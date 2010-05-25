@@ -66,7 +66,7 @@ class rcube_config
     if (empty($this->prop['skin']) && !empty($this->prop['skin_path']))
       $this->prop['skin'] = str_replace('skins/', '', unslashify($this->prop['skin_path']));
     else if (empty($this->prop['skin']))
-      $this->prop['skin'] = 'default';
+      $this->prop['skin'] = 'crystal';
 
     // fix paths
     $this->prop['log_dir'] = $this->prop['log_dir'] ? realpath(unslashify($this->prop['log_dir'])) : INSTALL_PATH . 'logs';

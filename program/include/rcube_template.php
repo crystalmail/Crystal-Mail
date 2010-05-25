@@ -675,7 +675,7 @@ class rcube_template extends rcube_html_page
                     $content = call_user_func($handler, $attrib);
                 }
                 else if ($object == 'productname') {
-                    $name = !empty($this->config['product_name']) ? $this->config['product_name'] : 'RoundCube Webmail';
+                    $name = !empty($this->config['product_name']) ? $this->config['product_name'] : 'Crystal Webmail';
                     $content = Q($name);
                 }
                 else if ($object == 'version') {
