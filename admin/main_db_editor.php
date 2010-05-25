@@ -76,7 +76,7 @@ echo '
     </script>';
 } else {
 
-echo '<p>You must enable the Admin Panel DB Editor in the <strong>db.inc.php</strong> file before you can continue.</p>';
+echo '<p>You must enable the Admin Panel DB Editor in the <strong>db.inc.php</strong> file before you can continue. This can be done by editing your db.inc.php file and setting the db_editor variable to \'true\'.</p>';
 
 }
 

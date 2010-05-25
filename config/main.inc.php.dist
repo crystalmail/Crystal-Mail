@@ -15,6 +15,11 @@ $rcmail_config = array();
 
 $rcmail_config['version'] = 1.1;
 
+// In order to enable the admin panel, you must change this option to 'true'.
+// Once enabled, you can access it via www.example.org/admin
+// Default login is User: admin Password: admin -- This can and should be changed after login
+$rcmail_config['enable_admin'] = 'false';
+
 //
 // Debuggin and Loggin Options
 //
@@ -43,11 +48,38 @@ $rcmail_config['log_dir'] = 'logs/';
 $rcmail_config['temp_dir'] = 'temp/';
 
 // List of active plugins (in plugins/ directory)
+// Additional plugins can be enabled by uncommenting existing plugins
 $rcmail_config['plugins'] = array(
-		calendar,
-		contextmenu,
-		remember_me, 
-		);
+	//addional_message_headers,
+    archive,
+    //autologon,
+    //calendar,
+    //captcha,
+    contextmenu,
+    //database_attachments,
+    //debug_logger,
+    emoticons,
+    //example_addressbook,
+    filesystem_attachments,
+    google_contacts,
+    //help,
+    //http_authentication,
+    //managesieve,
+    markasjunk,
+    //moreuserinfo PROBLEM
+    //new_user_dialog,
+    //new_user_identity,
+    //password,
+    remember_me,
+    show_additional_headers,
+    //squirrelmail_usercopy,
+    //subcriptions_option,
+    //userinfo, PROBLEM
+    vcard_attachments,
+    //virtuser_file,
+    //virtuser_query,
+    zipdownload
+    );
 
 // enable caching of messages and mailbox data in the local database.
 // this is recommended if the IMAP server does not run on the same machine
