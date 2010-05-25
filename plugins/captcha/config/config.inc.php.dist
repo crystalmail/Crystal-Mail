@@ -1,0 +1,14 @@
+<?php
+
+/* captcha plugin */
+
+/* Captcha challenge to enter authenticated state */
+$rcmail_config['captcha_auth'] = TRUE;
+
+/* Define below pages where a check should be performed in not authenticated state */
+$rcmail_config['captcha_page'] = array("contactus","recpw","register");
+
+/* Textual Captcha */
+$rcmail_config['captcha_onclick'] = 'riddle'; // entity_encoded or riddle
+
+?>

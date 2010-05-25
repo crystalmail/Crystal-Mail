@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title><roundcube:object name="pagetitle" /></title>
+<meta name="Robots" content="noindex,nofollow" />
+<roundcube:include file="/includes/links.html" />
+</head>
+<body>
+
+<div id="taskbar"></div>
+<roundcube:object name="message" id="message" />
+
+<div id="login-form">
+<img src="/images/futurecis_logo.png" border="0" alt="<roundcube:object name='productname' />" style="margin:2px 12px" />
+<div class="boxtitle"><roundcube:label name="welcome" /></div>
+<div class="boxcontent">
+
+<form name="form" action="./" method="post">
+<roundcube:object name="captcha" />
+<p style="text-align:center;">
+<input type="submit" class="button mainaction" value="<roundcube:label name='captcha.submit' />" />
+<span>&nbsp;</span>
+<input onclick="document.location.href = self.location.href" type="button" class="button" value="<roundcube:label name='captcha.reload' />" />
+<span>&nbsp;</span>
+<input onclick="document.location.href = './?_task=logout'" type="button" class="button" value="<roundcube:label name='captcha.back' />" />
+</p>
+</p>
+
+</form>
+</div>
+</div>
+<script type="text/javascript">
+  // post form to myself
+  document.forms.form.action = self.location.href;
+  document.forms.form.captcha_input.select();
+</script>
+</body>
+</html>

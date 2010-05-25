@@ -1,0 +1,103 @@
+form{clear:both;}
+body {
+font-family:Arial, Helvetica, sans-serif;
+}
+h1 {
+font-family:Arial, Helvetica, sans-serif;
+font-size: 2em;
+font-weight: normal;
+}
+h2 {
+font-family:Arial, Helvetica, sans-serif;
+font-size: 1.5em;
+font-weight: normal;
+}
+#logo {
+width: 200px;
+hight: 70px;
+padding-top: 50px;
+margin-left: 100px;
+padding-bottom: 25px;
+}
+#rounded {
+border-style:solid;
+border-width:1px;
+border-color: #A6C9E2;
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+padding-top: 30px;
+padding-bottom: 30px;
+padding-left: 20px;
+padding-right:20px;
+margin-bottom: 100px;
+margin-left: 100px;
+margin-right: 100px;
+}
+#button {
+background-color: #FFFFE0;
+border-style:solid;
+border-width:1px;
+border-color: #EEEEE0;
+padding: 3px;
+float: right;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+}
+.success {
+  color: #006400;
+  font-weight: bold !important;
+}
+
+.fail {
+  color: #ff0000 !important;
+  font-weight: bold !important;
+}
+#progress {
+  margin-bottom: 2em;
+  border: 1px solid #aaa;
+  background-color: #f9f9f9;
+  width: 700px;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+}
+
+#progress:after {
+  content: ".";
+  display: block;
+  height: 0;
+  font-size: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+#progress li {
+  float: left;
+  color: #999;
+  padding: 1em 5em 1em 0.2em;
+}
+
+#progress li a {
+  color: #999;
+  text-decoration: none;
+}
+
+#progress li a:hover {
+  text-decoration: underline;
+}
+
+#progress li.current {
+  color: #000;
+  font-weight: bold;
+}
+
+#progress li.passed,
+#progress li.passed a,
+#progress li.current a {
+  color: #333;
+}
+in_progress {
+font-weight: bold;
+}

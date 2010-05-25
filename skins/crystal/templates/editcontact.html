@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title><roundcube:object name="pagetitle" /></title>
+<roundcube:include file="/includes/links.html" />
+<script type="text/javascript" src="/functions.js"></script>
+</head>
+<body class="iframe">
+
+<div id="tabsbar">
+<roundcube:object name="contacttabsbar" />
+<script type="text/javascript"> if (window.rcmail) rcmail.add_onload(rcube_init_address_tabs); </script>
+</div>
+
+<div id="contact-details" class="boxcontent">
+<roundcube:object name="contacteditform" />
+
+<p><br />
+<roundcube:button command="show" type="input" class="button" label="cancel" />&nbsp;
+<roundcube:button command="save" type="input" class="button mainaction" label="save" />
+</p>
+
+</div>
+
+</body>
+</html>

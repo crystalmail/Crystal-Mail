@@ -1,0 +1,3 @@
+Login,STRING,15
+Password,PASSWORD,15
+Email,STRING,30
