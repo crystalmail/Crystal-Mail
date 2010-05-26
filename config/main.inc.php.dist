@@ -29,6 +29,10 @@ $rcmail_config['version'] = 1.1;
 // Default login is User: admin Password: admin -- This can and should be changed after login
 $rcmail_config['enable_admin'] = 'false';
 
+// Admin console username and password
+$rcmail_config['admin_user'] = 'admin';
+$rcmail_config['admin_password'] = 'admin';
+
 // THIS OPTION WILL ALLOW THE INSTALLER TO RUN AND CAN EXPOSE SENSITIVE CONFIG DATA.
 // ONLY ENABLE IT IF YOU'RE REALLY SURE WHAT YOU'RE DOING!
 $rcmail_config['enable_installer'] = true;
