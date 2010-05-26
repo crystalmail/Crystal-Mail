@@ -222,3 +222,88 @@ CREATE TABLE messages (
 ALTER TABLE messages ADD UNIQUE (user_id, cache_key, uid);
 CREATE INDEX messages_index_idx ON messages (user_id, cache_key, idx);
 CREATE INDEX messages_created_idx ON messages (created);
+
+--
+-- Constraints Table `event_ids`
+--
+
+CREATE SEQUENCE event_ids
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+CREATE TABLE events (
+    event_id integer DEFAULT nextval('event_ids'::regclass) NOT NULL,
+    user_id integer NOT NULL,
+    "start" timestamp without time zone DEFAULT now() NOT NULL,
+    "end" timestamp without time zone DEFAULT now() NOT NULL,
+    "summary" character varying(255) NOT NULL,
+    "description" text NOT NULL,
+    "location" character varying(255) NOT NULL,
+    "categories" character varying(255) NOT NULL,
+    "all_day" smallint NOT NULL DEFAULT 0
+);
+
+CREATE INDEX events_event_id_idx ON events USING btree (event_id);
+
+
+--
+-- Constraints Table `events`
+--
+ALTER TABLE ONLY events
+    ADD CONSTRAINT events_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+--
+-- Modify Database for Multiple Imap Accounts
+--
+
+DROP SEQUENCE accounts_id_seq;
+CREATE SEQUENCE accounts_id_seq;
+DROP TABLE accounts;
+CREATE TABLE accounts (
+  aid integer DEFAULT nextval('accounts_id_seq'::text),
+  account_dn varchar(128) NOT NULL,  
+  account_id varchar(128) NOT NULL,
+  account_pw varchar(128) NOT NULL,
+  account_host varchar(128) NOT NULL,
+  preferences text,
+  user_id integer NOT NULL default '0',
+  PRIMARY KEY (aid)
+);
+
+CREATE INDEX user_id_fk_accounts ON accounts (user_id);
+
+ALTER TABLE accounts
+  ADD CONSTRAINT accounts_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Sequence "collected_contact_ids"
+-- Name: collected_contact_ids; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE collected_contact_ids
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+--
+-- Table "google_contacts"
+-- Name: google_contacts; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE google_contacts (
+    contact_id integer DEFAULT nextval('collected_contact_ids'::text) PRIMARY KEY,
+    user_id integer NOT NULL REFERENCES users (user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    changed timestamp with time zone DEFAULT now() NOT NULL,
+    del smallint DEFAULT 0 NOT NULL,
+    name character varying(128) DEFAULT ''::character varying NOT NULL,
+    email character varying(128) DEFAULT ''::character varying NOT NULL,
+    firstname character varying(128) DEFAULT ''::character varying NOT NULL,
+    surname character varying(128) DEFAULT ''::character varying NOT NULL,
+    vcard text
+);
+
+CREATE INDEX google_contacts_user_id_idx ON google_contacts (user_id);

@@ -141,5 +141,49 @@ CREATE TABLE `identities` (
  INDEX `user_identities_index` (`user_id`, `del`)
 ) /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;
 
+-- Table structure for table `accounts`
+
+CREATE TABLE IF NOT EXISTS `accounts` (
+  `aid` int(10) unsigned NOT NULL auto_increment,
+  `account_dn` varchar(128) NOT NULL,  
+  `account_id` varchar(128) NOT NULL,
+  `account_pw` varchar(128) NOT NULL,
+  `account_host` varchar(128) NOT NULL,
+  `preferences` text,
+  `user_id` int(10) unsigned NOT NULL default '0',
+  PRIMARY KEY  (`aid`),
+  KEY `user_id_fk_accounts` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+ALTER TABLE `accounts`
+  ADD CONSTRAINT `accounts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
+
+-- Table structure for table `events`
+
+CREATE TABLE `events` (
+  `event_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) UNSIGNED NOT NULL DEFAULT '0',
+  `start` datetime NOT NULL DEFAULT '1000-01-01 00:00:00',
+  `end` datetime NOT NULL DEFAULT '1000-01-01 00:00:00',
+  `summary` varchar(255) NOT NULL,
+  `description` text NOT NULL,
+  `location` varchar(255) NOT NULL DEFAULT '',
+  `categories` varchar(255) NOT NULL DEFAULT '',
+  `all_day` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY(`event_id`),
+  CONSTRAINT `user_id_fk_events` FOREIGN KEY (`user_id`)
+    REFERENCES `users`(`user_id`)
+    /*!40008
+      ON DELETE CASCADE
+      ON UPDATE CASCADE */
+) /*!40000 ENGINE=INNODB */ /*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;
+
+-- Table structure for table `google_contacts`
+
+CREATE TABLE google_contacts LIKE contacts;
+
+ALTER TABLE `google_contacts`
+  ADD CONSTRAINT `google_contacts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
 
 /*!40014 SET FOREIGN_KEY_CHECKS=1 */;

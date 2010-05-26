@@ -143,3 +143,63 @@ CREATE TABLE messages (
 CREATE UNIQUE INDEX ix_messages_user_cache_uid ON messages (user_id,cache_key,uid);
 CREATE INDEX ix_messages_index ON messages (user_id,cache_key,idx);
 CREATE INDEX ix_messages_created ON messages (created);
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table events
+-- 
+
+CREATE TABLE events (
+  event_id integer NOT NULL PRIMARY KEY,
+  user_id integer NOT NULL default '0',
+  start datetime NOT NULL default '1000-01-01 00:00:00',
+  end datetime NOT NULL default '1000-01-01 00:00:00',
+  summary varchar(255) NOT NULL,
+  description text NOT NULL,
+  location varchar(255) NOT NULL default '',
+  categories varchar(255) NOT NULL default '',
+  all_day tinyint(1) NOT NULL default '0',
+  CONSTRAINT user_id_fk_events FOREIGN KEY (user_id)
+    REFERENCES users(user_id)
+);
+
+-- --------------------------------------------------------
+
+-- 
+-- Setup database for multiple imap accounts
+-- 
+
+DROP TABLE accounts;
+CREATE TABLE 'accounts' (
+   'aid' INTEGER PRIMARY KEY ASC,
+   'account_dn' VARCHAR(128) NOT NULL,
+   'account_id' VARCHAR(128) NOT NULL,
+   'account_pw' VARCHAR(128) NOT NULL,
+   'account_host' VARCHAR(128) NOT NULL,
+   'preferences' TEXT,
+   'user_id' UNSIGNED INTEGER(10) NOT NULL default '0',
+   CONSTRAINT 'accounts_ibfk_1' FOREIGN KEY ('user_id') REFERENCES 'users'  
+('user_id') ON DELETE
+CASCADE ON UPDATE CASCADE
+);
+
+-- --------------------------------------------------------
+
+-- 
+-- Table structure for table google_contacts
+-- 
+
+CREATE TABLE google_contacts (
+  contact_id integer NOT NULL PRIMARY KEY,
+  user_id integer NOT NULL default '0',
+  changed datetime NOT NULL default '0000-00-00 00:00:00',
+  del tinyint NOT NULL default '0',
+  name varchar(128) NOT NULL default '',
+  email varchar(128) NOT NULL default '',
+  firstname varchar(128) NOT NULL default '',
+  surname varchar(128) NOT NULL default '',
+  vcard text NOT NULL default ''
+);
+
+CREATE INDEX ix_google_contacts_user_id ON google_contacts(user_id);
