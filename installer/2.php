@@ -3,8 +3,7 @@
 // Function to create a new random token
 // e.g. createToken('UG8D-', 3, 4)
 // Might produce: UG8D-6T8Y-FCK7-09PL
-function createToken($tokenprefix, $sections, $sectionlength)
-{
+function createToken($tokenprefix, $sections, $sectionlength) {
 	// Declare salt and prefix
 	$token .= $tokenprefix;
 	$salt = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@$%^&*';
@@ -13,492 +12,395 @@ function createToken($tokenprefix, $sections, $sectionlength)
 	srand((double) microtime() * 1000000);
 
 	// Create the token
-	for($i = 0; $i < $sections; $i++)
-	{
-		for($n = 0; $n < $sectionlength; $n++)
-		{
-			$token.=substr($salt, rand() % strlen($salt), 1);
-		}
+	for($i = 0; $i < $sections; $i++) {
+	for($n = 0; $n < $sectionlength; $n++) {
+		$token.=substr($salt, rand() % strlen($salt), 1);
+	}
 
-		if($i < ($sections - 1)){ $token .= '-'; }
+	if($i < ($sections - 1)){ $token .= '-'; } 
 	}
 
 	// Return the token
 	return $token;
 }
 ?>
-<center>
-<style>
-fieldset {
-  margin-bottom: 1.5em;
-  border: 1px solid #aaa;
-  background-color: #fffffe;
--webkit-border-radius: 3px;
--moz-border-radius: 3px;
-border-radius: 3px;
-  
-}
-
-fieldset p.hint {
-  margin-top: 0.5em;
-}
-
-legend {
-  font-size: 1.1em;
-  font-weight: bold;
-}
-
-textarea.configfile {
-  background-color: #f9f9f9;
-  font-family: monospace;
-  font-size: 9pt;
-  width: 100%;
-  height: 30em;
-}
-
-.propname {
-  font-size: 9pt;
-  margin-top: 1em;
-  margin-bottom: 0.6em;
-}
-
-dd div {
-  margin-top: 0.3em;
-}
-
-dd label {
-  padding-left: 0.5em;
-}
-
-th {
-  text-align: left;
-}
-
-ul li {
-  margin: 0.3em 0 0.4em -1em;
-}
-
-ul li ul li {
-  margin-bottom: 0.2em;
-}
-
-h3 {
-  font-size: 1.1em;
-  margin-top: 1.5em;
-  margin-bottom: 0.6em;
-}
-
-h4 {
-  margin-bottom: 0.2em;
-}
-
-a.blocktoggle {
-  color: #666;
-  text-decoration: none;
-}
-
-a.addlink {
-  color: #999;
-  font-size: 0.9em;
-  padding: 1px 0 1px 20px;
-  background: url('images/add.png') top left no-repeat;
-  text-decoration: none;
-}
-
-a.removelink {
-  color: #999;
-  font-size: 0.9em;
-  padding: 1px 0 1px 24px;
-  background: url('images/delete.png') 4px 0 no-repeat;
-  text-decoration: none;
-}
-
-.hint {
-  color: #666;
-  font-size: 0.85em;
-background-color: #FFFFE0;
-border-style:solid;
-border-width:1px;
-border-color: #EEEEE0;
-padding: 3px;
--webkit-border-radius: 3px;
--moz-border-radius: 3px;
-border-radius: 3px;
-}
-
-.success {
-  color: #006400;
-  font-weight: bold !important;
-}
-
-.fail {
-  color: #ff0000 !important;
-  font-weight: bold !important;
-}
-
-.na {
-  color: #f60;
-  font-weight: bold;
-}
-
-.indent {
-  padding-left: 0.8em;
-}
-
-.notice {
-  padding: 1em;
-  background-color: #f7fdcb;
-  border: 2px solid #c2d071;
-}
-
-.suggestion {
-  padding: 0.6em;
-  background-color: #ebebeb;
-  border: 1px solid #999;
-}
-
-p.warning,
-div.warning {
-  padding: 1em;
-  background-color: #ef9398;
-  border: 2px solid #dc5757;
-}
-
-h3.warning {
-  color: #c00;
-  background: url('images/error.png') top left no-repeat;
-  padding-left: 24px;
-}
-
-</style>
 <ol id="progress">
-<li class="step2">Check environment</li><li class="step3"><inprogress>Generate config</inprogress></li><li class="step4">Check install</li></ol>
-</center>
+	<li class="step2">Check Environment</li><li class="step3"><inprogress>Generate Configuration</inprogress></li><li class="step4">Check Installation</li>
+</ol>
+
 <div id="rounded">
+	<div id="button">
+		<input type="submit" value="Install">
+	</div>
+	<br />
+	<div id="impatient">
+		<p>FOR THE IMPATIENT: It is possible to just enter the "Connection & Server" information and run Crystal Webmail without any other configuration.</p>
+		<p>It is recommended to be familiar with each of the options though.</p>
+	</div>
+	<br /><br />
+
+	
 <form name="form" method="post" action="?action=install">
+
+
 <fieldset>
-<legend>General configuration</legend>
+<legend>Connection & Server Configuration</legend>
 <dl class="configblock">
-
-<dt class="propname">Installation Name</dt>
-<dd>
-<input name="productname" size="30" id="cfgprodname" value="Crystal Webmail" type="text" /><div class="hint">The name of your service (used to compose page titles)</div>
-</dd>
-
-<dt class="propname">Temp Dir</dt>
-<dd>
-<input name="tempdir" size="30" id="cfgtempdir" value="temp/" type="text" /><div class="hint">Use this folder to store temp files (must be writeable for webserver)</div>
-</dd>
-
-
-<dt class="propname">IP Check</dt>
-
-<dd>
-<input name="ipcheck" id="cfgipcheck" value="1" type="checkbox" /><label for="cfgipcheck">Check client IP in session authorization</label><br />
-
-<p class="hint">This increases security but can cause sudden logouts when someone uses a proxy with changeing IPs.</p>
-</dd>
-
-<dt class="propname">Des Key</dt>
-<dd>
-<input name="deskey" size="30" id="cfgdeskey" value="<?php echo(createToken('', 1, 24)); ?>" type="text" /><div>This key is used to encrypt the users imap password before storing in the session record</div>
-<p class="hint">It's a random generated string to ensure that every installation has it's own key.
-If you enter it manually please provide a string of exactly 24 chars.</p>
-</dd>
-
-<dt class="propname">Enable Caching</dt>
-<dd>
-<input name="enablecaching" id="cfgcache" value="1" type="checkbox" /><label for="cfgcache">Cache messages in local database</label><br />
-</dd>
-
-<dt class="propname">Enable Spellcheck</dt>
-<dd>
-<input name="enablespellcheck" id="cfgspellcheck" value="1" checked="checked" type="checkbox" /><label for="cfgspellcheck">Make use of the spell checker</label><br />
-</dd>
-
-<dt class="propname">Spellcheck Engine</dt>
-<dd>
-
-<select name="spellcheckengine" id="cfgspellcheckengine">
-<option value="googie">Googie</option>
-</select>
-<label for="cfgspellcheckengine">Which spell checker to use</label><br />
-
-<p class="hint">GoogieSpell implies that the message content will be sent to Google in order to check the spelling.</p>
-</dd>
-
-<dt class="propname">Identities Level</dt>
-<dd>
-<select name="identitieslevel" id="cfgidentitieslevel">
-<option value="0" selected="selected">many identities with possibility to edit all params</option>
-
-<option value="1">many identities with possibility to edit all params but not email address</option>
-<option value="2">one identity with possibility to edit all params</option>
-<option value="3">one identity with possibility to edit all params but not email address</option>
-</select>
-<div>Level of identities access</div>
-<p class="hint">Defines what users can do with their identities.</p>
-</dd>
-
-</dl>
+	<dt class="propname">Mail Host</dt>
+	<div class="hint">Description: Enter the mail host to be used for login. If left blank, a text box will be provided during login so the user can enter their host.</div>
+	<div class="hint">If the server utilizes encryption, select SSL or TLS from the drop down.</div>
+	<div class="hint">Note: Multiple hosts can be added through the admin panel and a dropdown box will be created upon login to choose from the host list.</div>
+	<dd>
+		Encryption Type: <select name="host_encryption" id="host_encryption">
+			<option value="" selected="selected">NONE</option>
+			<option value="ssl">SSL</option>
+			<option value="tls">TLS</option>
+		</select>
+		<input name="default_host" size="30" id="default_host" value="" type="text" /> Example: mail.example.com
+	</dd>
+	<dt class="propname">Mail Host Port</dt>
+	<div class="hint">Description: Enter the mail host port number.</div>
+	<dd>
+		<input name="default_port" size="6" id="default_port" value="143" type="text" /> Default IMAP port is 143
+	</dd>
+	<dt class="propname">IMAP Auth Type</dt>
+	<div class="hint">Description: If your IMAP server requires authentication, select here..</div>
+	<dd>
+		<select name="imap_auth_type" id="imap_auth_type">
+			<option value="check" selected="selected">Auto-detect</option>
+			<option value="auth">auth (CRAM-MD5)</option>
+			<option value="plain">plain (PLAIN)</option>
+		</select>
+	</dd>
+	<dt class="propname">SMTP Host</dt>
+	<div class="hint">Description: Enter the SMTP host to be used for mailing. If left blank, the PHP mail() function will be used.</div>
+	<div class="hint">Note: Use %h variable as a replacement for the user's IMAP hostname.</div>
+	<dd>
+		<input name="smtp_server" size="30" id="smtp_server" value="" type="text" /> Example: mail.example.com
+	</dd>
+	<dt class="propname">SMTP Host Port</dt>
+	<div class="hint">Description: Enter the SMTP host port number.</div>
+	<dd>
+		<input name="smtp_port" size="6" id="smtp_port" value="25" type="text" /> Default SMTP port is 25
+	</dd>
+	<dt class="propname">SMTP User and Password</dt>
+	<div class="hint">Description: If your SMTP server requires authentication, enter it here.</div>
+	<dd>
+		Username: <input name="smtp_user" size="20" id="smtp_user" value="" type="text" /><br /><br />
+		Password: <input name="smtp_pass" size="20" id="smtp_pass" value="" type="password" />
+	</dd>
+	<dt class="propname">SMTP HELO Host</dt>
+	<div class="hint">Description: If your SMTP server requires a host response for HELO or EHLO, enter it here.</div>
+	<div class="hint">Note: If you leave this blank, the either the variable for server_name or localhost will be passed.</div>
+	<dd>
+		<input name="smtp_helo_host" size="20" id="smtp_helo_host" value="" type="text" /> 
+	</dd>
+	<dt class="propname">Mail Domain</dt>
+	<div class="hint">Description: This will be used to form email addresses of new users.</div>
+	<dd>
+		<input name="mail_domain" size="20" id="mail_domain" value="example.com" type="text" /> 
+	</dd>
+	<dt class="propname">Username Domain</dt>
+	<div class="hint">Description: If your server requires username+domain to authenticate, enter the domain here.</div>
+	<dd>
+		<input name="username_domain" size="20" id="username_domain" value="" type="text" /> 
+	</dd>
+	<dt class="propname">Virtual Users</dt>
+	<div class="hint">Description: Path to virtual user table to resolve user names and email addresses.</div>
+	<dd>
+		<input name="virtuser_file" size="40" id="virtuser_file" value="" type="text" /> 
+	</dd>
+	<dt class="propname">Virtual Users Query</dt>
+	<div class="hint">Description: Query to resolve virtual users user names and email addresses.</div>
+	<div class="hint">Note: Use %u to replace the current username for login.</div>
+	<div class="hint">Note 2: The query expects the first column to be email address and the second column to be an optional identity name.</div>
+	<dd>
+		<input name="virtuser_query" size="40" id="virtuser_query" value="" type="text" /> 
+	</dd>
+		
+	<!-- These entries are not part of the installer but are required for the main.inc.php -->
+	<input name="smtp_auth_type" size="10" id="smtp_auth_type" value="" type="hidden" />
+	<input name="imap_root" size="10" id="imap_root" value="" type="hidden" />
+	<input name="imap_delimiter" size="10" id="imap_delimiter" value="" type="hidden" />
 </fieldset>
+
+
+<div class="spacer"></div>
 
 <fieldset>
-
-<legend>Logging & Debugging</legend>
-<dl class="loggingblock">
-
-<dt class="propname">Debug Level</dt>
-<dd>
-<input name="debuglevel[]" value="1" id="cfgdebug1" checked="checked" type="checkbox" /><label for="cfgdebug1">Log errors</label><br /><input name="debuglevel[]" value="4" id="cfgdebug4" type="checkbox" /><label for="cfgdebug4">Print errors (to the browser)</label><br /><input name="debuglevel[]" value="8" id="cfgdebug8" type="checkbox" /><label for="cfgdebug8">Verbose display (enables debug console)</label><br /></dd>
-
-<dt class="propname">Log Driver</dt>
-<dd>
-<select name="logdriver" id="cfglogdriver">
-
-<option value="file" selected="selected">file</option>
-<option value="syslog">syslog</option>
-</select>
-<div>How to do logging? 'file' - write to files in the log directory, 'syslog' - use the syslog facility.</div>
-</dd>
-
-<dt class="propname">Log Dir</dt>
-<dd>
-<input name="logdir" size="30" id="cfglogdir" value="logs/" type="text" /><div>Use this folder to store log files (must be writeable for webserver). Note that this only applies if you are using the 'file' logdriver.</div>
-</dd>
-
-<dt class="propname">Syslog Id</dt>
-
-<dd>
-<input name="syslogid" size="30" id="cfgsyslogid" value="crystalmail" type="text" /><div>What ID to use when logging with syslog. Note that this only applies if you are using the 'syslog' logdriver.</div>
-</dd>
-
-<dt class="propname">Syslog Facility</dt>
-<dd>
-<select name="syslogfacility" id="cfgsyslogfacility">
-<option value="8" selected="selected">user-level messages</option>
-<option value="16">mail subsystem</option>
-<option value="128">local level 0</option>
-<option value="136">local level 1</option>
-
-<option value="144">local level 2</option>
-<option value="152">local level 3</option>
-<option value="160">local level 4</option>
-<option value="168">local level 5</option>
-<option value="176">local level 6</option>
-<option value="184">local level 7</option>
-</select>
-<div>What ID to use when logging with syslog.  Note that this only applies if you are using the 'syslog' logdriver.</div>
-</dd>
-
-
-
-</dl>
+<legend>Administrative & Security Configuration</legend>
+<dl class="configblock">
+	<dt class="propname">Enable Admin Panel</dt>
+	<div class="hint">Description: This will enable the Administrative Panel.</div>
+	<div class="hint">Note: For some people this might pose a security risk.</div>
+	<dd>
+		<select name="enable_admin" id="enable_admin">
+			<option value="true" selected="selected">Yes, enable the admin panel.</option>
+			<option value="false">No, do not enable the admin panel.</option>
+		</select>
+	</dd>
+	<dt class="propname">Admin User and Password</dt>
+	<div class="hint">Description: This will be the username and password used to login to the Administrative Panel.</div>
+	<dd>
+		Username: <input name="admin_user" size="20" id="admin_user" value="admin" type="text" /><br /><br />
+		Password: <input name="admin_password" size="20" id="admin_password" value="admin" type="password" /> Default: admin
+	</dd>
+	<dt class="propname">Client IP Check</dt>
+	<div class="hint">Description: This will check the client IP in the session authorization.</div>
+	<dd>
+		<select name="ip_check" id="ip_check">
+			<option value="false" selected="selected">No, do not enable client IP check.</option>
+			<option value="true">Yes, enable client IP check.</option>
+		</select>
+	</dd>
+	<dt class="propname">Double Authorization</dt>
+	<div class="hint">Description: This will use an additional changing cookie to authorize users.</div>
+	<div class="hint">NOTE: There have been problems reported with this option when enabled.</div>
+	<dd>
+		<select name="double_auth" id="double_auth">
+			<option value="false" selected="selected">No, do not enable double authorization.</option>
+			<option value="true">Yes, enable double authorization.</option>
+		</select>
+	</dd>
+	<dt class="propname">Outgoing Email Message</dt>
+	<div class="hint">Description: This will is a message that will be added to the bottom of all outgoing messages.</div>
+	<div class="hint">NOTE: The message will be stored in 'footer.txt' in the config directory.</div>
+	<dd>
+		<textarea name="message_footer" id="message_footer" value="" cols="65" rows="10"></textarea>
+	
+	</dd>
+	<dt class="propname">Add IP and Hostname to Header?</dt>
+	<div class="hint">Description: This will add the users IP and hostname to the header of outgoing messages.</div>
+	<div class="hint">Note: For some people this might pose a security risk.</div>
+	<dd>
+		<select name="http_received_header" id="http_received_header">
+			<option value="false" selected="selected">No, do not add additional information to the header.</option>
+			<option value="true">Yes, add additional information to the header.</option>
+		</select>
+	</dd>
+	<dt class="propname">Encrypt IP and Hostname in Header?</dt>
+	<div class="hint">Description: This will encrypt the users IP and hostname in the header of outgoing messages.</div>
+	<dd>
+		<select name="http_received_header_encrypt" id="http_received_header_encrypt">
+			<option value="false" selected="selected">No, do not encrypt additional information in the header.</option>
+			<option value="true">Yes, encrypt additional information in the header.</option>
+		</select>
+	</dd>
+	<dt class="propname">Load Host Specific Configuration?</dt>
+	<div class="hint">Description: This will load host specific configuration.</div>
+	<div class="hint">Note: See <a href="http://www.crystalwebmail.com/documentation" target="_blank">http://www.crystalwebmail.com/documentation</a> for more details..</div>
+	<dd>
+		<select name="include_host_config" id="include_host_config">
+			<option value="false" selected="selected">No, do not include host configuration.</option>
+			<option value="true">Yes, include host configuration.</option>
+		</select>
+	</dd>
+	<dt class="propname">Enable DNS checking for E-Mail Address Validation?</dt>
+	<div class="hint">Description: This will perform a DNS lookup to validate the senders e-mail address..</div>
+	<dd>
+		<select name="email_dns_check" id="email_dns_check">
+			<option value="false" selected="selected">No, do not enable DNS checks.</option>
+			<option value="true">Yes, enable DNS checks.</option>
+		</select>
+	</dd>
+	<dt class="propname">User Over-Rides</dt>
+	<div class="hint">Description: When the options below are checked, users will be unable to change these options.</div>
+	<dd>
+		<table>
+			<tr>
+				<td><input name="skin_override" id="skin_override" value="skin" type="checkbox" /> Change Theme<br /></td>
+				<td><input name="pagesize_override" id="pagesize_override" value="pagesize" type="checkbox" /> Emails per page shown<br /></td>
+				<td><input name="timezone_override" id="timezone_override" value="timezone" type="checkbox" /> Timezone<br /></td>
+			</tr>
+				<td><input name="prefer_html_override" id="prefer_html_override" value="prefer_html" type="checkbox" /> Show HTML Messages<br /></td>
+				<td><input name="show_images_override" id="show_images_override" value="show_images" type="checkbox" /> Display Inline Images<br /></td>
+				<td><input name="htmleditor_override" id="htmleditor_override" value="htmleditor" type="checkbox" /> Composing Messages in HTML Format<br /></td>
+			<tr>
+				<td><input name="draft_autosave_override" id="draft_autosave_override" value="draft_autosave" type="checkbox" /> Draft Autosave Time<br /></td>
+				<td><input name="preview_pane_override" id="preview_pane_override" value="preview_pane" type="checkbox" /> Preview Pane Display<br /></td>
+				<td><input name="logout_purge_override" id="logout_purge_override" value="logout_purge" type="checkbox" /> Trash Purge Upon Logout<br /></td>
+			</tr>	
+			<tr>
+				<td><input name="inline_images_override" id="inline_images_override" value="inline_images" type="checkbox" /> Display Images Inline<br /></td>
+				<td><input name="logout_expunge_override" id="logout_expunge_override" value="logout_expunge" type="checkbox" /> Compact Inbox Upon Logout<br /></td>
+				<td><input name="check_all_folders_override" id="check_all_folders_override" value="check_all_folders" type="checkbox" /> Check All Folders for New Messages<br /></td>
+			</tr>	
+			<tr>
+				<td><input name="prettydate_override" id="prettydate_override" value="prettydate" type="checkbox" /> Date Display<br /></td>
+				<td><input name="dst_active_override" id="dst_active_override" value="dst_active" type="checkbox" /> Daylight Savings Time<br /></td>
+			</tr>
+		</table>	
+	</dd>
+		
+	<!-- These entries are not part of the config but are required for the main.inc.php -->
+	<input name="des_key" size="30" id="des_key" value="<?php echo(createToken('', 1, 24)); ?>" type="hidden" />
+	<input name="generic_message_footer" size="30" id="generic_message_footer" value="config/footer.txt" type="hidden" />
+	<input name="mail_header_delimiter" size="30" id="mail_header_delimiter" value="null" type="hidden" />
 </fieldset>
 
+<div class="spacer"></div>
 
 <fieldset>
-<legend>Database setup</legend>
-<dl class="configblock" id="cgfblockdb">
-<dt class="propname">Database Dsnw</dt>
-<dd>
-<p>Database settings for read/write operations:</p>
-<select name="dbtype" id="cfgdbtype">
-
-<option value="mysql" selected="selected">MySQL</option>
-<option value="mysqli">MySQLi</option>
-<option value="pgsql">PgSQL</option>
-<option value="sqlite">SQLite</option>
-</select>
-<label for="cfgdbtype">Database type</label><br /><input name="dbhost" size="20" id="cfgdbhost" value="localhost" type="text" /><label for="cfgdbhost">Database server (omit for sqlite)</label><br /><input name="dbname" size="20" id="cfgdbname" value="crystalmail" type="text" /><label for="cfgdbname">Database name (use absolute path and filename for sqlite)</label><br /><input name="dbuser" size="20" id="cfgdbuser" value="crystal" type="text" /><label for="cfgdbuser">Database user name (needs write permissions)(omit for sqlite)</label><br /><input name="dbpass" size="20" id="cfgdbpass" value="pass" type="password" /><label for="cfgdbpass">Database password (omit for sqlite)</label><br /></dd>
-</dl>
+<legend>Debugging & Logging Configuration</legend>
+<dl class="configblock">
+	<dt class="propname">Debug Level</dt>
+	<div class="hint">Description: What level of logging should be performed.</div>
+	<div class="hint">Note: Anything other than one could expose sensitive information which be be a security risk.</div>
+	<dd>
+		<select name="debug_level" id="debug_level">
+			<option value="1" selected="selected">Log Level 1: Log to normal logs. This is the default.</option>
+			<option value="4">Log Level 4: Display the errors in the browser.</option>
+			<option value="8">Log Level 8: This will produce tracing errors (verbose logging).</option>
+		</select>
+	</dd>
+	<dt class="propname">Log Driver</dt>
+	<div class="hint">Description: What driver should be used for logging.</div>
+	<dd>
+		<select name="log_driver" id="log_driver">
+			<option value="file" selected="selected">Log to the local Crystal logs directory chosen below.</option>
+			<option value="syslog">Utilize Syslog.</option>
+		</select>
+	</dd>
+	<dt class="propname">Log Date Format</dt>
+	<div class="hint">Description: What format should the time be in for the log files.</div>
+	<div class="hint">Note: Check out <a href="http://php.net/manual/en/function.date.php" target="_blank">http://php.net/manual/en/function.date.php</a> for the various date formats.</div>
+	<dd>
+		<input name="admin_user" size="20" id="admin_user" value="d-M-Y H:i:s O" type="text" /> Example: [25-May-2010 17:34:14 -0400] 
+	</dd>
+	<dt class="propname">Syslog ID</dt>
+	<div class="hint">Description: This is the name that will be used to identify log entries from Crystal Webmail.</div>
+	<dd>
+		<input name="syslog_id" size="10" id="syslog_id" value="crystal" type="text" />  
+	</dd>
+	<dt class="propname">Syslog Facility</dt>
+	<div class="hint">Description: when using the syslog driver, what facility should ebe used?</div>
+	<div class="hint">Note: Check out <a href="http://php.net/manual/en/function.openlog.php" target="_blank">http://php.net/manual/en/function.openlog.php</a> for the possible values.</div>
+	<dd>
+		<input name="syslog_facility" size="10" id="syslog_facility" value="LOG_USER" type="text" /> 
+	</dd>
+	<dt class="propname">Log Folder</dt>
+	<div class="hint">Description: This is the folder where log files will be stored when using the 'file' log driver.</div>
+	<div class="hint">Note: This folder must have write access for the web server user. i.e. apache/www</div>
+	<dd>
+		<input name="log_dir" size="30" id="log_dir" value="logs" type="text" />  
+	</dd>
+	<dt class="propname">Temporary Folder</dt>
+	<div class="hint">Description: This is the folder where temporary files will be stored like attachments</div>
+	<div class="hint">Note: This folder must have write access for the web server user. i.e. apache/www</div>
+	<dd>
+		<input name="temp_dir" size="30" id="temp_dir" value="temp" type="text" />  
+	</dd>
+	<dt class="propname">Log Successful Logins</dt>
+	<div class="hint">Description: This will log all successful logins by users.</div>
+	<dd>
+		<select name="log_options" id="log_options">
+			<option value="false" selected="selected">No, do not log all successful logins.</option>
+			<option value="true">Yes, log all successful logins.</option>
+		</select>
+	</dd>
+	<dt class="propname">Services Debugging</dt>
+	<div class="hint">Description: When the options below are checked, all input for each service is redirected to the logs.</div>
+	<div class="hint">Note: WARNING! If you enable IMAP debug, passwords are logged in clear text!</div>
+	<div class="hint">Note 2: SMTP logging will log every message sent including contents of the message. This will require a significant amout of disk space over time.</div>
+	<dd>
+		<table>
+			<tr>
+				<td><input name="smtp_log" id="smtp_log" value="smtp_log" type="checkbox" /> SMTP Log<br /></td>
+				<td><input name="smtp_debug" id="smtp_debug" value="smtp_debug" type="checkbox" /> SMTP Debug<br /></td>
+				<td><input name="sql_debug" id="sql_debug" value="sql_debug" type="checkbox" /> SQL Debug<br /></td>
+			</tr>	
+			<tr>
+				<td><input name="imap_debug" id="imap_debug" value="imap_debug" type="checkbox" /> IMAP Debug<br /></td>
+				<td><input name="ldap_debug" id="ldap_debug" value="ldap_debug" type="checkbox" /> LDAP Debug<br /></td>
+			</tr>
+		</table>	
+	</dd>
 </fieldset>
 
+<div class="spacer"></div>
 
 <fieldset>
-<legend>IMAP Settings</legend>
-<dl class="configblock" id="cgfblockimap">
-<dt class="propname">Default Host</dt>
-<dd>
-<div>The IMAP host chosen to perform the log-in</div>
-<div id="defaulthostlist">
-<div id="defaulthostentry0"><input name="defaulthost[]" size="30" value="" type="text" /></div></div>
-
-<p class="hint">Leave blank to show a textbox at login. To use SSL/IMAPS connection, type ssl://hostname</p>
-
-</dd>
-
-<dt class="propname">Default Port</dt>
-<dd>
-<input name="defaultport" size="6" id="cfgimapport" value="143" type="text" /><div>TCP port used for IMAP connections</div>
-</dd>
-
-<dt class="propname">Username Domain</dt>
-<dd>
-<input name="usernamedomain" size="30" id="cfguserdomain" value="" type="text" /><div>Automatically add this domain to user names for login</div>
-
-<p class="hint">Only for IMAP servers that require full e-mail addresses for login</p>
-
-</dd>
-
-<dt class="propname">Auto Create User</dt>
-<dd>
-<input name="autocreateuser" id="cfgautocreate" value="1" checked="checked" type="checkbox" /><label for="cfgautocreate">Automatically create a new RoundCube user when log-in the first time</label><br />
-
-<p class="hint">A user is authenticated by the IMAP server but it requires a local record to store settings
-and contacts. With this option enabled a new user record will automatically be created once the IMAP login succeeds.</p>
-
-<p class="hint">If this option is disabled, the login only succeeds if there's a matching user-record in the local RoundCube database
-what means that you have to create those records manually or disable this option after the first login.</p>
-</dd>
-
-<dt class="propname">Sent mbox</dt>
-
-<dd>
-<input name="sentmbox" size="20" id="cfgsentmbox" value="Sent" type="text" /><div>Store sent messages in this folder</div>
-
-<p class="hint">Leave blank if sent messages should not be stored</p>
-</dd>
-
-<dt class="propname">Trash mbox</dt>
-<dd>
-<input name="trashmbox" size="20" id="cfgtrashmbox" value="Trash" type="text" /><div>Move messages to this folder when deleting them</div>
-
-<p class="hint">Leave blank if they should be deleted directly</p>
-</dd>
-
-<dt class="propname">Drafts mbox</dt>
-<dd>
-<input name="draftsmbox" size="20" id="cfgdraftsmbox" value="Drafts" type="text" /><div>Store draft messages in this folder</div>
-
-<p class="hint">Leave blank if they should not be stored</p>
-</dd>
-
-<dt class="propname">Junk mbox</dt>
-<dd>
-<input name="junkmbox" size="20" id="cfgjunkmbox" value="Junk" type="text" /><div>Store spam messages in this folder</div>
-</dd>
-
-</dl>
-</fieldset>
-
-
-<fieldset>
-<legend>SMTP Settings</legend>
-<dl class="configblock" id="cgfblocksmtp">
-<dt class="propname">Smtp Server</dt>
-<dd>
-<input name="smtpserver" size="30" id="cfgsmtphost" value="" type="text" /><div>Use this host for sending mails</div>
-
-<p class="hint">To use SSL connection, set ssl://smtp.host.com. If left blank, the PHP mail() function is used</p>
-</dd>
-
-<dt class="propname">Smtp Port</dt>
-<dd>
-<input name="smtpport" size="6" id="cfgsmtpport" value="25" type="text" /><div>SMTP port (default is 25; 465 for SSL; 587 for submission)</div>
-</dd>
-
-<dt class="propname">Smtp User And Pass</dt>
-<dd>
-<input name="smtpuser" size="20" id="cfgsmtpuser" value="" type="text" /><input name="smtppass" size="20" id="cfgsmtppass" value="" type="password" /><div>SMTP username and password (if required)</div>
-<p>
-<input name="smtpuseru" id="cfgsmtpuseru" value="1" type="checkbox" /><label for="cfgsmtpuseru">Use the current IMAP username and password for SMTP authentication</label>
-</p>
-
-</dd>
-<!--
-<dt class="propname">smtpauthtype</dt>
-<dd>
-<div>Method to authenticate at the SMTP server. Choose (auto) if you don't know what this is</div>
-</dd>
--->
-<dt class="propname">Smtp Log</dt>
-<dd>
-<input name="smtplog" id="cfgsmtplog" value="1" checked="checked" type="checkbox" /><label for="cfgsmtplog">Log sent messages in <tt>{logdir}/sendmail</tt> or to syslog.</label><br />
-</dd>
-
-</dl>
-</fieldset>
+<legend>General Configuration</legend>
+<dl class="configblock">
+	<dt class="propname">Plugins</dt>
+	<div class="hint">Description: When the options below are checked, the associated plugins are enabled.</div>
+	<div class="hint">Note: The default plugins selected have already been configured. If you enable additional ones, you may need to configure them.</div><br />
+	<div class="hint">The following Plugins were found on your system:</div>
+	<dd>
+		<?php
+		$dir = "../plugins";
+		$plugins=scandir("../plugins");
+		foreach ($plugins as $plugin_name){
+			if (preg_match("/[^.\^.svn]/", $plugin_name)) {
+				foreach ($rcmail_config['plugins'] as $default_plugin){ 
+					if ($plugin_name == $default_plugin) {
+						$checked="checked=\"yes\" ";
+					} else {	
+						$checked="";
+					}	
+				}
+				$plugin_list .= "<input name=\"$plugin_name\" id=\"$plugin_name\"$checked value=\"$plugin_name\" type=\"checkbox\" \> $plugin_name<br />";
+			}
+		}		
+		echo "$plugin_list";
+		?>
+	</dd>
+	<dt class="propname">Automaticvally Create Users</dt>
+	<div class="hint">Description: This will automatically create a new user once the IMAP login has suceeded.</div>
+	<div class="hint">Note: It is recommended to leave this enabled otherwise only users that have logged into Crystal before will be able to login.</div>
+	<dd>
+		<select name="auto_create_user" id="auto_create_user">
+			<option value="true" selected="selected">Yes, automatically create new users upon successful logins.</option>
+			<option value="false">No, do not automatically create new users upon successful logins.</option>
+		</select>
+	</dd>
+	<dt class="propname">Page Titles</dt>
+	<div class="hint">Description: This is the title you want to appear in the browser window title bar.</div>
+	<dd>
+		<input name="product_name" size="30" id="product_name" value="Crystal Webmail" type="text" />  
+	</dd>
+	<dt class="propname">Folder Names: Drafts</dt>
+	<div class="hint">Description: This is the name of the folder used to store draft messages.</div>
+	<div class="hint">Note: If left blank, draft messages will not be stored.</div>
+	<dd>
+		<input name="drafts_mbox" size="20" id="drafts_mbox" value="Drafts" type="text" />  
+	</dd>
+	<dt class="propname">Folder Names: Junk</dt>
+	<div class="hint">Description: This is the name of the folder used to store junk messages.</div>
+	<div class="hint">Note: If left blank, junk messages will not be stored.</div>
+	<dd>
+		<input name="junk_mbox" size="20" id="junk_mbox" value="Junk" type="text" />  
+	</dd>
+	<dt class="propname">Folder Names: Archive</dt>
+	<div class="hint">Description: This is the name of the folder used to store archive messages.</div>
+	<div class="hint">Note: If left blank, archive messages will not be stored.</div>
+	<dd>
+		<input name="archive_mbox" size="20" id="archive_mbox" value="Archive" type="text" />  
+	</dd>
+	<dt class="propname">Folder Names: Sent</dt>
+	<div class="hint">Description: This is the name of the folder used to store sent messages.</div>
+	<div class="hint">Note: If left blank, sent messages will not be stored.</div>
+	<dd>
+		<input name="sent_mbox" size="20" id="sent_mbox" value="Sent" type="text" />  
+	</dd>
+	<dt class="propname">Folder Names: Trash</dt>
+	<div class="hint">Description: This is the name of the folder used to store trash messages.</div>
+	<div class="hint">Note: If left blank, trash messages will not be stored.</div>
+	<dd>
+		<input name="trash_mbox" size="20" id="trash_mbox" value="Trash" type="text" />  
+	</dd>
 
 
-<fieldset>
 
-<legend>Display settings &amp; user prefs</legend>
-<dl class="configblock" id="cgfblockdisplay">
 
-<dt class="propname">Language <span class="userconf">*</span></dt>
-<dd>
-<input name="language" size="6" id="cfglocale" value="" type="text" /><div>The default locale setting. This also defines the language of the login screen.<br/>Leave it empty to auto-detect the user agent language.</div>
-<p class="hint">Enter a <a href="http://www.faqs.org/rfcs/rfc1766">RFC1766</a> formatted language name. Examples: enUS, deDE, deCH, frFR, ptBR</p>
 
-</dd>
 
-<dt class="propname">Skin <span class="userconf">*</span></dt>
-<dd>
-<input name="skin" size="30" id="cfgskin" value="default" type="text" /><div>Name of interface skin (folder in /skins)</div>
-</dd>
-
-<dt class="propname">Pagesize <span class="userconf">*</span></dt>
-<dd>
-<input name="pagesize" size="6" id="cfgpagesize" value="40" type="text" /><div>Show up to X items in list view.</div>
-</dd>
-
-<dt class="propname">Prefer Html <span class="userconf">*</span></dt>
-<dd>
-<input name="preferhtml" id="cfghtmlview" value="1" checked="checked" type="checkbox" /><label for="cfghtmlview">Prefer displaying HTML messages</label><br />
-</dd>
-
-<dt class="propname">Preview Pane <span class="userconf">*</span></dt>
-<dd>
-<input name="previewpane" id="cfgprevpane" value="1" type="checkbox" /><label for="cfgprevpane">If preview pane is enabled</label><br />
-</dd>
-
-<dt class="propname">Html Editor (WYSIWYG) <span class="userconf">*</span></dt>
-<dd>
-<input name="htmleditor" id="cfghtmlcompose" value="1" type="checkbox" /><label for="cfghtmlcompose">Compose HTML formatted messages</label><br />
-</dd>
-
-<dt class="propname">Draft Autosave <span class="userconf">*</span></dt>
-<dd>
-<label for="cfgautosave">Save compose message every</label>
-<select name="draftautosave" id="cfgautosave">
-<option value="0">never</option>
-
-<option value="60">1 min</option>
-<option value="180">3 min</option>
-<option value="300" selected="selected">5 min</option>
-<option value="600">10 min</option>
-</select>
-</dd>
-
-<dt class="propname">Mdn Requests <span class="userconf">*</span></dt>
-<dd>
-<select name="mdnrequests" id="cfgmdnreq">
-<option value="0" selected="selected">ask the user</option>
-
-<option value="1">send automatically</option>
-<option value="2">ignore</option>
-</select>
-<div>Behavior if a received message requests a message delivery notification (read receipt)</div>
-</dd>
-
-<dt class="propname">Mime Param Folding <span class="userconf">*</span></dt>
-<dd>
-<select name="mimeparamfolding" id="cfgmimeparamfolding">
-<option value="0">Full RFC 2231 (Crystal Mail, Thunderbird)</option>
-<option value="1">RFC 2047/2231 (MS Outlook, OE)</option>
-
-<option value="2">Full RFC 2047 (deprecated)</option>
-</select>
-<div>How to encode attachment long/non-ascii names</div>
-</dd>
 
 </dl>
 
-<p class="hint"><span class="userconf">*</span>&nbsp; These settings are defaults for the user preferences</p>
 </fieldset>
-<div id="button">
-<input type="submit" value="Install">
-</div>
-<br>
+	<div id="button">
+		<input type="submit" value="Install">
+	</div>
+	<br>
 </form>

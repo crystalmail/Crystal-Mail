@@ -21,6 +21,77 @@ $rcmail_config['version'] = 1.1;
 
 
 //
+// CONNECTION / SERVER CONFIGURATION 
+//
+
+// IMAP / POP3 Host chosen to perform the log-in
+// Leave blank to show a textbox at login, give a list of hosts
+// to display a pulldown menu or set one host as string.
+// To use SSL/TLS connection, enter hostname with prefix ssl:// or tls://
+$rcmail_config['default_host'] = 'mail.example.com';
+
+// IMAP / POP3 TCP port used for IMAP/POP3 connections
+$rcmail_config['default_port'] = 143;
+
+// IMAP auth type. Can be "auth" (CRAM-MD5), "plain" (PLAIN) or "check" to auto detect.
+// Optional, defaults to "check"
+$rcmail_config['imap_auth_type'] = null;
+
+// SMTP SERVER - Use this host for sending mails.
+// To use SSL connection, set ssl://smtp.host.com
+// if left blank, the PHP mail() function is used
+// Use %h variable as replacement for user's IMAP hostname
+$rcmail_config['smtp_server'] = 'mail.example.com';
+
+// SMTP port (default is 25; 465 for SSL)
+$rcmail_config['smtp_port'] = 25;
+
+// SMTP username (if required) if you use %u as the username crystal
+// will use the current username for login
+$rcmail_config['smtp_user'] = '';
+
+// SMTP password (if required) if you use %p as the password crystal
+// will use the current user's password for login
+$rcmail_config['smtp_pass'] = '';
+
+// SMTP AUTH type (DIGEST-MD5, CRAM-MD5, LOGIN, PLAIN or empty to use
+// best server supported one)
+$rcmail_config['smtp_auth_type'] = '';
+
+// SMTP HELO host 
+// Hostname to give to the remote server for SMTP 'HELO' or 'EHLO' messages 
+// Leave this blank and you will get the server variable 'server_name' or 
+// localhost if that isn't defined. 
+$rcmail_config['smtp_helo_host'] = '';
+
+// This domain will be used to form e-mail addresses of new users
+// Specify an array with 'host' => 'domain' values to support multiple hosts
+$rcmail_config['mail_domain'] = 'example.com';
+
+// If you know your imap's root directory and its folder delimiter,
+// you can specify them here. Otherwise they will be determined automatically.
+$rcmail_config['imap_root'] = null;
+$rcmail_config['imap_delimiter'] = null;
+
+// Automatically add this domain to user names for login
+// Only for IMAP servers that require full e-mail addresses for login
+// Specify an array with 'host' => 'domain' values to support multiple hosts
+$rcmail_config['username_domain'] = '';
+
+// Path to a virtuser table file to resolve user names and e-mail addresses
+$rcmail_config['virtuser_file'] = '';
+
+// Query to resolve user names and e-mail addresses from the database
+// %u will be replaced with the current username for login.
+// The query should select the user's e-mail address as first column
+// and optional identity name as second column
+$rcmail_config['virtuser_query'] = '';
+
+
+
+
+
+//
 // Administrative / Security Options
 //
 
@@ -29,7 +100,7 @@ $rcmail_config['version'] = 1.1;
 // Default login is User: admin Password: admin -- This can and should be changed after login
 $rcmail_config['enable_admin'] = 'false';
 
-// Admin console username and password
+// Admin Panel username and password
 $rcmail_config['admin_user'] = 'admin';
 $rcmail_config['admin_password'] = 'admin';
 
@@ -126,77 +197,6 @@ $rcmail_config['smtp_debug'] = false;
 
 // Log successful logins
 $rcmail_config['log_logins'] = false;
-
-
-
-
-
-//
-// CONNECTION / SERVER CONFIGURATION 
-//
-
-// IMAP / POP3 Host chosen to perform the log-in
-// Leave blank to show a textbox at login, give a list of hosts
-// to display a pulldown menu or set one host as string.
-// To use SSL/TLS connection, enter hostname with prefix ssl:// or tls://
-$rcmail_config['default_host'] = 'mail.example.com';
-
-// IMAP / POP3 TCP port used for IMAP/POP3 connections
-$rcmail_config['default_port'] = 143;
-
-// IMAP auth type. Can be "auth" (CRAM-MD5), "plain" (PLAIN) or "check" to auto detect.
-// Optional, defaults to "check"
-$rcmail_config['imap_auth_type'] = null;
-
-// SMTP SERVER - Use this host for sending mails.
-// To use SSL connection, set ssl://smtp.host.com
-// if left blank, the PHP mail() function is used
-// Use %h variable as replacement for user's IMAP hostname
-$rcmail_config['smtp_server'] = 'mail.example.com';
-
-// SMTP port (default is 25; 465 for SSL)
-$rcmail_config['smtp_port'] = 25;
-
-// SMTP username (if required) if you use %u as the username crystal
-// will use the current username for login
-$rcmail_config['smtp_user'] = '';
-
-// SMTP password (if required) if you use %p as the password crystal
-// will use the current user's password for login
-$rcmail_config['smtp_pass'] = '';
-
-// SMTP AUTH type (DIGEST-MD5, CRAM-MD5, LOGIN, PLAIN or empty to use
-// best server supported one)
-$rcmail_config['smtp_auth_type'] = '';
-
-// SMTP HELO host 
-// Hostname to give to the remote server for SMTP 'HELO' or 'EHLO' messages 
-// Leave this blank and you will get the server variable 'server_name' or 
-// localhost if that isn't defined. 
-$rcmail_config['smtp_helo_host'] = '';
-
-// This domain will be used to form e-mail addresses of new users
-// Specify an array with 'host' => 'domain' values to support multiple hosts
-$rcmail_config['mail_domain'] = 'example.com';
-
-// If you know your imap's root directory and its folder delimiter,
-// you can specify them here. Otherwise they will be determined automatically.
-$rcmail_config['imap_root'] = null;
-$rcmail_config['imap_delimiter'] = null;
-
-// Automatically add this domain to user names for login
-// Only for IMAP servers that require full e-mail addresses for login
-// Specify an array with 'host' => 'domain' values to support multiple hosts
-$rcmail_config['username_domain'] = '';
-
-// Path to a virtuser table file to resolve user names and e-mail addresses
-$rcmail_config['virtuser_file'] = '';
-
-// Query to resolve user names and e-mail addresses from the database
-// %u will be replaced with the current username for login.
-// The query should select the user's e-mail address as first column
-// and optional identity name as second column
-$rcmail_config['virtuser_query'] = '';
 
 
 
