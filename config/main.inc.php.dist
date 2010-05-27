@@ -288,6 +288,11 @@ $rcmail_config['identities_level'] = 1;
 // If true all folders will be checked for recent messages
 $rcmail_config['check_all_folders'] = true;
 
+//Login Screen Message
+$rcmail_config['login_message'] = '';
+
+//Meebo Code
+$rcmail_config['meebo_code'] = '';
 
 
 
