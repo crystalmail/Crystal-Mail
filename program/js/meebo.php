@@ -13,5 +13,5 @@ if (typeof Meebo == 'undefined') {
 	_.d?'&domain='+_.d:'','"\'></bo','dy>'].join('')}try{
 	d=i.contentWindow.document.open();d.write(s());d.close()}catch(e){
 	_.d=d.domain;i.src='javascript:d=document.open();d.write("'+s().replace(/"/g,'\\"')+'");d.close();'}})
-    ({ network: '<?php $rcmail_config['meebo_code'] ?>', stage: false });
+    ({ network: '<?=$rcmail_config['meebo_code']?>', stage: false });
 }
