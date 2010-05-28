@@ -2,29 +2,30 @@
 
 /*
  +-----------------------------------------------------------------------+
- | crystal_install.php                                                   |
+ | crystal_install.php                                                     |
  |                                                                       |
- | This file is part of the Crystal Mail Webmail package                 |
- | Copyright (C) 2008-2010, Crystal Mail Dev. - USA!                     |
+ | This file is part of the Crystal Webmail package                    |
+ | Copyright (C) 2010, Crystal Dev. - USA                 |
  | Licensed under the GNU Public License                                 |
  +-----------------------------------------------------------------------+
+
  $Id:  $
 
 */
 
 
 /**
- * Class to control the installation process of the Crystal Mail Webmail package
+ * Class to control the installation process of the RoundCube Webmail package
  *
  * @category Install
- * @package  Crystal Mail
+ * @package  RoundCube
  * @author Thomas Bruederli
  */
 class crystal_install
 {
   var $step;
   var $is_post = false;
-   var $failures = 0;
+  var $failures = 0;
   var $config = array();
   var $configured = false;
   var $last_error = null;
@@ -326,7 +327,7 @@ class crystal_install
   
   /**
    * Compare the local database schema with the reference schema
-   * required for this version of Crystal Mail
+   * required for this version of RoundCube
    *
    * @param boolean True if the schema schould be updated
    * @return boolean True if the schema is up-to-date, false if not or an error occured
@@ -364,7 +365,7 @@ class crystal_install
   
   /**
    * Compare the local database schema with the reference schema
-   * required for this version of Crystal Mail
+   * required for this version of RoundCube
    *
    * @param boolean True if the schema schould be updated
    * @return boolean True if the schema is up-to-date, false if not or an error occured
@@ -622,7 +623,7 @@ class crystal_install
   }
   
   /**
-   * Handler for Crystal Mail errors
+   * Handler for RoundCube errors
    */
   function raise_error($p)
   {

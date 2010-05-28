@@ -135,3 +135,35 @@ legend{
 	padding-right: 50px;
 	font-weight: bold;
 }
+
+#reqs {
+	margin-left: 30%;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+#footer {
+  margin: 2em 20px 1em 20px;
+  padding-top: 0.6em;
+  font-size: smaller;
+  text-align: center;
+  border-top: 1px dotted #999;
+}
+
+a.addlink {
+  color: #00ff00;
+  font-size: 0.9em;
+  padding: 1px 0 1px 20px;
+  background: url('images/add.png') top left no-repeat;
+  text-decoration: none;
+}
+
+a.removelink {
+  color: #ff0000;
+  font-size: 0.9em;
+  padding: 1px 0 1px 24px;
+  background: url('images/delete.png') 4px 0 no-repeat;
+  text-decoration: none;
+}

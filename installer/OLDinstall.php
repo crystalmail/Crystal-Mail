@@ -1,7 +1,7 @@
 <title>Crystal Mail Installer :: Installing</title>
 <center>
 <ol id="progress">
-        <li>Check Environment</li><li>Configuration</li><li class="bold">Verify Configuration</li>
+        <li>Check Environment</li><li>Configuration</li><li><in_progress>Verify Configuration</in_progress></li>
 </ol>
 <h3>Below is the configuration files that have been generated. Click 'Install' to complete the installation process.</h3>
 

@@ -1,47 +1,6 @@
-<title>Crystal Mail Installer :: Step 1:: Check Environment</title>
-<center>
-<ol id="progress">
-<li class="step2"><in_progress>Check environment</in_progress></li><li class="step3">Generate config</li><li class="step4">Check install</li></ol>
-</center>
 <div id="rounded">
 <form action="index.php" method="get">
 <?php
-function __autoload($classname)
-{
-  $filename = preg_replace(
-      array('/MDB2_(.+)/', '/Mail_(.+)/', '/Net_(.+)/', '/^html_.+/', '/^utf8$/'),
-      array('MDB2/\\1', 'Mail/\\1', 'Net/\\1', 'html', 'utf8.class'),
-      $classname
-  );
-  include_once $filename. '.php';
-}
-
-
-/**
- * Fake internal error handler to catch errors
- */
-
-
-ini_set('error_reporting', E_ALL&~E_NOTICE);
-ini_set('display_errors', 1);
-
-define('INSTALL_PATH', realpath(dirname(__FILE__) . '/../').'/');
-define('RCMAIL_CONFIG_DIR', INSTALL_PATH . 'config');
-
-$include_path  = INSTALL_PATH . 'program/lib' . PATH_SEPARATOR;
-$include_path .= INSTALL_PATH . 'program' . PATH_SEPARATOR;
-$include_path .= INSTALL_PATH . 'program/include' . PATH_SEPARATOR;
-$include_path .= ini_get('include_path');
-
-set_include_path($include_path);
-
-require_once 'main.inc';
-
-
-
-$CWI = crystal_install::get_instance();
-$CWI->load_config();
-
 
 $required_php_exts = array(
     'PCRE'      => 'pcre',
@@ -102,7 +61,7 @@ $source_urls = array(
     'Mail_mime' => 'http://pear.php.net/package/Mail_mime',
 );
 
-echo '<input type="hidden" name="step" value="' . ($CWI->configured ? 2 : 2) . '" />';
+echo '<input type="hidden" name="_step" value="' . ($RCI->configured ? 3 : 2) . '" />';
 ?>
 
 <h3>Checking PHP version</h3>
@@ -110,14 +69,14 @@ echo '<input type="hidden" name="step" value="' . ($CWI->configured ? 2 : 2) . '
 
 define('MIN_PHP_VERSION', '5.2.0');
 if (version_compare(PHP_VERSION, MIN_PHP_VERSION, '>=')) {
-    $CWI->pass('Version', 'PHP ' . PHP_VERSION . ' detected');
+    $RCI->pass('Version', 'PHP ' . PHP_VERSION . ' detected');
 } else {
-    $CWI->fail('Version', 'PHP Version ' . MIN_PHP_VERSION . ' or greater is required ' . PHP_VERSION . ' detected');
+    $RCI->fail('Version', 'PHP Version ' . MIN_PHP_VERSION . ' or greater is required ' . PHP_VERSION . ' detected');
 }
 ?>
 
 <h3>Checking PHP extensions</h3>
-<p class="hint">The following modules/extensions are <em>required</em> to run RoundCube:</p>
+<p class="hint">The following modules/extensions are <em>required</em> to run Crystal Webmail:</p>
 <?php
 
 // get extensions location
@@ -126,11 +85,11 @@ $ext_dir = ini_get('extension_dir');
 $prefix = (PHP_SHLIB_SUFFIX === 'dll') ? 'php_' : '';
 foreach ($required_php_exts AS $name => $ext) {
     if (extension_loaded($ext)) {
-        $CWI->pass($name);
+        $RCI->pass($name);
     } else {
         $_ext = $ext_dir . '/' . $prefix . $ext . '.' . PHP_SHLIB_SUFFIX;
         $msg = @is_readable($_ext) ? 'Could be loaded. Please add in php.ini' : '';
-        $CWI->fail($name, $msg, $source_urls[$name]);
+        $RCI->fail($name, $msg, $source_urls[$name]);
     }
     echo '<br />';
 }
@@ -142,12 +101,12 @@ foreach ($required_php_exts AS $name => $ext) {
 
 foreach ($optional_php_exts AS $name => $ext) {
     if (extension_loaded($ext)) {
-        $CWI->pass($name);
+        $RCI->pass($name);
     }
     else {
         $_ext = $ext_dir . '/' . $prefix . $ext . '.' . PHP_SHLIB_SUFFIX;
         $msg = @is_readable($_ext) ? 'Could be loaded. Please add in php.ini' : '';
-        $CWI->na($name, $msg, $source_urls[$name]);
+        $RCI->na($name, $msg, $source_urls[$name]);
     }
     echo '<br />';
 }
@@ -163,12 +122,12 @@ foreach ($optional_php_exts AS $name => $ext) {
 $prefix = (PHP_SHLIB_SUFFIX === 'dll') ? 'php_' : '';
 foreach ($supported_dbs AS $database => $ext) {
     if (extension_loaded($ext)) {
-        $CWI->pass($database);
+        $RCI->pass($database);
     }
     else {
         $_ext = $ext_dir . '/' . $prefix . $ext . '.' . PHP_SHLIB_SUFFIX;
         $msg = @is_readable($_ext) ? 'Could be loaded. Please add in php.ini' : 'Not installed';
-        $CWI->na($database, $msg, $source_urls[$database]);
+        $RCI->na($database, $msg, $source_urls[$database]);
     }
     echo '<br />';
 }
@@ -184,10 +143,10 @@ foreach ($supported_dbs AS $database => $ext) {
 foreach ($required_libs as $classname => $file) {
     @include_once $file;
     if (class_exists($classname)) {
-        $CWI->pass($classname);
+        $RCI->pass($classname);
     }
     else {
-        $CWI->fail($classname, "Failed to load $file", $source_urls[$classname]);
+        $RCI->fail($classname, "Failed to load $file", $source_urls[$classname]);
     }
     echo "<br />";
 }
@@ -196,7 +155,7 @@ foreach ($required_libs as $classname => $file) {
 ?>
 
 <h3>Checking php.ini/.htaccess settings</h3>
-<p class="hint">The following settings are <em>required</em> to run RoundCube:</p>
+<p class="hint">The following settings are <em>required</em> to run Crystal Webmail:</p>
 
 <?php
 
@@ -204,17 +163,17 @@ foreach ($ini_checks as $var => $val) {
     $status = ini_get($var);
     if ($val === '-NOTEMPTY-') {
         if (empty($status)) {
-            $CWI->fail($var, "cannot be empty and needs to be set");
+            $RCI->fail($var, "cannot be empty and needs to be set");
         } else {
-            $CWI->pass($var);
+            $RCI->pass($var);
         }
         echo '<br />';
         continue;
     }
     if ($status == $val) {
-        $CWI->pass($var);
+        $RCI->pass($var);
     } else {
-      $CWI->fail($var, "is '$status', should be '$val'");
+      $RCI->fail($var, "is '$status', should be '$val'");
     }
     echo '<br />';
 }
@@ -228,17 +187,17 @@ foreach ($optional_checks as $var => $val) {
     $status = ini_get($var);
     if ($val === '-NOTEMPTY-') {
         if (empty($status)) {
-            $CWI->optfail($var, "Could be set");
+            $RCI->optfail($var, "Could be set");
         } else {
-            $CWI->pass($var);
+            $RCI->pass($var);
         }
         echo '<br />';
         continue;
     }
     if ($status == $val) {
-        $CWI->pass($var);
+        $RCI->pass($var);
     } else {
-      $CWI->optfail($var, "is '$status', could be '$val'");
+      $RCI->optfail($var, "is '$status', could be '$val'");
     }
     echo '<br />';
 }
@@ -246,13 +205,14 @@ foreach ($optional_checks as $var => $val) {
 
 <?php
 
-if ($CWI->failures) {
-  echo '<p class="warning">Sorry but your webserver does not meet the requirements for Crystal Webmail! :(<br />
+if ($RCI->failures) {
+  echo '<p class="warning">Sorry but your webserver does not meet the requirements for Crystal Webmail!<br />
             Please install the missing modules or fix the php.ini settings according to the above check results.<br />
             Hint: only checks showing <span class="fail">NOT OK</span> need to be fixed.</p>';
 }
-echo '<p id="button"><input type="submit" value="NEXT" ' . ($CWI->failures ? 'disabled' : '') . ' /></p><br>';
+echo '<p><br /><div id="button"><input type="submit" value="Next" ' . ($RCI->failures ? 'disabled' : '') . ' /></div></p>';
 
 ?>
 
 </form>
+</div>
