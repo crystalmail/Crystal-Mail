@@ -18,8 +18,8 @@ $rcmail_config = array();
 // For examples see http://pear.php.net/manual/en/package.database.mdb2.intro-dsn.php
 // currently supported db_providers: mysql, mysqli, pgsql, sqlite, mssql or sqlsrv
 
-$rcmail_config['db_dsnw'] = 'mysql://crystalwebmail:pass@localhost/crystalwebmailmail';
-// postgres example: 'pgsql://crystalwebmail:pass@localhost/crystalwebmailmail';
+$rcmail_config['db_dsnw'] = 'mysql://crystalwebmail:pass@localhost/crystalwebmail';
+// postgres example: 'pgsql://crystalwebmail:pass@localhost/crystalwebmail';
 // Warning: for SQLite use absolute path in DSN:
 // sqlite example: 'sqlite:////full/path/to/sqlite.db?mode=0646';
 

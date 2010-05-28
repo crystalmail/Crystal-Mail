@@ -6,7 +6,7 @@
 		if (file_exists('../config/main.inc.php')) {
 			include ('../config/main.inc.php');
 
-			if ($rcmail_config['enable_installer'] == True){
+			if ($rcmail_config['enable_installer'] == true){
 				error_reporting(0);
 				if (file_exists($_GET["step"].".php")) {
 					$step = $_GET["step"].".php";
