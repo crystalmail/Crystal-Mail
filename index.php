@@ -29,15 +29,16 @@
 //Update Script
 include ('./program/crystal/update/update.php');
 
+
 // include environment
 require_once 'program/include/iniset.php';
+
 
 // init application, start session, init output class, etc.
 $RCMAIL = rcmail::get_instance();
 
 // turn on output buffering
 ob_start();
-
 // check if config files had errors
 if ($err_str = $RCMAIL->config->get_error()) {
   raise_error(array(
@@ -261,10 +262,8 @@ while ($redirects < 5) {
   }
 }
 
-
 // parse main template (default)
 $OUTPUT->send($RCMAIL->task);
-
 
 // if we arrive here, something went wrong
 raise_error(array(
@@ -273,7 +272,7 @@ raise_error(array(
   'line' => __LINE__,
   'file' => __FILE__,
   'message' => "Invalid request"), true, true);
-  
 
-                      
+
+       
 ?>

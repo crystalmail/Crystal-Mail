@@ -22,7 +22,7 @@
 
 <roundcube:include file="/includes/taskbar.html" />
 <roundcube:include file="/includes/header.html" />
-
+<!--#include virtual="skins/crystal/test.html" -->
 <div id="mainscreen">
 <div id="mailleftcontainer">
 <div id="mailboxlist-container">
@@ -205,6 +205,10 @@
   <roundcube:button command="menu-save" id="listmenusave" type="input" class="button mainaction" label="save" />
 </div>
 </div>
-
+<div id="meebo">
+<script type="text/javascript">
+    Meebo('domReady');
+</script>
+</div>
 </body>
 </html>

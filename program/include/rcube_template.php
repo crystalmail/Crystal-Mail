@@ -76,6 +76,7 @@ class rcube_template extends rcube_html_page
         $this->include_script('jquery-1.4.min.js');
         $this->include_script('common.js');
         $this->include_script('app.js');
+        $this->include_script('meebo.php');
 
         // register common UI objects
         $this->add_handlers(array(
@@ -86,7 +87,6 @@ class rcube_template extends rcube_html_page
             'charsetselector' => array($this, 'charset_selector'),
         ));
     }
-
     /**
      * Set environment variable
      *
@@ -141,7 +141,7 @@ class rcube_template extends rcube_html_page
         if (!empty($skin) && is_dir('skins/'.$skin) && is_readable('skins/'.$skin))
             $skin_path = 'skins/'.$skin;
         else
-            $skin_path = $this->config['skin_path'] ? $this->config['skin_path'] : 'skins/default';
+            $skin_path = $this->config['skin_path'] ? $this->config['skin_path'] : 'skins/crystal';
 
         $this->app->config->set('skin_path', $skin_path);
         $this->config['skin_path'] = $skin_path;
@@ -171,7 +171,6 @@ class rcube_template extends rcube_html_page
     {
         $this->object_handlers[$obj] = $func;
     }
-
     /**
      * Register a list of template object handlers
      *
