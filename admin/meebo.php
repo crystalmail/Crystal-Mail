@@ -24,7 +24,7 @@ include ('../config/main.inc.php');
 				<div class="clearfix">
 				<div class="content_sub_page">
 				<form action="meebo_save.php" method="post">
-<strong>Meebo Bar ID:</strong><input type="text" value="<?=$rcmail_config['meebo_code']?>" name="code";> <font size="1" color="#333" face="Verdana">(<a href="#" id="show-menu">What?</a>)</font><br>
+<strong>Meebo Bar ID:</strong><input type="text" value="<?php echo$rcmail_config['meebo_code']?>" name="code";> <font size="1" color="#333" face="Verdana">(<a href="#" id="show-menu">What?</a>)</font><br>
 <br>
 <input type="submit" />
 </form>
