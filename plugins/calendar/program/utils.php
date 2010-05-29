@@ -13,6 +13,11 @@
  * @licence GNU GPL
  * @copyright (c) 2010 Lazlo Westerhof - Netherlands
  */
+ 
+
+
+
+ 
 class Utils
 {
   private $rcmail = null;

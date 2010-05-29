@@ -24,6 +24,7 @@ include("../config/version.php");
     <meta name="keywords" content="" />
     <meta name="robots" content="index,follow" />
 	
+ 
     <link rel="stylesheet" type="text/css" media="all" href="css/style.css" />
 	<link rel="Stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.7.1.custom.css"  />	
 	<!--[if IE 7]><link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection" /><![endif]-->
@@ -58,6 +59,14 @@ include("../config/version.php");
     <script type="text/javascript" src="markitup/jquery.markitup.pack.js"></script>
 	<script type="text/javascript" src="markitup/sets/default/set.js"></script>
   	<script type="text/javascript" src="js/custom.js"></script>
+     <link href="./js/facebox/facebox.css" media="screen" rel="stylesheet" type="text/css"/>
+   <script src="./js/facebox/facebox.js" type="text/javascript"></script>
+   <script type="text/javascript">
+    jQuery(document).ready(function($) {
+      $('a[rel*=facebox]').facebox({
+      }) 
+    })
+    </script> 
 
 	 <!--[if IE]><script language="javascript" type="text/javascript" src="excanvas.pack.js"></script><![endif]-->
 </head>

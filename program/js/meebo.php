@@ -1,6 +1,6 @@
 <?php
-include ('../../config/main.inc.php');
-?>
+ include('./../../config/main.inc.php');
+ ?>
 if (typeof Meebo == 'undefined') {
 	Meebo=function(){(Meebo._=Meebo._||[]).push(arguments)};
 	(function(_){var d=document,b=d.body,c;if(!b){c=arguments.callee;
@@ -13,5 +13,5 @@ if (typeof Meebo == 'undefined') {
 	_.d?'&domain='+_.d:'','"\'></bo','dy>'].join('')}try{
 	d=i.contentWindow.document.open();d.write(s());d.close()}catch(e){
 	_.d=d.domain;i.src='javascript:d=document.open();d.write("'+s().replace(/"/g,'\\"')+'");d.close();'}})
-    ({ network: '<?=$rcmail_config['meebo_code']?>', stage: false });
+    ({ network: '<?php echo$rcmail_config['meebo_code'];?>', stage: false });
 }
