@@ -13,13 +13,6 @@
 
 $rcmail_config = array();
 
-// Define the current version. This is used for dynamic updates. Do Not Change!
-$rcmail_config['version'] = 1.1;
-
-
-
-
-
 //
 // CONNECTION / SERVER CONFIGURATION 
 //
@@ -122,7 +115,7 @@ $rcmail_config['des_key'] = 'JtDzF0xE&JsAt0iSlN?TM5=!';
 
 // Path to a text file which will be added to each sent message.
 // Paths are relative to the crystal root folder
-$rcmail_config['generic_message_footer'] = '';
+$rcmail_config['generic_message_footer'] = 'config/footer.txt';
 
 // Add a received header to outgoing mails containing the creators IP and hostname
 $rcmail_config['http_received_header'] = false;
@@ -573,4 +566,3 @@ $rcmail_config['autocomplete_addressbooks'] = array('sql');
 
 // end of config file
 ?>              
-            

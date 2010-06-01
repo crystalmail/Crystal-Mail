@@ -1,4 +1,4 @@
-<form action="index.php?_step=3" method="post">
+<form action="index.php?_step=4" method="post">
 <?php
 // check env for a local configuration
 if (!$RCI->configured ) {
@@ -265,10 +265,10 @@ if (isset($_POST['sendmail']) && !empty($_POST['_from']) && !empty($_POST['_to']
     $headers = array(
       'From'    => trim($_POST['_from']),
       'To'      => trim($_POST['_to']),
-      'Subject' => 'Test message from RoundCube',
+      'Subject' => 'Test message from Crystal Webmail',
     );
 
-    $body = 'This is a test to confirm that RoundCube can send email.';
+    $body = 'This is a test to confirm that Crystal Webmail can send email.';
     $smtp_response = array();
     
     // send mail using configured SMTP server

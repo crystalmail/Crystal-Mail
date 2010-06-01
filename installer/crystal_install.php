@@ -15,10 +15,10 @@
 
 
 /**
- * Class to control the installation process of the RoundCube Webmail package
+ * Class to control the installation process of the Crystal Webmail package
  *
  * @category Install
- * @package  RoundCube
+ * @package  Crystal
  * @author Thomas Bruederli
  */
 class crystal_install
@@ -327,7 +327,7 @@ class crystal_install
   
   /**
    * Compare the local database schema with the reference schema
-   * required for this version of RoundCube
+   * required for this version of Crystal
    *
    * @param boolean True if the schema schould be updated
    * @return boolean True if the schema is up-to-date, false if not or an error occured
@@ -365,7 +365,7 @@ class crystal_install
   
   /**
    * Compare the local database schema with the reference schema
-   * required for this version of RoundCube
+   * required for this version of Crystal
    *
    * @param boolean True if the schema schould be updated
    * @return boolean True if the schema is up-to-date, false if not or an error occured
@@ -622,7 +622,7 @@ class crystal_install
   }
   
   /**
-   * Handler for RoundCube errors
+   * Handler for Crystal errors
    */
   function raise_error($p)
   {

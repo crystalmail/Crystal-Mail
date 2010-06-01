@@ -271,7 +271,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<div class="hint">Note: For some people this might pose a security risk.</div>
 	<dd>
 		<?php
-			$check_enableadmin = new html_checkbox(array('name' => '_ip_check', 'id' => "cfgenableadmin"));
+			$check_enableadmin = new html_checkbox(array('name' => '_enable_admin', 'id' => "cfgenableadmin"));
 			echo $check_enableadmin->show(intval($RCI->getprop('enable_admin')), array('value' => 1));
 			echo "Enable Admin Panel<br />";
 
