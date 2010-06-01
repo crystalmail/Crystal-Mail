@@ -17,15 +17,16 @@ if (!$RCI->configured ) {
 ?>
 <div id="rounded" class="center">
 	<h3>Generating config files</h3>
-	<img src="images/loading.gif" id="loading.gif" name="loading.gif" alt="loading.gif" />
+	<div id="loading"><img src="images/loading.gif" id="loading.gif" name="loading.gif" alt="loading.gif" /></div>
 
 <?php
 
 	//Delay, then load next page
-    echo '<h3>COMPLETE!</h3>';
-
+    echo '<div id="complete" style="display:none"><h3>COMPLETE!</h3></div>';
+    echo "<script>setTimeout(function() { $('#loading').fadeOut(); }, 2000);</script>";
+    echo "<script>setTimeout(function() { $('#complete').fadeIn(); }, 2500);</script>";
 	if (!isset($_GET['reload'])) {
-		echo '<meta http-equiv=Refresh content="0;url=index.php?_step=4">';
+		echo '<meta http-equiv=Refresh content="4;url=index.php?_step=4">';
 	}
 ?>
 

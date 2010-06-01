@@ -63,6 +63,7 @@ if ($RCI->configured && empty($_REQUEST['_step'])) {
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link rel="stylesheet" type="text/css" href="style.css" />
 <script type="text/javascript" src="client.js"></script>
+<script type="text/javascript" src="../program/js/jquery-1.4.min.js"></script>
 </head>
 
 <body>
