@@ -471,7 +471,6 @@ class crystal_install
     return $out;
   }
   
-  
   /**
    * Display OK status
    *

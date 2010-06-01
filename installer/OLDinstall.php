@@ -1,11 +1,12 @@
 <title>Crystal Mail Installer :: Installing</title>
 <center>
 <ol id="progress">
-        <li>Check Environment</li><li>Configuration</li><li><in_progress>Verify Configuration</in_progress></li>
+        <li>Check Environment</li><li>Configuration</li><li class="bold">Verify Configuration</li>
 </ol>
 <h3>Below is the configuration files that have been generated. Click 'Install' to complete the installation process.</h3>
 
 
+<div id="rounded">
 <h1>main.inc.php</h1>
 <textarea rows="20" cols="150">
 <?php echo "<?php" ?>
@@ -454,9 +455,10 @@ $rcmail_config['index_sort'] = TRUE;
 // end of config file
 
 <?php echo "?>" ?>
-</textarea><br><br>
+</div></textarea><br><br>
 
 
+<div id="rounded">
 <h1>db.inc.php</h1>
 <textarea rows="20" cols="150">
 <?php echo "<?php" ?>

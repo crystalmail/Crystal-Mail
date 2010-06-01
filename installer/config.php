@@ -17,26 +17,31 @@ $RCI->bool_config_props = array(
 	'htmleditor' => 1,
 	'debug_level' => 1,
 	'smtp_user_u' => 1,
+	//'enable_admin' => 1,
 );
 
 // allow the current user to get to the next step
 $_SESSION['allowinstaller'] = true;
 
 if (!empty($_POST['submit'])) {
-	$textbox = new html_textarea(array('rows' => 16, 'cols' => 60, 'class' => "configfile"));
-
-	echo '<div><em>main.inc.php (<a href="index.php?_getfile=main">download</a>)</em></div>';
+	$textbox = new html_textarea(array('rows' => 20, 'cols' => 100, 'class' => "configfile"));
+	echo '<h2><p class="center">Please review the two configuration files below. If all the setting are correct, click the INSTALL button.</p></h2>';
+	
+	echo '<div id="rounded" class="center"><fieldset><legend>main.inc.php';	
+	echo '(<a href="index.php?_getfile=main">download</a>)</legend>';
 	echo $textbox->show(($_SESSION['main.inc.php'] = $RCI->create_config('main')));
-
-	echo '<div style="margin-top:1em"><em>db.inc.php (<a href="index.php?_getfile=db">download</a>)</em></div>';
+	echo '</fieldset>';	
+	
+	echo '<fieldset><legend>db.inc.php';	
+	echo '(<a href="index.php?_getfile=db">download</a>)</legend>';
 	echo $textbox->show($_SESSION['db.inc.php'] = $RCI->create_config('db'));
-
-	echo '<p class="hint">Of course there are more options to configure.
-	Have a look at the config files or visit <a href="http://trac.roundcube.net/wiki/Howto_Config">Howto_Config</a> to find out.</p>';
-
-	echo '<p><input type="button" onclick="location.href=\'./index.php?_step=3\'" value="CONTINUE" /></p>';
-
-	// echo '<style type="text/css"> .configblock { display:none } </style>';
+	
+	echo '<p><input id="button" type="button" onclick="location.href=\'./index.php?_step=3\'" value="INSTALL" /></p>';
+	
+	echo '<p class="center">Of course there are more options to configure.
+	Have a look at the config files or visit <a href="http://trac.crystalwebmail.net/wiki/Howto_Config">Howto_Config</a> to find out.</p>';
+	echo '</fieldset></div>';	
+	
 	echo "\n<hr style='margin-bottom:1.6em' />\n";
 }
 
@@ -67,9 +72,6 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 <form action="index.php" method="post">
 <input type="hidden" name="_step" value="2" />
 <div id="rounded">
-	<div id="button">
-		<input type="submit" value="Verify">
-	</div>
 	<br />
 	<div id="impatient">
 		<p>FOR THE IMPATIENT: It is possible to just enter the "Connection & Server" information and run Crystal Webmail without any other configuration.</p>
@@ -157,11 +159,11 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<dt class="propname">IMAP Auth Type</dt>
 	<div class="hint">Description: If your IMAP server requires authentication, select here..</div>
 	<dd>
-		<select name="imap_auth_type" id="imap_auth_type">
-			<option value="check" selected="selected">Auto-detect</option>
-			<option value="auth">auth (CRAM-MD5)</option>
-			<option value="plain">plain (PLAIN)</option>
-		</select>
+		<?php
+	   		$select_imapauth = new html_select(array('name' => '_imap_auth_type', 'id' => "cfgimapauth"));
+	   		$select_imapauth->add(array('(auto)', 'PLAIN', 'DIGEST-MD5', 'CRAM-MD5', 'LOGIN'), array('0', 'PLAIN', 'DIGEST-MD5', 'CRAM-MD5', 'LOGIN'));
+	   		echo $select_imapauth->show(intval($RCI->getprop('imap_auth_type')));
+		?>
 	</dd>
 	<dt class="propname">SMTP Host</dt>
 	<div class="hint">Description: Enter the SMTP host to be used for mailing. If left blank, the PHP mail() function will be used.</div>
@@ -202,23 +204,27 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<div class="hint">Description: If your SMTP uses authentication, select it here.</div>
 	<dd>
 		<?php
-	
 	   		$select_smtpauth = new html_select(array('name' => '_smtp_auth_type', 'id' => "cfgsmtpauth"));
 	   		$select_smtpauth->add(array('(auto)', 'PLAIN', 'DIGEST-MD5', 'CRAM-MD5', 'LOGIN'), array('0', 'PLAIN', 'DIGEST-MD5', 'CRAM-MD5', 'LOGIN'));
 	   		echo $select_smtpauth->show(intval($RCI->getprop('smtp_auth_type')));
-	   
 		?>
 	</dd>
 	<dt class="propname">SMTP HELO Host</dt>
 	<div class="hint">Description: If your SMTP server requires a host response for HELO or EHLO, enter it here.</div>
 	<div class="hint">Note: If you leave this blank, the either the variable for server_name or localhost will be passed.</div>
 	<dd>
-		<input name="smtp_helo_host" size="20" id="smtp_helo_host" value="" type="text" /> 
+		<?php
+			$text_helohost = new html_inputfield(array('name' => '_smtp_helo_host', 'size' => 30, 'id' => "cfghelohost"));
+			echo $text_helohost->show($RCI->getprop('smtp_helo_host'));
+		?>
 	</dd>
 	<dt class="propname">Mail Domain</dt>
 	<div class="hint">Description: This will be used to form email addresses of new users.</div>
 	<dd>
-		<input name="mail_domain" size="20" id="mail_domain" value="example.com" type="text" /> 
+		<?php
+			$text_maildomain = new html_inputfield(array('name' => '_mail_domain', 'size' => 30, 'id' => "cfgmaildomain"));
+			echo $text_maildomain->show($RCI->getprop('mail_domain'));
+		?>
 	</dd>
 	<dt class="propname">Username Domain</dt>
 	<div class="hint">Description: If your server requires username+domain to authenticate, enter the domain here.</div>
@@ -231,19 +237,27 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<dt class="propname">Virtual Users</dt>
 	<div class="hint">Description: Path to virtual user table to resolve user names and email addresses.</div>
 	<dd>
-		<input name="virtuser_file" size="40" id="virtuser_file" value="" type="text" /> 
+		<?php
+			$text_virtfile = new html_inputfield(array('name' => '_virtuser_file', 'size' => 30, 'id' => "cfgvirtfile"));
+			echo $text_virtfile->show($RCI->getprop('virtuser_file'));
+		?>
 	</dd>
 	<dt class="propname">Virtual Users Query</dt>
 	<div class="hint">Description: Query to resolve virtual users user names and email addresses.</div>
 	<div class="hint">Note: Use %u to replace the current username for login.</div>
 	<div class="hint">Note 2: The query expects the first column to be email address and the second column to be an optional identity name.</div>
 	<dd>
-		<input name="virtuser_query" size="40" id="virtuser_query" value="" type="text" /> 
+		<?php
+			$text_virtquery = new html_inputfield(array('name' => '_virtuser_query', 'size' => 30, 'id' => "cfgvirtquery"));
+			echo $text_virtquery->show($RCI->getprop('virtuser_query'));
+		?>
 	</dd>
 		
 	<!-- These entries are not part of the installer but are required for the main.inc.php -->
-	<input name="imap_root" size="10" id="imap_root" value="" type="hidden" />
-	<input name="imap_delimiter" size="10" id="imap_delimiter" value="" type="hidden" />
+	<?php
+		$text_imaproot = new html_inputfield(array('name' => '_imap_root', 'size' => 30, 'id' => "cfgimaproot"));
+		$text_imapdelimiter = new html_inputfield(array('name' => '_imap_delimiter', 'size' => 30, 'id' => "cfgimapdelimiter"));
+	?>
 </fieldset>
 
 
@@ -252,20 +266,32 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 <fieldset>
 <legend>Administrative & Security Configuration</legend>
 <dl class="configblock">
-	<dt class="propname">Enable Admin Panel</dt>
+	<dt class="propname">Admin Panel</dt>
 	<div class="hint">Description: This will enable the Administrative Panel.</div>
 	<div class="hint">Note: For some people this might pose a security risk.</div>
 	<dd>
-		<select name="enable_admin" id="enable_admin">
-			<option value="true" selected="selected">Yes, enable the admin panel.</option>
-			<option value="false">No, do not enable the admin panel.</option>
-		</select>
+		<?php
+			$check_enableadmin = new html_checkbox(array('name' => '_ip_check', 'id' => "cfgenableadmin"));
+			echo $check_enableadmin->show(intval($RCI->getprop('enable_admin')), array('value' => 1));
+			echo "Enable Admin Panel<br />";
+
+			echo "Admin Username:\n"; 
+				$text_adminuser = new html_inputfield(array('name' => '_admin_user', 'size' => 20, 'id' => "cfgadminuser"));
+				echo $text_adminuser->show($RCI->getprop('admin_user'));
+				echo "<br /><br />";
+			echo "Admin Password:\n"; 
+				$text_adminpassword = new html_passwordfield(array('name' => '_admin_password', 'size' => 20, 'id' => "cfgadminpassword"));
+				echo $text_adminpassword->show($RCI->getprop('admin_password'));
+		?>		
 	</dd>
-	<dt class="propname">Admin User and Password</dt>
-	<div class="hint">Description: This will be the username and password used to login to the Administrative Panel.</div>
+	<dt class="propname">Crystal Webmail Installer</dt>
+	<div class="hint">Description: This option allows you to keep the installer available after you complete this installation.</div>
+	<div class="hint">Note: THIS IS NOT RECOMMENDED AND POSES A MAJOR SECURITY RISK!!!</div>
 	<dd>
-		Username: <input name="admin_user" size="20" id="admin_user" value="admin" type="text" /><br /><br />
-		Password: <input name="admin_password" size="20" id="admin_password" value="admin" type="password" /> Default: admin
+		<?php
+			$check_installer = new html_checkbox(array('name' => '_enable_installer', 'id' => "cfgenableinstaller"));
+			echo $check_installer->show(intval($RCI->getprop('enable_installer')), array('value' => 0));
+		?>Leave Crystal Installer Enabled (Not Recommended)
 	</dd>
 	<dt class="propname">Client IP Check</dt>
 	<div class="hint">Description: This will check the client IP in the session authorization.</div>
@@ -279,79 +305,119 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<div class="hint">Description: This will use an additional changing cookie to authorize users.</div>
 	<div class="hint">NOTE: There have been problems reported with this option when enabled.</div>
 	<dd>
-		<select name="double_auth" id="double_auth">
-			<option value="false" selected="selected">No, do not enable double authorization.</option>
-			<option value="true">Yes, enable double authorization.</option>
-		</select>
+		<?php
+			$check_doubleauth = new html_checkbox(array('name' => '_double_auth', 'id' => "cfgdoubleauth"));
+			echo $check_doubleauth->show(intval($RCI->getprop('double_auth')), array('value' => 1));
+		?>Enable Double Authorization
 	</dd>
 	<dt class="propname">Outgoing Email Message</dt>
 	<div class="hint">Description: This will is a message that will be added to the bottom of all outgoing messages.</div>
 	<div class="hint">NOTE: The message will be stored in 'footer.txt' in the config directory.</div>
 	<dd>
-		<textarea name="message_footer" id="message_footer" value="" cols="65" rows="10"></textarea>
+		<?php
+			$check_footer = new html_textarea(array('name' => '_message_footer', 'id' => "cfgfooter", 'cols' => "65", 'rows' => "10"));
+			echo $check_footer->show(file_get_contents('../config/footer.txt'));
+		?> 
 	
 	</dd>
 	<dt class="propname">Add IP and Hostname to Header?</dt>
 	<div class="hint">Description: This will add the users IP and hostname to the header of outgoing messages.</div>
 	<div class="hint">Note: For some people this might pose a security risk.</div>
 	<dd>
-		<select name="http_received_header" id="http_received_header">
-			<option value="false" selected="selected">No, do not add additional information to the header.</option>
-			<option value="true">Yes, add additional information to the header.</option>
-		</select>
+		<?php
+			$check_receivedheader = new html_checkbox(array('name' => '_http_received_header', 'id' => "cfgreceivedheader"));
+			echo $check_receivedheader->show(intval($RCI->getprop('http_received_header')), array('value' => 1));
+		?>Enable Additional Header Information
 	</dd>
 	<dt class="propname">Encrypt IP and Hostname in Header?</dt>
 	<div class="hint">Description: This will encrypt the users IP and hostname in the header of outgoing messages.</div>
 	<dd>
-		<select name="http_received_header_encrypt" id="http_received_header_encrypt">
-			<option value="false" selected="selected">No, do not encrypt additional information in the header.</option>
-			<option value="true">Yes, encrypt additional information in the header.</option>
-		</select>
+		<?php
+			$check_headerencrypt = new html_checkbox(array('name' => '_http_received_header_encrypt', 'id' => "cfgheaderencrypt"));
+			echo $check_headerencrypt->show(intval($RCI->getprop('http_received_header_encrypt')), array('value' => 1));
+		?>Enable Header Encryption
 	</dd>
 	<dt class="propname">Load Host Specific Configuration?</dt>
 	<div class="hint">Description: This will load host specific configuration.</div>
 	<div class="hint">Note: See <a href="http://www.crystalwebmail.com/documentation" target="_blank">http://www.crystalwebmail.com/documentation</a> for more details..</div>
 	<dd>
-		<select name="include_host_config" id="include_host_config">
-			<option value="false" selected="selected">No, do not include host configuration.</option>
-			<option value="true">Yes, include host configuration.</option>
-		</select>
+		<?php
+			$check_hostspecific = new html_checkbox(array('name' => '_include_host_config', 'id' => "cfghostspecific"));
+			echo $check_hostspecific->show(intval($RCI->getprop('include_host_config')), array('value' => 1));
+		?>Enable Host Specific Configuration
 	</dd>
 	<dt class="propname">Enable DNS checking for E-Mail Address Validation?</dt>
 	<div class="hint">Description: This will perform a DNS lookup to validate the senders e-mail address..</div>
 	<dd>
-		<select name="email_dns_check" id="email_dns_check">
-			<option value="false" selected="selected">No, do not enable DNS checks.</option>
-			<option value="true">Yes, enable DNS checks.</option>
-		</select>
+		<?php
+			$check_dnscheck = new html_checkbox(array('name' => '_email_dns_check', 'id' => "cfgdnscheck"));
+			echo $check_dnscheck->show(intval($RCI->getprop('email_dns_check')), array('value' => 1));
+		?>Enable DNS Checking For Email Validation
 	</dd>
 	<dt class="propname">User Over-Rides</dt>
 	<div class="hint">Description: When the options below are checked, users will be unable to change these options.</div>
 	<dd>
-		<table>
-			<tr>
-				<td><input name="skin_override" id="skin_override" value="skin" type="checkbox" /> Change Theme<br /></td>
-				<td><input name="pagesize_override" id="pagesize_override" value="pagesize" type="checkbox" /> Emails per page shown<br /></td>
-				<td><input name="timezone_override" id="timezone_override" value="timezone" type="checkbox" /> Timezone<br /></td>
-			</tr>
-				<td><input name="prefer_html_override" id="prefer_html_override" value="prefer_html" type="checkbox" /> Show HTML Messages<br /></td>
-				<td><input name="show_images_override" id="show_images_override" value="show_images" type="checkbox" /> Display Inline Images<br /></td>
-				<td><input name="htmleditor_override" id="htmleditor_override" value="htmleditor" type="checkbox" /> Composing Messages in HTML Format<br /></td>
-			<tr>
-				<td><input name="draft_autosave_override" id="draft_autosave_override" value="draft_autosave" type="checkbox" /> Draft Autosave Time<br /></td>
-				<td><input name="preview_pane_override" id="preview_pane_override" value="preview_pane" type="checkbox" /> Preview Pane Display<br /></td>
-				<td><input name="logout_purge_override" id="logout_purge_override" value="logout_purge" type="checkbox" /> Trash Purge Upon Logout<br /></td>
-			</tr>	
-			<tr>
-				<td><input name="inline_images_override" id="inline_images_override" value="inline_images" type="checkbox" /> Display Images Inline<br /></td>
-				<td><input name="logout_expunge_override" id="logout_expunge_override" value="logout_expunge" type="checkbox" /> Compact Inbox Upon Logout<br /></td>
-				<td><input name="check_all_folders_override" id="check_all_folders_override" value="check_all_folders" type="checkbox" /> Check All Folders for New Messages<br /></td>
-			</tr>	
-			<tr>
-				<td><input name="prettydate_override" id="prettydate_override" value="prettydate" type="checkbox" /> Date Display<br /></td>
-				<td><input name="dst_active_override" id="dst_active_override" value="dst_active" type="checkbox" /> Daylight Savings Time<br /></td>
-			</tr>
-		</table>	
+		<?php
+			echo "<table><tr>";
+			
+			$check_skinoverride = new html_checkbox(array('name' => '_skin_override', 'id' => "cfgskinoverride"));
+			echo "<td>".$check_skinoverride->show(intval($RCI->getprop('skin_override')), array('value' => 1));
+			echo "Change Theme</td>\n";
+
+			$check_pagesizeoverride = new html_checkbox(array('name' => '_pagesize_override', 'id' => "cfgpagesizeoverride"));
+			echo "<td>".$check_pagesizeoverride->show(intval($RCI->getprop('pagesize_override')), array('value' => 1));
+			echo "Emails Per Page Shown</td>\n";
+
+			$check_timezoneoverride = new html_checkbox(array('name' => '_timezone_override', 'id' => "cfgtimezoneoverride"));
+			echo "<td>".$check_timezoneoverride->show(intval($RCI->getprop('timezone_override')), array('value' => 1));
+			echo "Change Timezone</td></tr>\n";
+
+			$check_htmloverride = new html_checkbox(array('name' => '_prefer_html_override', 'id' => "cfghtmloverride"));
+			echo "<tr><td>".$check_htmloverride->show(intval($RCI->getprop('prefer_html_override')), array('value' => 1));
+			echo "Show HTML Messages</td>\n";
+
+			$check_imagesoverride = new html_checkbox(array('name' => '_show_images_override', 'id' => "cfgimagesoverride"));
+			echo "<td>".$check_imagesoverride->show(intval($RCI->getprop('show_images_override')), array('value' => 1));
+			echo "Display Inline Images</td>\n";
+			
+			$check_htmleditoroverride = new html_checkbox(array('name' => '_htmleditor_override', 'id' => "cfghtmleditoroverride"));
+			echo "<td>".$check_htmleditoroverride->show(intval($RCI->getprop('htmleditor_override')), array('value' => 1));
+			echo "Compose Messages In HTML Format</td></tr>\n";
+			
+			$check_draftsave = new html_checkbox(array('name' => '_draft_autosave_override', 'id' => "cfgdraftsave"));
+			echo "<tr><td>".$check_draftsave->show(intval($RCI->getprop('draft_autosave_override')), array('value' => 1));
+			echo "Draft Autosave Time</td>\n";
+
+			$check_previewoverride = new html_checkbox(array('name' => '_preview_pane_override', 'id' => "cfgpreviewoverride"));
+			echo "<td>".$check_previewoverride->show(intval($RCI->getprop('preview_pane_override')), array('value' => 1));
+			echo "Displaying the Preview Pane</td>\n";
+			
+			$check_logoutpurgeoverride = new html_checkbox(array('name' => '_logout_purge_override', 'id' => "cfglogoutpurgeoverride"));
+			echo "<td>".$check_logoutpurgeoverride->show(intval($RCI->getprop('logout_purge_override')), array('value' => 1));
+			echo "Trash Purge Upon Logout</td></tr>\n";
+			
+			$check_inlineimagesoverride = new html_checkbox(array('name' => '_inline_images_override', 'id' => "cfginlineimagesoverride"));
+			echo "<tr><td>".$check_inlineimagesoverride->show(intval($RCI->getprop('inline_images_override')), array('value' => 1));
+			echo "Displaying of Inline Imagesime</td>\n";
+
+			$check_expungeoverride = new html_checkbox(array('name' => '_logout_expunge_override', 'id' => "cfgexpungeoverride"));
+			echo "<td>".$check_expungeoverride->show(intval($RCI->getprop('logout_expunge_override')), array('value' => 1));
+			echo "Compact Inbox Upon Logout</td>\n";
+			
+			$check_foldersoverride = new html_checkbox(array('name' => '_check_all_folders_override', 'id' => "cfgfoldersoverride"));
+			echo "<td>".$check_foldersoverride->show(intval($RCI->getprop('check_all_folders_override')), array('value' => 1));
+			echo "Check All Folders For New Messages</td></tr>\n";
+			
+			$check_dateoverride = new html_checkbox(array('name' => '_prettydate_override', 'id' => "cfgdateoverride"));
+			echo "<tr><td>".$check_dateoverride->show(intval($RCI->getprop('prettydate_override')), array('value' => 1));
+			echo "Date Display</td>\n";
+
+			$check_dstoverride = new html_checkbox(array('name' => '_dst_active_override', 'id' => "cfgdstoverride"));
+			echo "<td>".$check_dstoverride->show(intval($RCI->getprop('dst_active_override')), array('value' => 1));
+			echo "Daylight Savings Time</td>\n";
+			
+			echo "</table></tr>";
+		?>
 	</dd>
 		
 	<!-- These entries are not part of the config but are required for the main.inc.php -->
@@ -395,7 +461,10 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<div class="hint">Description: What format should the time be in for the log files.</div>
 	<div class="hint">Note: Check out <a href="http://php.net/manual/en/function.date.php" target="_blank">http://php.net/manual/en/function.date.php</a> for the various date formats.</div>
 	<dd>
-		<input name="admin_user" size="20" id="admin_user" value="d-M-Y H:i:s O" type="text" /> Example: [25-May-2010 17:34:14 -0400] 
+		<?php
+			$input_logdateformat = new html_inputfield(array('name' => '_log_date_format', 'size' => 30, 'id' => "cfglogdateformat"));
+			echo $input_logdateformat->show($RCI->getprop('log_date_format'));
+		?> Example: [25-May-2010 17:34:14 -0400] 
 	</dd>
 	<dt class="propname">Syslog ID</dt>
 	<div class="hint">Description: This is the name that will be used to identify log entries from Crystal Webmail.</div>
@@ -445,10 +514,10 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<dt class="propname">Log Successful Logins</dt>
 	<div class="hint">Description: This will log all successful logins by users.</div>
 	<dd>
-		<select name="log_options" id="log_options">
-			<option value="false" selected="selected">No, do not log all successful logins.</option>
-			<option value="true">Yes, log all successful logins.</option>
-		</select>
+		<?php
+			$check_logoptions = new html_checkbox(array('name' => '_log_options', 'id' => "cfglogoptions"));
+			echo "<td>".$check_logoptions->show(intval($RCI->getprop('log_options')), array('value' => 1));
+		?>Log Successful Logins
 	</dd>
 	<dt class="propname">Services Debugging</dt>
 	<div class="hint">Description: When the options below are checked, all input for each service is redirected to the logs.</div>
@@ -493,53 +562,20 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<div class="hint">Note: The default plugins selected have already been configured. If you enable additional ones, you may need to configure them.</div><br />
 	<div class="hint">The following Plugins were found on your system:</div>
 	<dd>
-
-		<?php
-		/* EXAMPLE!!!!!!!!!!!!!!!!!
-			$input_skin = new html_select(array('name' => '_skin', 'id' => "cfgskin"));
-			$skins=scandir("../skins");
-			foreach ($skins as $skin_name){
-				if (preg_match("/[^.\^.svn\^.DS_Store]/", $skin_name)) {
-					$input_skin->add($skin_name, $skin_name);
-				}
-			}		
-			echo $input_skin->show($RCI->getprop('skin'), skin);
-			
-
-
-			// This is for multiple selects
-			$check_smtplog = new html_checkbox(array('name' => '_smtp_log', 'id' => "cfgsmtplog"));
-			echo "<td>".$check_smtplog->show(intval($RCI->getprop('smtp_log')), array('value' => 1));
-			echo "SMTP Log</td>\n";
-		*/
-		?>
-
-		<?php
-		    $plugins=scandir("../plugins"); 
+		<?php 
+			include ('../config/main.inc.php.dist'); 
+			$plugins=scandir("../plugins"); 
 			foreach ($plugins as $plugin_name){ 
-				$checked = ""; 
+				$checked = "array('value' => 0"; 
 				if (preg_match("/[^.\^.svn\^.DS_Store]/", $plugin_name)) { 
-					if (in_array($plugin_name, $rcmail_config['plugins'])) 
-						$checked = "checked=\"checked\"";
-						$check_plugin = $check_plugin.$plugin_name;
-						$check_plugin = new html_checkbox(array('name' => '_plugin_'.$plugin_name, 'id' => "cfgplugin".$plugin_name));
-
+					if (in_array($plugin_name, $rcmail_config['plugins'])){ 
+						$checked = ""; 
+					} 
+					$check_plugin = new html_checkbox(array('name' => '_plugin_'.$plugin_name, 'id' => "cfgplugin".$plugin_name)); 
+					echo $check_plugin->show($checked).$plugin_name."<br>"; 
 				} 
-			}         
+			} 
 		?>
-		<?php
-		/* ORIGINAL CODE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		    $plugins=scandir("../plugins"); 
-			foreach ($plugins as $plugin_name){ 
-				$checked = ""; 
-				if (preg_match("/[^.\^.svn\^.DS_Store]/", $plugin_name)) { 
-					if (in_array($plugin_name, $rcmail_config['plugins'])) 
-						$checked = "checked=\"checked\""; 
-						$plugin_list .= "<input name=\"$plugin_name\" id=\"$plugin_name\"$checked value=\"$plugin_name\" type=\"checkbox\" \> $plugin_name<br />"; 
-				} 
-			}         
-        	echo "$plugin_list";
-		*/?>
 	</dd>
 	<dt class="propname">Automatically Create Users</dt>
 	<div class="hint">Description: This will automatically create a new user once the IMAP login has suceeded.</div>
@@ -606,18 +642,18 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<dt class="propname">Automaticvally Create Default Folders</dt>
 	<div class="hint">Description: This will automatically create the default IMAP folders after login.</div>
 	<dd>
-		<select name="create_default_folders" id="create_default_folders">
-			<option value="true" selected="selected">Yes, automatically create IMAP folders upon login.</option>
-			<option value="false">No, do not automatically create IMAP folders upon login.</option>
-		</select>
+		<?php
+			$check_createfolders = new html_checkbox(array('name' => '_create_default_folders', 'size' => 20, 'id' => "cfgcreatefolders"));
+			echo $check_createfolders->show(intval($RCI->getprop('create_default_folders')), array('value' => 1));
+		?>Create Default IMAP Folders Upon Successful Login
 	</dd>
 	<dt class="propname">Protect Default IMAP Folders</dt>
 	<div class="hint">Description: When this option is enabled, it will prevent users from renaming, deleting, or subscription changes to default IMAP folders.</div>
 	<dd>
-		<select name="protect_default_folders" id="protect_default_folders">
-			<option value="true" selected="selected">Yes, protect the default IMAP folders.</option>
-			<option value="false">No, do not protect the default IMAP folders.</option>
-		</select>
+		<?php
+			$check_protectfolders = new html_checkbox(array('name' => '_protect_default_folders', 'size' => 20, 'id' => "cfgprotectfolders"));
+			echo $check_protectfolders->show(intval($RCI->getprop('protect_default_folders')), array('value' => 1));
+		?>Protect Default IMAP Folders From Modification
 	</dd>
 	<dt class="propname">Delivery Notification</dt>
 	<div class="hint">Description: Choose the default behavior when a delivery notification (read receipt) is requested.</div>
@@ -664,65 +700,80 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	</dd>
 	<dt class="propname">Message Cache Lifetime</dt>
 	<div class="hint">Description: When message caching is enabled, this will determine the length of time that the cach is valid for.</div>
+	<div class="hint">Note: Enter 's'(seconds), 'm' (minutes), 'h' (hours), 'd' (days), 'w' (weeks).</div>
 	<dd>
-		<input name="message_cache_lifetime" size="5" id="message_cache_lifetime" value="10" type="text" />
-		<select name="message_cache_lifetime_increment" id="message_cache_lifetime_increment">
-			<option value="s">Seconds (s)</option>
-			<option value="m">Minutes (m)</option>
-			<option value="h">Hours (h)</option>
-			<option value="d" selected="selected">Days (d)</option>
-			<option value="w">Weeks (w)</option>
-		</select>
+		<?php
+			$text_cachelifetime = new html_inputfield(array('name' => '_message_cache_lifetime', 'size' => 20, 'id' => "cfgcachelifetime"));
+			echo $text_cachelifetime->show($RCI->getprop('message_cache_lifetime'));
+		?>
 	</dd>
 	<dt class="propname">Force HTTPS</dt>
 	<div class="hint">Description: When this option is enabled, Crystal will force the connection over HTTPS.</div>
 	<dd>
-		<select name="force_https" id="force_https">
-			<option value="false" selected="selected">No, allow un-secure connections.</option>
-			<option value="true">Yes, only allow secure connections.</option>
-		</select>
+		<?php
+			$check_forcehttps = new html_checkbox(array('name' => '_force_https', 'id' => "cfgforcehttps"));
+			echo $check_forcehttps->show(intval($RCI->getprop('force_https')), array('value' => 1));
+		?> Force Communication Over HTTPS Only
 	</dd>
 	<dt class="propname">Sendmail Delay</dt>
 	<div class="hint">Description: This options sets the number of seconds a user must wait between sending emails.</div>
 	<dd>
-		<input name="sendmail_delay" size="10" id="sendmail_delay" value="5" type="text" />
+		<?php
+			$text_sendmaildelay = new html_inputfield(array('name' => '_sendmail_delay', 'size' => 20, 'id' => "cfgsendmaildelay"));
+			echo $text_sendmaildelay->show($RCI->getprop('sendmail_delay'));
+		?>
 	</dd>
 	<dt class="propname">Session Lifetime</dt>
 	<div class="hint">Description: This options sets the number of seconds a users session is active.</div>
 	<div class="hint">Note: The value must be greater than the 'Keep Alive'.</div>
 	<dd>
-		<input name="session_lifetime" size="10" id="session_lifetime" value="15" type="text" />
+		<?php
+			$text_seesionlifetime = new html_inputfield(array('name' => '_session_lifetime', 'size' => 20, 'id' => "cfgseesionlifetime"));
+			echo $text_seesionlifetime->show($RCI->getprop('session_lifetime'));
+		?>
 	</dd>
 	<dt class="propname">Keep Alive Minimum</dt>
 	<div class="hint">Description: This options sets the minimum number of seconds a users keep alive is active.</div>
 	<div class="hint">Note: The value must be lesser than the 'Session Lifetime'.</div>
 	<dd>
-		<input name="min_keep_alive" size="10" id="min_keep_alive" value="5" type="text" />
+		<?php
+			$text_minkeepalive = new html_inputfield(array('name' => '_min_keep_alive', 'size' => 20, 'id' => "cfgminkeepalive"));
+			echo $text_minkeepalive->show($RCI->getprop('min_keep_alive'));
+		?>
 	</dd>
 	<dt class="propname">Keep Alive</dt>
 	<div class="hint">Description: This options sets the number of seconds a users keep alive is active.</div>
 	<div class="hint">Note: The value must be greater than or equal to the 'Keep Alive Minimum'.</div>
 	<dd>
-		<input name="keep_alive" size="10" id="keep_alive" value="10" type="text" />
+		<?php
+			$text_keepalive = new html_inputfield(array('name' => '_keep_alive', 'size' => 20, 'id' => "cfgkeepalive"));
+			echo $text_keepalive->show($RCI->getprop('keep_alive'));
+		?>
 	</dd>
 	<dt class="propname">User Agent</dt>
 	<div class="hint">Description: This options sets the user agent that is added to the message headers.</div>
 	<dd>
-		<input name="useragent" size="30" id="useragent" value="Crystal Webmail" type="text" />
+		<?php
+			$text_useragent = new html_inputfield(array('name' => '_useragent', 'size' => 50, 'id' => "cfguseragent"));
+			echo $text_useragent->show($RCI->getprop('useragent'));
+		?>
 	</dd>
 	<dt class="propname">Zero Quota</dt>
 	<div class="hint">Description: This setting allows for using zero (0) as a no limit indicator.</div>
 	<div class="hint">Description: If your system uses 0 to signify 'no limit', then set this option to 'true'.</div>
 	<dd>
-		<select name="quota_zero_as_unlimited" id="quota_zero_as_unlimited">
-			<option value="false" selected="selected">No, my system does not use zero(0) to signify 'no limit'.</option>
-			<option value="true">Yes, my system does use zero(0) to signify 'no limit'.</option>
-		</select>
+		<?php
+			$check_quotazero = new html_checkbox(array('name' => '_quota_zero_as_unlimited', 'id' => "cfgquotazero"));
+			echo $check_quotazero->show(intval($RCI->getprop('quota_zero_as_unlimited')), array('value' => 1));
+		?> Zero (0) Means No Quota Limit
 	</dd>
 	<dt class="propname">Default Character Set</dt>
 	<div class="hint">Description: This options sets the default character set to use as a fallback for message decoding.</div>
 	<dd>
-		<input name="default_charset" size="20" id="default_charset" value="ISO-8859-1" type="text" />
+		<?php
+			$text_charset = new html_inputfield(array('name' => '_default_charset', 'size' => 50, 'id' => "cfgcharset"));
+			echo $text_charset->show($RCI->getprop('default_charset'));
+		?>
 	</dd>
 	<dt class="propname">Spell Checker Enabled?</dt>
 	<div class="hint">Description: This setting allows you to use the built in spell checker from GoogieSpell.</div>
@@ -743,33 +794,39 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		<?php
 			$select_spell = new html_select(array('name' => '_spellcheck_engine', 'id' => "cfgspellcheckengine"));
 			if (extension_loaded('pspell'))
-	  			$select_spell->add('Googie', 'googie');
+	  			$select_spell->add('googie', 'googie');
 	  			$select_spell->add('pspell', 'pspell');
-	  		echo $select_spell->show($RCI->is_post ? $_POST['_spellcheck_engine'] : 'pspell');
+	  		echo $select_spell->show($RCI->is_post ? $_POST['_spellcheck_engine'] : 'googie');
 	  	?>
 	</dd>
 	<dt class="propname">Spell Check URI</dt>
 	<div class="hint">Description: If you have a locally installed Nox Spell Server, specify the URI to call it here.</div>
 	<div class="hint">Note: If you use Googie, leave this blank.</div>
 	<dd>
-		<input name="spellcheck_uri" size="50" id="spellcheck_uri" value="" type="text" />
+		<?php
+			$text_spellcheckuri = new html_inputfield(array('name' => '_spellcheck_uri', 'size' => 50, 'id' => "cfgspellcheckuri"));
+			echo $text_spellcheckuri->show($RCI->getprop('spellcheck_uri'));
+		?>
 	</dd>
 	<dt class="propname">Session Domain</dt>
 	<div class="hint">Description: This is the domain that is added to the session ID.</div>
 	<dd>
-		<input name="session_domain" size="50" id="session_domain" value="" type="text" /> Example: example.com
+		<?php
+			$text_sessiondomain = new html_inputfield(array('name' => '_session_domain', 'size' => 50, 'id' => "cfgsessiondomain"));
+			echo $text_sessiondomain->show($RCI->getprop('session_domain'));
+		?>
 	</dd>
 	<dt class="propname">Delete Always</dt>
 	<div class="hint">Description: This will allow for messages to always be marked as deleted even if moving to the "Trash" fails.</div>
 	<div class="hint">Note: Some setups require this if users do not have a trash folder or if they are over their quota.</div>
 	<dd>
-		<select name="delete_always" id="delete_always">
-			<option value="false" selected="selected">No, do not mark messages as deleted.</option>
-			<option value="true">Yes, always mark messages as deleted.</option>
-		</select>
+		<?php
+			$check_deletealways = new html_checkbox(array('name' => '_delete_always', 'id' => "cfgdeletealways"));
+			echo $check_deletealways->show(intval($RCI->getprop('delete_always')), array('value' => 1));
+		?> Always Mark Messages As Deleted
 	</dd>
 	<dt class="propname">Draft Autosave</dt>
-	<div class="hint">Description: This is the length of time in seconds before a draft message is save to the 'Drafts' folder.</div>
+	<div class="hint">Description: This is the length of time before a draft message is save to the 'Drafts' folder.</div>
 	<dd>
 		<?php
 			$select_autosave = new html_select(array('name' => '_draft_autosave', 'id' => 'cfgautosave'));
@@ -779,36 +836,39 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 				echo $select_autosave->show(intval($RCI->getprop('draft_autosave')));
 	  	?>
 	</dd>
-	<dt class="propname">Clear Trash On Logout</dt>
+	<dt class="propname">Empty Trash On Logout</dt>
 	<div class="hint">Description: If set, this option will clear a users trash folder when they logout.</div>
 	<div class="hint">Note: This setting can be overridden by the user.</div>
 	<dd>
-		<select name="logout_purge" id="logout_purge">
-			<option value="false" selected="selected">No, do not empty the trash on logout.</option>
-			<option value="true">Yes, empty the trash on logout.</option>
-		</select>
+		<?php
+			$check_logoutpurge = new html_checkbox(array('name' => '_logout_purge', 'id' => "cfglogoutpurge"));
+			echo $check_logoutpurge->show(intval($RCI->getprop('logout_purge')), array('value' => 1));
+		?> Empty Trash Upon Logout
 	</dd>
 	<dt class="propname">Compact Inbox On Logout</dt>
 	<div class="hint">Description: If set, this option will compcat the users inbox folder when they logout.</div>
 	<div class="hint">Note: This setting can be overridden by the user.</div>
 	<dd>
-		<select name="logout_expunge" id="logout_expunge">
-			<option value="false" selected="selected">No, do not archive the inbox on logout.</option>
-			<option value="true">Yes, archive the inbox on logout.</option>
-		</select>
+		<?php
+			$check_logoutexpunge = new html_checkbox(array('name' => '_logout_expunge', 'id' => "cfglogoutexpunge"));
+			echo $check_logoutexpunge->show(intval($RCI->getprop('logout_expunge')), array('value' => 1));
+		?> Compact Inbox Upon Logout
 	</dd>
 	<dt class="propname">Flag For Deletion</dt>
 	<div class="hint">Description: If set, this option will immediately remove flagged messages for deletion.</div>
 	<dd>
-		<select name="flag_for_deletion" id="flag_for_deletion">
-			<option value="false" selected="selected">No, do not flag for deletion.</option>
-			<option value="true">Yes, flag for deletion.</option>
-		</select>
+		<?php
+			$check_flagdelete = new html_checkbox(array('name' => '_flag_for_deletion', 'id' => "cfgflagdelete"));
+			echo $check_flagdelete->show(intval($RCI->getprop('flag_for_deletion')), array('value' => 1));
+		?> Delete Messages Flagged For Deletion
 	</dd>
 	<dt class="propname">Mime Magic Database</dt>
 	<div class="hint">Description: This is the location of the mime magic database.</div>
 	<dd>
-		<input name="mime_magic" size="30" id="mime_magic" value="/usr/share/misc/magic" type="text" /> 
+		<?php
+			$text_mimemagic = new html_inputfield(array('name' => '_mime_magic', 'size' => 50, 'id' => "cfgmimemagic"));
+			echo $text_mimemagic->show($RCI->getprop('mime_magic'));
+		?>
 	</dd>
 	
 	<!-- These entries are not part of the config but are required for the main.inc.php -->
@@ -843,90 +903,101 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<dt class="propname">Email Columns</dt>
 	<div class="hint">Description: This is a list of the columns that should be displayed when viewing the inbox.</div>
 	<dd>
-		<table>
-			<tr>
-				<td><input name="cols_var1" id="cols_var1" value="subject" type="checkbox" checked="yes" /> Subject<br /></td>
-				<td><input name="cols_var2" id="cols_var2" value="from" type="checkbox" checked="yes" /> From<br /></td>
-				<td><input name="cols_var3" id="cols_var3" value="to" type="checkbox" /> To<br /></td>
-				<td><input name="cols_var4" id="cols_var4" value="cc" type="checkbox" /> CC<br /></td>
-				<td><input name="cols_var5" id="cols_var5" value="attachment" type="checkbox" checked="yes" /> Attachment<br /></td>
-			</tr>
-			<tr>
-				<td><input name="cols_var6" id="cols_var6" value="date" type="checkbox" checked="yes" /> Date<br /></td>
-				<td><input name="cols_var7" id="cols_var7" value="size" type="checkbox" checked="yes" /> Size<br /></td>
-				<td><input name="cols_var8" id="cols_var8" value="flag" type="checkbox" checked="yes" /> Flag<br /></td>
-				<td><input name="cols_var9" id="cols_var9" value="replyto" type="checkbox" /> Reply-To<br /></td>
-			</tr>
-		</table>
+		<?php 
+			include ('../config/main.inc.php.dist'); 
+			$cols_list = array('subject', 'from', 'to', 'cc', 'attachment', 'date', 'size', 'flag', 'replyto');
+			foreach ($cols_list as $col){ 
+				$checked = "array('value' => 0"; 
+				if (in_array($col, $rcmail_config['list_cols'])){ 
+					$checked = ""; 
+				} 
+				$check_listcols = new html_checkbox(array('name' => '_list_cols'.$col, 'id' => "cfglistcols".$col)); 
+				echo $check_listcols->show($checked).$col."<br>"; 
+			} 
+		?>
 	</dd>
 	<dt class="propname">Date: Short</dt>
 	<div class="hint">Description: This is the display format for the date in a short format.</div>
 	<dd>
-		<input name="date_short" size="10" id="date_short" value="D H:i" type="text" /> 
+		<?php
+			$text_dateshort = new html_inputfield(array('name' => '_date_short', 'size' => 20, 'id' => "cfgdateshort"));
+			echo $text_dateshort->show($RCI->getprop('date_short'));
+		?>
 	</dd>
 	<dt class="propname">Date: Long</dt>
 	<div class="hint">Description: This is the display format for the date in a long format.</div>
 	<dd>
-		<input name="date_long" size="10" id="date_long" value="d.m.Y H:i" type="text" /> 
+		<?php
+			$text_datelong = new html_inputfield(array('name' => '_date_long', 'size' => 20, 'id' => "cfgdatelong"));
+			echo $text_datelong->show($RCI->getprop('date_long'));
+		?>
 	</dd>
 	<dt class="propname">Date: Today</dt>
 	<div class="hint">Description: This is the display format for the date format today.</div>
 	<dd>
-		<input name="date_today" size="10" id="date_today" value="H:i" type="text" /> 
+		<?php
+			$text_datetoday = new html_inputfield(array('name' => '_date_today', 'size' => 20, 'id' => "cfgdatetoday"));
+			echo $text_datetoday->show($RCI->getprop('date_today'));
+		?>
 	</dd>
 	<dt class="propname">Date: Date Only</dt>
 	<div class="hint">Description: This is the display format for the date only and does not include time.</div>
 	<dd>
-		<input name="date_only" size="10" id="date_only" value="d F Y" type="text" /> 
+		<?php
+			$text_dateonly = new html_inputfield(array('name' => '_date_only', 'size' => 20, 'id' => "cfgdateonly"));
+			echo $text_dateonly->show($RCI->getprop('date_only'));
+		?>
 	</dd>
 	<dt class="propname">Default IMAP Folders</dt>
 	<div class="hint">Description: This is a list of the default IMAP folders that will be displayed when viewing the inbox.</div>
 	<dd>
-		<table>
-			<tr>
-				<td><input name="default_imap_folders_var1" id="default_imap_folders_var1" value="INBOX" type="checkbox" checked="yes" /> Inbox<br /></td>
-				<td><input name="default_imap_folders_var2" id="default_imap_folders_var2" value="Drafts" type="checkbox" checked="yes" /> Drafts<br /></td>
-				<td><input name="default_imap_folders_var3" id="default_imap_folders_var3" value="Sent" type="checkbox" checked="yes" /> Sent<br /></td>
-			</tr>
-			<tr>
-				<td><input name="default_imap_folders_var4" id="default_imap_folders_var4" value="Junk" type="checkbox" checked="yes" /> Junk<br /></td>
-				<td><input name="default_imap_folders_var5" id="default_imap_folders_var5" value="Archive" type="checkbox" checked="yes" /> Archive<br /></td>
-				<td><input name="default_imap_folders_var6" id="default_imap_folders_var6" value="Trash" type="checkbox" checked="yes" /> Trash<br /></td>
-			</tr>
-		</table>
+		<?php 
+			include ('../config/main.inc.php.dist'); 
+			$folder_list = array('INBOX', 'Drafts', 'Sent', 'Junk', 'Archive', 'Trash');
+			foreach ($folder_list as $folder){ 
+				$checked = "array('value' => 0"; 
+				if (in_array($folder, $rcmail_config['list_cols'])){ 
+					$checked = ""; 
+				} 
+				$check_folderlist = new html_checkbox(array('name' => '_default_imap_folders'.$col, 'id' => "cfgfolderlist".$col)); 
+				echo $check_folderlist->show($checked).$folder."<br>"; 
+			} 
+		?>
 	</dd>
 	<dt class="propname">Display Next Message After Deletion</dt>
 	<div class="hint">Description: If set, this option will display the next message after deleting a message.</div>
 	<dd>
-		<select name="display_next" id="display_next">
-			<option value="false" selected="selected">No, do not display the next message after deletion.</option>
-			<option value="true">Yes, display the next message after deletion.</option>
-		</select>
+		<?php
+			$check_displaynext = new html_checkbox(array('name' => '_display_next', 'id' => "cfgdisplaynext"));
+			echo $check_displaynext->show(intval($RCI->getprop('display_next')), array('value' => 1));
+		?> Display Next Message After Deletion
 	</dd>
 	<dt class="propname">Sort Messages By?</dt>
 	<div class="hint">Description: This option chooses whether messages should be sorted by index number or date.</div>
 	<dd>
-		<select name="index_sort" id="index_sort">
-			<option value="true" selected="selected">Yes, sort messages by index.</option>
-			<option value="false">No, sort messages by date.</option>
-		</select>
+		<?php
+			$check_indexsort = new html_checkbox(array('name' => '_index_sort', 'id' => "cfgindexsort"));
+			echo $check_indexsort->show(intval($RCI->getprop('index_sort')), array('value' => 1));
+		?> Sort Message By Index
 	</dd>
 	<dt class="propname">Display Images Inline</dt>
 	<div class="hint">Description: This option chooses whether images should be displayed inline or below the message body.</div>
 	<dd>
-		<select name="inline_images" id="inline_images">
-			<option value="true" selected="selected">Yes, display the images inline.</option>
-			<option value="false">No, display the images after the message body.</option>
-		</select>
+		<?php
+			$check_inlineimages = new html_checkbox(array('name' => '_inline_images', 'id' => "cfginlineimages"));
+			echo $check_inlineimages->show(intval($RCI->getprop('inline_images')), array('value' => 1));
+		?> Display Images Inline
 	</dd>
 	<dt class="propname">Display Remote Images</dt>
 	<div class="hint">Description: This option chooses whether iremote images should be displayed.</div>
 	<dd>
-		<select name="show_images" id="show_images">
-			<option value="0" selected="selected">Ask if remote images should be displayed.</option>
-			<option value="1">Ask if remote images should be displayed if sender is not in address book.</option>
-			<option value="2">Always display remote images.</option>
-		</select>
+		<?php
+			$select_show_images = new html_select(array('name' => '_show_images', 'id' => "cfgshow_images"));
+			$select_show_images->add('Ask user if remote images should be displayed', '0');
+			$select_show_images->add('Ask user if remote images should be displayed if sender is not in address book', '1');
+			$select_show_images->add('Always display remote images', '2');
+			echo $select_show_images->show(intval($RCI->getprop('show_images')));
+		?>
 	</dd>
 	<dt class="propname">Attachment Encoding</dt>
 	<div class="hint">Description: This option chooses the encoding format used for attachments.</div>
@@ -942,18 +1013,18 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<dt class="propname">Show Deleted Messages</dt>
 	<div class="hint">Description: This option chooses whether deleted messages are still shown in the users inbox.</div>
 	<dd>
-		<select name="skip_deleted" id="skip_deleted">
-			<option value="true" selected="selected">Do not show deleted messages.</option>
-			<option value="false">Show deleted messages.</option>
-		</select>
+		<?php
+			$check_skip_deleted = new html_checkbox(array('name' => '_skip_deleted', 'id' => "cfgskip_deleted"));
+			echo $check_skip_deleted->show(intval($RCI->getprop('skip_deleted')), array('value' => 1));
+		?> Show Deleted Messages
 	</dd>
 	<dt class="propname">Mark Messages As Read When Deleted</dt>
 	<div class="hint">Description: This option chooses whether read messages are considered read upon deletion.</div>
 	<dd>
-		<select name="read_when_deleted" id="read_when_deleted">
-			<option value="false" selected="selected">No, do not mark messages as read when they are deleted.</option>
-			<option value="true">Yes, mark messages as read when they are deleted.</option>
-		</select>
+		<?php
+			$check_read_when_deleted = new html_checkbox(array('name' => '_read_when_deleted', 'id' => "cfgread_when_deleted"));
+			echo $check_read_when_deleted->show(intval($RCI->getprop('read_when_deleted')), array('value' => 1));
+		?> Mark Messages As Read When Deleted
 	</dd>
 	<dt class="propname">Preview Pane</dt>
 	<div class="hint">Description: This option chooses whether a preview pane is displayed for viewing messages.</div>
@@ -966,32 +1037,36 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<dt class="propname">Focus Window When New Message Arrives</dt>
 	<div class="hint">Description: This bring the browser window/tab to your attention when a new message arrives.</div>
 	<dd>
-		<select name="focus_on_new_message" id="focus_on_new_message">
-			<option value="true" selected="selected">Yes, focus window.</option>
-			<option value="false">No, do not focus window.</option>
-		</select>
+		<?php
+			$check_focus_on_new_message = new html_checkbox(array('name' => '_focus_on_new_message', 'id' => "cfgfocus_on_new_message", 'value' => 1));
+			echo $check_focus_on_new_message->show(intval($RCI->getprop('focus_on_new_message')));
+		?>Focus Window When New Message Arrives
 	</dd>
 	<dt class="propname">Default Sort Column</dt>
 	<div class="hint">Description: Choose the default column that messages should be sorted by.</div>
 	<dd>
-		<select name="message_sort_col" id="message_sort_col">
-			<option value="date" selected="selected">date</option>
-			<option value="subject">subject</option>
-			<option value="from">from</option>
-			<option value="to">to</option>
-			<option value="cc">cc</option>
-			<option value="attachment">attachment</option>
-			<option value="size">size</option>
-			<option value="flag">flag</option>
-		</select>
+		<?php
+			$select_message_sort_col = new html_select(array('name' => '_message_sort_col', 'id' => "cfgmessage_sort_col"));
+			$select_message_sort_col->add('date', 'date');
+			$select_message_sort_col->add('subject', 'subject');
+			$select_message_sort_col->add('from', 'from');
+			$select_message_sort_col->add('to', 'to');
+			$select_message_sort_col->add('cc', 'cc');
+			$select_message_sort_col->add('attachment', 'attachment');
+			$select_message_sort_col->add('size', 'size');
+			$select_message_sort_col->add('flag', 'flag');
+			echo $select_message_sort_col->show(intval($RCI->getprop('message_sort_col')));
+		?>
 	</dd>
 	<dt class="propname">Default Sort Order</dt>
-	<div class="hint">Description: This is the efault sort order for messages.</div>
+	<div class="hint">Description: This is the default sort order for messages.</div>
 	<dd>
-		<select name="message_sort_order" id="message_sort_order">
-			<option value="DESC" selected="selected">Descending</option>
-			<option value="ASC">Ascending</option>
-		</select>
+		<?php
+			$select_message_sort_order = new html_select(array('name' => '_message_sort_order', 'id' => "cfgmessage_sort_order"));
+			$select_message_sort_order->add('Descending', 'DESC');
+			$select_message_sort_order->add('Ascending', 'ASC');
+			echo $select_message_sort_order->show(intval($RCI->getprop('message_sort_order')));
+		?>
 	</dd>
 	<dt class="propname">Default Number of Messages Displayed</dt>
 	<div class="hint">Description: This number determines the number of messages displayed per page when viewing message folders.</div>
@@ -1005,7 +1080,10 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<dt class="propname">Max Number of Messages Displayed</dt>
 	<div class="hint">Description: This number determines the maximum number of messages displayed per page when viewing message folders.</div>
 	<dd>
-		<input name="max_pagesize" size="5" id="max_pagesize" value="200" type="text" />
+		<?php
+			$input_max_pagesize = new html_inputfield(array('name' => '_max_pagesize', 'size' => 6, 'id' => "cfgmax_pagesize"));
+			echo $input_max_pagesize->show($RCI->getprop('max_pagesize'));
+		?>
 	</dd>
 	<dt class="propname">HTML Messages</dt>
 	<div class="hint">Description: This will display HTML messages by default.</div>
@@ -1042,26 +1120,51 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<dt class="propname">What type of Address Books to Use</dt>
 	<div class="hint">Description: You can choose two types of address books currently; SQL and/or LDAP.</div>
 	<dd>
-		<select name="address_book_type" id="address_book_type">
-			<option value="sql" selected="selected">SQL Only</option>
-			<option value="ldap">LDAP Only</option>
-			<option value="sql,ldap">SQL & LDAP</option>
-		</select>
+		<?php
+			$select_address_book_type = new html_select(array('name' => '_address_book_type', 'id' => "cfgaddress_book_type"));
+			$select_address_book_type->add('SQL', 'sql');
+			$select_address_book_type->add('LDAP', 'ldap');
+			$select_address_book_type->add('SQL & LDAP', 'isql,ldap');
+			echo $select_address_book_type->show(intval($RCI->getprop('address_book_type')));
+		?>
 	</dd>
 	<dt class="propname">Name of LDAP Address Books</dt>
 	<div class="hint">Description: What should this address book be called?</div>
 	<dd>
-		<input name="ldap_name" size="30" id="ldap_name" value="" type="text" /> Example: My Contacts<br />
+		<?php
+			$input_ldap_name = new html_inputfield(array('name' => '_ldap_name', 'size' => 6, 'id' => "cfgldap_name"));
+			echo $input_ldap_name->show($RCI->getprop('ldap_name'));
+		?> Example: My Contacts<br />
 	</dd>
 	<dt class="propname">LDAP Server</dt>
 	<div class="hint">Description: List the hostname(s) for the LDAP server(s).</div>
 	<dd>
-		<input name="ldap_hosts" size="50" id="ldap_hosts" value="" type="text" />Example: ldap1.example.com,ldap2.example.com
+		<div id="defaulthostlist">
+		<?php
+		//	$ldap_hosts = new html_inputfield(array('name' => '_ldap_hosts[]', 'size' => 30));
+		//	echo $ldap_hosts->show($RCI->getprop('ldap_hosts'));
+
+		//	if (empty($ldap_hosts))
+	  	//		$ldap_hosts = array('');
+
+	  	//		$i = 0;
+	  	//		foreach ($ldap_hosts as $host) {
+		//    		echo '<div id="ldap_hosts'.$i.'">' . $text_ldaphost->show($host);
+		//	  	if ($i++ > 0)
+		//		    echo '<a href="#" onclick="removehostfield(this.parentNode);return false" class="removelink" title="Remove this entry">remove</a>';
+		//	    	echo '</div>';
+	  	//		}
+		?>
+		</div>
+		<div><a href="javascript:addhostfield()" class="addlink" title="Add another field">add</a></div>
 	</dd>
 	<dt class="propname">LDAP Port</dt>
 	<div class="hint">Description: LDAP port to connect on.</div>
 	<dd>
-		<input name="ldap_port" size="6" id="ldap_port" value="" type="text" />Example: 389
+		<?php
+			$input_ldap_port = new html_inputfield(array('name' => '_ldap_port', 'size' => 6, 'id' => "cfgldap_port"));
+			echo $input_ldap_port->show($RCI->getprop('ldap_port'));
+		?> 
 	</dd>
 	<dt class="propname">LDAP Version</dt>
 	<div class="hint">Description: What version of LDAP should be used?</div>
