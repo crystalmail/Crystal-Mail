@@ -91,7 +91,7 @@ $rcmail_config['virtuser_query'] = '';
 // In order to enable the admin panel, you must change this option to 'true'.
 // Once enabled, you can access it via www.example.org/admin
 // Default login is User: admin Password: admin -- This can and should be changed after login
-$rcmail_config['enable_admin'] = 'false';
+$rcmail_config['enable_admin'] = false;
 
 // Admin Panel username and password
 $rcmail_config['admin_user'] = 'admin';
@@ -549,14 +549,28 @@ $rcmail_config['ldap_public']['example'] = array(
   'LDAP_rdn'      => 'mail',  // The RDN field that is used for new entries, this field needs to be one of the search_fields, the base of base_dn is appended to the RDN to insert into the LDAP directory.
   'ldap_version'  => 3,       // using LDAPv3
   'search_fields' => array('mail', 'cn'),  // fields to search in
+  'sort'          => 'cn',    // The field to sort the listing by.
+  'scope'         => 'sub',   // search mode: sub|base|list
+  'sizelimit'     => '0',     // Enables you to limit the count of entries fetched. Setting this to 0 means no limit.
+  'timelimit'     => '0',     // Sets the number of seconds how long is spend on the search. Setting this to 0 means no limit.
+  'filter'        => 'accountStatus=active',      // used for basic listing (if not empty) and will be &'d with search queries. example: status=act
+  'fuzzy_search'  => true);   // server allows wildcard search
   'name_field'    => 'cn',    // this field represents the contact's name
+  'altemail_field'   => 'mailAlternateAddress',  // this field represents the contact's alternative e-mail
   'email_field'   => 'mail',  // this field represents the contact's e-mail
   'surname_field' => 'sn',    // this field represents the contact's last name
   'firstname_field' => 'gn',  // this field represents the contact's first name
-  'sort'          => 'cn',    // The field to sort the listing by.
-  'scope'         => 'sub',   // search mode: sub|base|list
-  'filter'        => 'accountStatus=active',      // used for basic listing (if not empty) and will be &'d with search queries. example: status=act
-  'fuzzy_search'  => true);   // server allows wildcard search
+  'title_field' => 'title', // this field represents the contact's title
+  'telephone_field' => 'homePhone', // this field represents the contact's home telephone number
+  'cellphone_field' => 'mobile', // this field represents the contact's mobile telephone number
+  'homeaddress_field' => 'homePostalAddress', // this field represents the contact's home address
+  'organization_field' => 'o', // this field represents the contact's company name
+  'orgtelephone_field' => 'telephoneNumber', // this field represents the contact's work telephone number
+  'orgfax_field' => 'facsimileTelephoneNumber', // this field represents the contact's work fax number
+  'orgaddress_field' => 'postalAddress', // this field represents the contact's work address
+  'notes_field' => 'description', // this field represents the contact's notes field
+);
+
 */
 
 // An ordered array of the ids of the addressbooks that should be searched

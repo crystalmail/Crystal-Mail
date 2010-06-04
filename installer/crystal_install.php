@@ -176,6 +176,7 @@ class crystal_install
 	  case 'Drafts': $_folder = $this->config['drafts_mbox']; break;
 	  case 'Sent':   $_folder = $this->config['sent_mbox']; break;
 	  case 'Junk':   $_folder = $this->config['junk_mbox']; break;
+	  case 'Archive':$_folder = $this->config['archive_mbox']; break;
 	  case 'Trash':  $_folder = $this->config['trash_mbox']; break;
           }
 	  if (!in_array($_folder, $value))  $value[] = $_folder;
@@ -472,6 +473,24 @@ class crystal_install
   }
   
   /**
+   * Return a list with all default overrides
+   *
+   * @return array Clean list with default overrides
+   */
+  function get_overrides()
+  {
+    $dont_overrides = (array)$this->getprop('dont_override');
+    $out = array();
+    
+    foreach ($dont_overrides as $key => $name) {
+      if (!empty($name))
+        $out[] = is_numeric($key) ? $name : $key;
+    }
+    
+    return $out;
+  }
+  
+  /**
    * Display OK status
    *
    * @param string Test name
@@ -649,4 +668,3 @@ class crystal_install
   }
   
 }
-

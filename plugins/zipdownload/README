@@ -2,6 +2,10 @@ Roundcube Webmail Zip Download
 ==============================
 This plugin adds an option to download all attachments to a message in one zip file, when a message has multiple attachments.
 
+Requirements
+============
+* php_zip extension (including ZipArchive class)
+
 Install
 =======
 * Place this plugin folder into plugins directory of RoundCube

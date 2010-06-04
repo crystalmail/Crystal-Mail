@@ -17,7 +17,7 @@ $RCI->bool_config_props = array(
 	'htmleditor' => 1,
 	'debug_level' => 1,
 	'smtp_user_u' => 1,
-	//'enable_admin' => 1,
+	'enable_admin' => 1,
 );
 
 // allow the current user to get to the next step
@@ -42,7 +42,7 @@ if (!empty($_POST['submit'])) {
 	Have a look at the config files or visit <a href="http://trac.crystalwebmail.net/wiki/Howto_Config">Howto_Config</a> to find out.</p>';
 	echo '</fieldset></div>';	
 	
-	echo "\n<hr style='margin-bottom:1.6em' />\n";
+	echo "\n<hr style='margin-bottom:1.6em; margin-top:-4em;' />\n";
 }
 
 // Function to create a new random token
@@ -358,65 +358,34 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<div class="hint">Description: When the options below are checked, users will be unable to change these options.</div>
 	<dd>
 		<?php
-			echo "<table><tr>";
-			
-			$check_skinoverride = new html_checkbox(array('name' => '_skin_override', 'id' => "cfgskinoverride"));
-			echo "<td>".$check_skinoverride->show(intval($RCI->getprop('skin_override')), array('value' => 1));
-			echo "Change Theme</td>\n";
+		/*
+			$text_imaphost = new html_inputfield(array('name' => '_default_host[]', 'size' => 30));
+			$default_hosts = $RCI->get_hostlist();
 
-			$check_pagesizeoverride = new html_checkbox(array('name' => '_pagesize_override', 'id' => "cfgpagesizeoverride"));
-			echo "<td>".$check_pagesizeoverride->show(intval($RCI->getprop('pagesize_override')), array('value' => 1));
-			echo "Emails Per Page Shown</td>\n";
+			if (empty($default_hosts))
+	  			$default_hosts = array('');
 
-			$check_timezoneoverride = new html_checkbox(array('name' => '_timezone_override', 'id' => "cfgtimezoneoverride"));
-			echo "<td>".$check_timezoneoverride->show(intval($RCI->getprop('timezone_override')), array('value' => 1));
-			echo "Change Timezone</td></tr>\n";
+	  			$i = 0;
+	  			foreach ($default_hosts as $host) {
+		    		echo '<div id="defaulthostentry'.$i.'">' . $text_imaphost->show($host);
+			  	if ($i++ > 0)
+				    echo '<a href="#" onclick="removehostfield(this.parentNode);return false" class="removelink" title="Remove this entry">remove</a>';
+			    	echo '</div>';
+	  			}
+		*/
+		?>
 
-			$check_htmloverride = new html_checkbox(array('name' => '_prefer_html_override', 'id' => "cfghtmloverride"));
-			echo "<tr><td>".$check_htmloverride->show(intval($RCI->getprop('prefer_html_override')), array('value' => 1));
-			echo "Show HTML Messages</td>\n";
-
-			$check_imagesoverride = new html_checkbox(array('name' => '_show_images_override', 'id' => "cfgimagesoverride"));
-			echo "<td>".$check_imagesoverride->show(intval($RCI->getprop('show_images_override')), array('value' => 1));
-			echo "Display Inline Images</td>\n";
-			
-			$check_htmleditoroverride = new html_checkbox(array('name' => '_htmleditor_override', 'id' => "cfghtmleditoroverride"));
-			echo "<td>".$check_htmleditoroverride->show(intval($RCI->getprop('htmleditor_override')), array('value' => 1));
-			echo "Compose Messages In HTML Format</td></tr>\n";
-			
-			$check_draftsave = new html_checkbox(array('name' => '_draft_autosave_override', 'id' => "cfgdraftsave"));
-			echo "<tr><td>".$check_draftsave->show(intval($RCI->getprop('draft_autosave_override')), array('value' => 1));
-			echo "Draft Autosave Time</td>\n";
-
-			$check_previewoverride = new html_checkbox(array('name' => '_preview_pane_override', 'id' => "cfgpreviewoverride"));
-			echo "<td>".$check_previewoverride->show(intval($RCI->getprop('preview_pane_override')), array('value' => 1));
-			echo "Displaying the Preview Pane</td>\n";
-			
-			$check_logoutpurgeoverride = new html_checkbox(array('name' => '_logout_purge_override', 'id' => "cfglogoutpurgeoverride"));
-			echo "<td>".$check_logoutpurgeoverride->show(intval($RCI->getprop('logout_purge_override')), array('value' => 1));
-			echo "Trash Purge Upon Logout</td></tr>\n";
-			
-			$check_inlineimagesoverride = new html_checkbox(array('name' => '_inline_images_override', 'id' => "cfginlineimagesoverride"));
-			echo "<tr><td>".$check_inlineimagesoverride->show(intval($RCI->getprop('inline_images_override')), array('value' => 1));
-			echo "Displaying of Inline Imagesime</td>\n";
-
-			$check_expungeoverride = new html_checkbox(array('name' => '_logout_expunge_override', 'id' => "cfgexpungeoverride"));
-			echo "<td>".$check_expungeoverride->show(intval($RCI->getprop('logout_expunge_override')), array('value' => 1));
-			echo "Compact Inbox Upon Logout</td>\n";
-			
-			$check_foldersoverride = new html_checkbox(array('name' => '_check_all_folders_override', 'id' => "cfgfoldersoverride"));
-			echo "<td>".$check_foldersoverride->show(intval($RCI->getprop('check_all_folders_override')), array('value' => 1));
-			echo "Check All Folders For New Messages</td></tr>\n";
-			
-			$check_dateoverride = new html_checkbox(array('name' => '_prettydate_override', 'id' => "cfgdateoverride"));
-			echo "<tr><td>".$check_dateoverride->show(intval($RCI->getprop('prettydate_override')), array('value' => 1));
-			echo "Date Display</td>\n";
-
-			$check_dstoverride = new html_checkbox(array('name' => '_dst_active_override', 'id' => "cfgdstoverride"));
-			echo "<td>".$check_dstoverride->show(intval($RCI->getprop('dst_active_override')), array('value' => 1));
-			echo "Daylight Savings Time</td>\n";
-			
-			echo "</table></tr>";
+		<?php
+			$dont_overrides = $RCI->get_overrides();
+			if (empty($dont_overrides))
+	  			$dont_overrides = array('skin', 'pagesize', 'timezone', 'prefer_html', 'show_images', 'htmleditor', 'draft_autosave', 'preview_pane', 'logout_purge', 'inline_images', 'logout_expunge', 'check_all_folders', 'prettydate', 'dst_active');
+	  			
+	  			foreach ($dont_overrides as $override) {
+					$check_override = new html_checkbox(array('name' => '_dont_override[]', 'id' => 'cfgdontoverride'));
+					//echo $check_override.$override->show(intval($RCI->getprop('dont_override['.$override']')), array('value' => 1));
+					echo $check_override->show(intval(array('value' => $override)));
+					echo $override.'<br />';
+			}		
 		?>
 	</dd>
 		
@@ -515,8 +484,8 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<div class="hint">Description: This will log all successful logins by users.</div>
 	<dd>
 		<?php
-			$check_logoptions = new html_checkbox(array('name' => '_log_options', 'id' => "cfglogoptions"));
-			echo "<td>".$check_logoptions->show(intval($RCI->getprop('log_options')), array('value' => 1));
+			$check_loglogins = new html_checkbox(array('name' => '_log_logins', 'id' => "cfgloglogins"));
+			echo "<td>".$check_loglogins->show(intval($RCI->getprop('log_logins')), array('value' => 1));
 		?>Log Successful Logins
 	</dd>
 	<dt class="propname">Services Debugging</dt>
@@ -955,7 +924,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 			include ('../config/main.inc.php.dist'); 
 			$folder_list = array('INBOX', 'Drafts', 'Sent', 'Junk', 'Archive', 'Trash');
 			foreach ($folder_list as $folder){ 
-				$checked = "array('value' => 0"; 
+				$checked = "array('value' => 1"; 
 				if (in_array($folder, $rcmail_config['list_cols'])){ 
 					$checked = ""; 
 				} 
@@ -1111,7 +1080,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 
 
 
-
+<!--
 <div class="spacer"></div>
 
 <fieldset>
@@ -1121,19 +1090,19 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<div class="hint">Description: You can choose two types of address books currently; SQL and/or LDAP.</div>
 	<dd>
 		<?php
-			$select_address_book_type = new html_select(array('name' => '_address_book_type', 'id' => "cfgaddress_book_type"));
-			$select_address_book_type->add('SQL', 'sql');
-			$select_address_book_type->add('LDAP', 'ldap');
-			$select_address_book_type->add('SQL & LDAP', 'isql,ldap');
-			echo $select_address_book_type->show(intval($RCI->getprop('address_book_type')));
+			//$select_address_book_type = new html_select(array('name' => '_address_book_type', 'id' => "cfgaddress_book_type"));
+			//$select_address_book_type->add('SQL', 'sql');
+			//$select_address_book_type->add('LDAP', 'ldap');
+			//$select_address_book_type->add('SQL & LDAP', 'isql,ldap');
+			//echo $select_address_book_type->show(intval($RCI->getprop('address_book_type')));
 		?>
 	</dd>
 	<dt class="propname">Name of LDAP Address Books</dt>
 	<div class="hint">Description: What should this address book be called?</div>
 	<dd>
 		<?php
-			$input_ldap_name = new html_inputfield(array('name' => '_ldap_name', 'size' => 6, 'id' => "cfgldap_name"));
-			echo $input_ldap_name->show($RCI->getprop('ldap_name'));
+			//$input_ldap_name = new html_inputfield(array('name' => '_ldap_name', 'size' => 6, 'id' => "cfgldap_name"));
+			//echo $input_ldap_name->show($RCI->getprop('ldap_name'));
 		?> Example: My Contacts<br />
 	</dd>
 	<dt class="propname">LDAP Server</dt>
@@ -1155,15 +1124,17 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		//	    	echo '</div>';
 	  	//		}
 		?>
+<!--
 		</div>
+<!--		
 		<div><a href="javascript:addhostfield()" class="addlink" title="Add another field">add</a></div>
 	</dd>
 	<dt class="propname">LDAP Port</dt>
 	<div class="hint">Description: LDAP port to connect on.</div>
 	<dd>
 		<?php
-			$input_ldap_port = new html_inputfield(array('name' => '_ldap_port', 'size' => 6, 'id' => "cfgldap_port"));
-			echo $input_ldap_port->show($RCI->getprop('ldap_port'));
+			//$input_ldap_port = new html_inputfield(array('name' => '_ldap_port', 'size' => 6, 'id' => "cfgldap_port"));
+			//echo $input_ldap_port->show($RCI->getprop('ldap_port'));
 		?> 
 	</dd>
 	<dt class="propname">LDAP Version</dt>
@@ -1282,10 +1253,13 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<dd>
 		<input name="ldap_filter" size="50" id="ldap_filter" value="" type="text" /> Example: accountStatus=active
 	</dd>	
+	-->
 	<!-- These entries are not part of the config but are required for the main.inc.php -->
-	<input name="autocomplete_addressbooks" size="5" id="autocomplete_addressbooks" value="sql, ldap" type="hidden" />
+	<input name="autocomplete_addressbooks" size="5" id="autocomplete_addressbooks" value="sql" type="hidden" />
+<!--
 </fieldset>
 </dl>
+-->
 <?php
 
 echo '<p><div id="button"><input type="submit" name="submit" value="' . ($RCI->configured ? 'UPDATE' : 'CREATE') . ' CONFIG" ' . ($RCI->failures ? 'disabled' : '') . ' /></div></p>';

@@ -61,7 +61,7 @@ $source_urls = array(
     'Mail_mime' => 'http://pear.php.net/package/Mail_mime',
 );
 
-echo '<input type="hidden" name="_step" value="' . ($RCI->configured ? 3 : 2) . '" />';
+echo '<input type="hidden" name="_step" value="' . ($RCI->configured ? 4 : 2) . '" />';
 ?>
 
 <h3>Checking PHP version</h3>

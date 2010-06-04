@@ -52,7 +52,6 @@ if ($RCI->configured && empty($_REQUEST['_step'])) {
   header("Location: ./?_step=1");
   exit;
 }
-
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -70,14 +69,22 @@ if ($RCI->configured && empty($_REQUEST['_step'])) {
 
   <div id="logo"><img src="images/logo.png"/></div>
 <center>
+	<?php
+		$installer_enabled =  $RCI->getprop('enable_installer');
+		if ($installer_enabled == '0'){
+			echo '<h1 class="center">DENIED!!!</h1>';
+			echo 'The installer is disabled! To enable, change the variable "enable_installer" to "true" in your main.inc.php';
+			exit;
+	}
+	?>
 	<ol id="progress">
 	<?php
-  
-	  foreach (array('Check Environment', 'Create Configuration', 'Generate Configuration', 'Test Configuration') as $i => $item) {
-   	  	$j = $i + 1;
-  	  	$link = ($RCI->step >= $j || $RCI->configured) ? '<a href="./index.php?_step='.$j.'">' . Q($item) . '</a>' : Q($item);
-    	printf('<li class="step%d%s">%s</li>', $j+1, $RCI->step > $j ? ' passed' : ($RCI->step == $j ? ' current' : ''), $link);
-  	  }
+	  
+		foreach (array('Check Environment', 'Create Configuration', 'Generate Configuration', 'Test Configuration') as $i => $item) {
+   	  		$j = $i + 1;
+  	  		$link = ($RCI->step >= $j || $RCI->configured) ? '<a href="./index.php?_step='.$j.'">' . Q($item) . '</a>' : Q($item);
+    		printf('<li class="step%d%s">%s</li>', $j+1, $RCI->step > $j ? ' passed' : ($RCI->step == $j ? ' current' : ''), $link);
+  	  	}
 	?>
 	</ol>
 </center>

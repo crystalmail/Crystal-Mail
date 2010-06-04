@@ -370,7 +370,7 @@ class rcube_ldap extends rcube_addressbook
   {
     $contacts = array();
 
-    $result = $this->search(array('email','name'), $search));
+    $result = $this->search(array('email','name'), $search);
     while ($sql_arr = $result->iterate()) {
       $contacts[] = format_email_recipient($sql_arr['email'], $sql_arr['name']);
 

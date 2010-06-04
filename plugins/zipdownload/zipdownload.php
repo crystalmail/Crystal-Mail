@@ -5,9 +5,8 @@
  *
  * Plugin to allow the download of all message attachments in one zip file
  *
- * @version 0.1
+ * @version 1.1
  * @author Philip Weir
- * @url http://roundcube.net/plugins/zipdownload
  */
 class zipdownload extends rcube_plugin
 {
@@ -57,18 +56,8 @@ class zipdownload extends rcube_plugin
 
 		foreach ($message->attachments as $part) {
 			$pid = $part->mime_id;
-
- 			// TNEF encoded attachment part
- 			if (preg_match('/^winmail\.([0-9.]+)\.([0-9]+)$/', $part->mime_id, $nt)) {
- 				$pid = $nt[1]; $i = $nt[2];
-				if ($tpart = $message->mime_parts[$pid]) {
-					$tnef_arr = $imap->tnef_decode($tpart, $message->uid);
-					if (is_a($tnef_arr[$i], 'rcube_message_part'))
-						$message->mime_parts[$pid] = $tnef_arr[$i];
-				}
- 			}
-
 			$part = $message->mime_parts[$pid];
+
 			if ($part->body)
 				$orig_message_raw = $part->body;
 			else

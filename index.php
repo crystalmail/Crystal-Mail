@@ -172,8 +172,8 @@ if (empty($RCMAIL->user->ID)) {
   if ($RCMAIL->config->get('enable_installer') && is_readable('./installer/index.php')) {
     $OUTPUT->add_footer(html::div(array('style' => "background:#ef9398; border:2px solid #dc5757; padding:0.5em; margin:2em auto; width:50em"),
       html::tag('h2', array('style' => "margin-top:0.2em"), "Installer script is still accessible") .
-      html::p(null, "The install script of your RoundCube installation is still stored in its default location!") .
-      html::p(null, "Please <b>remove</b> the whole <tt>installer</tt> folder from the RoundCube directory because .
+      html::p(null, "The install script of your Crystal Webmail installation is still accessible!") .
+      html::p(null, "Please <b>disable</b> <tt>installer</tt> in the main configuration file or via the admin panel because.
         these files may expose sensitive configuration data like server passwords and encryption keys
         to the public. Make sure you cannot access the <a href=\"./installer/\">installer script</a> from your browser.")
       )

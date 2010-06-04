@@ -50,4 +50,3 @@ function raise_error($p)
   $rci = crystal_install::get_instance();
   $rci->raise_error($p);
 }
-
