@@ -1,7 +1,7 @@
 <title>Crystal Mail Installer :: Welcome</title>
 </center>
 
-<div id="rounded"><h1><center>Welcome to the Crystal Webmail Installer</h1>
+<div id="rounded" class="rounded"><h1><center>Welcome to the Crystal Webmail Installer</h1>
 <br>
 <center>
 <p>You are just moments away from installing the best webmail client ever!<br />

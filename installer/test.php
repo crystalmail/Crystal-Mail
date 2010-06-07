@@ -15,7 +15,7 @@ if (!$RCI->configured ) {
 	fclose($handle_db);
 }
 ?>
-<div id="rounded">
+<div id="rounded" class="rounded">
 <h3>Check config files</h3>
 <?php
 
@@ -99,7 +99,7 @@ if ($RCI->configured && ($messages = $RCI->check_config())) {
 ?>
 
 <h3>Check if directories are writable</h3>
-<p>RoundCube may need to write/save files into these directories</p>
+<p>Crystal Mail may need to write/save files into these directories</p>
 <?php
 
 if ($RCI->configured) {

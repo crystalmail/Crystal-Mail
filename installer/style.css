@@ -1,7 +1,7 @@
 form{clear:both;}
 body {
 font-family:Arial, Helvetica, sans-serif;
-background-color: #3D9AE3;
+background-color: #FFF;
 }
 #container {
 }
@@ -23,12 +23,6 @@ margin-left: 100px;
 padding-bottom: 25px;
 }
 #rounded {
-border-style:solid;
-border-width:1px;
-border-color: #A6C9E2;
--webkit-border-radius: 10px;
--moz-border-radius: 10px;
-border-radius: 10px;
 padding-top: 30px;
 padding-bottom: 30px;
 padding-left: 20px;
@@ -37,6 +31,15 @@ margin-bottom: 100px;
 margin-left: 100px;
 margin-right: 100px;
 }
+.rounded {
+border-style:solid;
+border-width:1px;
+border-color: #A6C9E2;
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+}
+
 #button {
 background-color: #FFFFE0;
 border-style:solid;
@@ -48,6 +51,36 @@ float: right;
 -moz-border-radius: 3px;
 border-radius: 3px;
 }
+.hint{
+background-color: #FFFFE0;
+border-style:solid;
+border-width:1px;
+border-color: #EEEEE0;
+padding: 3px;
+padding-left: 40px;
+padding-bottom: 5px;
+width: 800px;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+}
+.warning{
+background-color:#ff585a;
+text-align:center;
+border:1px solid #f0393c;
+margin-bottom:12px;
+padding:4px;
+-webkit-border-radius: 3px;
+-moz-border-radius: 3px;
+border-radius: 3px;
+}
+.description{
+padding: 3px;
+padding-left: 40px;
+padding-bottom: 5px;
+width: 900px;
+}
+
 .success {
   color: #006400;
   font-weight: bold !important;
@@ -58,14 +91,17 @@ border-radius: 3px;
   font-weight: bold !important;
 }
 #progress {
-  margin-bottom: 2em;
   border: 1px solid #aaa;
   background-color: #f9f9f9;
-  width: 1000px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
   text-align: center;
+  margin-bottom: 100px;
+  margin-left: 100px;
+  margin-right: 100px;
+  font-size: 15px;
+  text-align:center;
 }
 
 #progress:after {
@@ -112,10 +148,6 @@ font-weight: bold;
     padding-top: 5px;
 }
 
-.hint{
-    padding-left: 40px;
-    padding-bottom: 5px;
-}
 
 dd {
     padding-bottom: 15px;
@@ -125,7 +157,7 @@ dd {
 	height: 55px;
 }
 
-legend{
+.legend{
 	font-weight: bold;
 	font-size: 200%;
 }

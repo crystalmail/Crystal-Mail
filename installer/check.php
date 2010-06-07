@@ -1,4 +1,4 @@
-<div id="rounded">
+<div id="rounded" class="rounded">
 <form action="index.php" method="get">
 <?php
 
@@ -208,11 +208,13 @@ foreach ($optional_checks as $var => $val) {
 if ($RCI->failures) {
   echo '<p class="warning">Sorry but your webserver does not meet the requirements for Crystal Webmail!<br />
             Please install the missing modules or fix the php.ini settings according to the above check results.<br />
-            Hint: only checks showing <span class="fail">NOT OK</span> need to be fixed.</p>';
+            Hint: only checks showing <span class="fail">NOT AVAILABLE</span> need to be fixed.</p>';
 }
 echo '<p><br /><div id="button"><input type="submit" value="Next" ' . ($RCI->failures ? 'disabled' : '') . ' /></div></p>';
 
 ?>
 
 </form>
+<br>
 </div>
+

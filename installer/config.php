@@ -25,24 +25,24 @@ $_SESSION['allowinstaller'] = true;
 
 if (!empty($_POST['submit'])) {
 	$textbox = new html_textarea(array('rows' => 20, 'cols' => 100, 'class' => "configfile"));
-	echo '<h2><p class="center">Please review the two configuration files below. If all the setting are correct, click the INSTALL button.</p></h2>';
+	echo '<div class="rounded" id="rounded"> <h2><p class="center">Please review the two configuration files below. If all the setting are correct, click the INSTALL button.</p></h2>';
 	
-	echo '<div id="rounded" class="center"><fieldset><legend>main.inc.php';	
-	echo '(<a href="index.php?_getfile=main">download</a>)</legend>';
+	echo '<div><fieldset class="rounded"><p><legend>main.inc.php';	
+	echo '(<a href="index.php?_getfile=main">download</a>)</p></legend>';
 	echo $textbox->show(($_SESSION['main.inc.php'] = $RCI->create_config('main')));
 	echo '</fieldset>';	
 	
-	echo '<fieldset><legend>db.inc.php';	
+	echo '<fieldset class="rounded"><legend>db.inc.php';	
 	echo '(<a href="index.php?_getfile=db">download</a>)</legend>';
 	echo $textbox->show($_SESSION['db.inc.php'] = $RCI->create_config('db'));
 	
-	echo '<p><input id="button" type="button" onclick="location.href=\'./index.php?_step=3\'" value="INSTALL" /></p>';
+	echo '<p id="button"><input type="button" onclick="location.href=\'./index.php?_step=3\'" value="INSTALL" /></p>';
 	
 	echo '<p class="center">Of course there are more options to configure.
 	Have a look at the config files or visit <a href="http://trac.crystalwebmail.net/wiki/Howto_Config">Howto_Config</a> to find out.</p>';
 	echo '</fieldset></div>';	
 	
-	echo "\n<hr style='margin-bottom:1.6em; margin-top:-4em;' />\n";
+	echo "\n</div>\n";
 }
 
 // Function to create a new random token
@@ -71,7 +71,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 ?>
 <form action="index.php" method="post">
 <input type="hidden" name="_step" value="2" />
-<div id="rounded">
+<div class="rounded" id="rounded">
 	<br />
 	<div id="impatient">
 		<p>FOR THE IMPATIENT: It is possible to just enter the "Connection & Server" information and run Crystal Webmail without any other configuration.</p>
@@ -83,13 +83,13 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 <form name="form" method="post" action="?action=install">
 
 
-<fieldset>
-<legend>Connection & Server Configuration</legend>
-<p class="propname">NOTE: Additional configuration options are available through the main.inc.php in the Crystal Mail config directory. This template is only used to provide an initial configuration to get Crystal mail installed and running.</p><br />
+<fieldset class="rounded">
+<legend class="legend">Connection & Server Configuration</legend>
+<p class="propname"><strong>Note:</strong> Additional configuration options are available through the main.inc.php in the Crystal Mail config directory. This template is only used to provide an initial configuration to get Crystal mail installed and running.</p><br />
 
 <dl class="configblock">
 	<dt class="propname">Database Configuration</dt>
-	<div class="hint">Description: Enter the mail host to be used for login. If left blank, a text box will be provided during login so the user can enter their host.</div>
+	<div class="description"><strong>Description</strong>: Enter the mail host to be used for login. If left blank, a text box will be provided during login so the user can enter their host.</div>
 	<dd>
 		<?php
 			require_once 'MDB2.php';
@@ -112,7 +112,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 			$dsnw = MDB2::parseDSN($RCI->getprop('db_dsnw'));
 
 			echo $select_dbtype->show($RCI->is_post ? $_POST['_dbtype'] : $dsnw['phptype']);
-			echo '<label for="cfgdbtype">Database type Note: Only databases that were detected will be displayed.</label><br />';
+			echo '<label for="cfgdbtype">Database type <strong>Note:</strong> Only databases that were detected will be displayed.</label><br />';
 			echo $input_dbhost->show($RCI->is_post ? $_POST['_dbhost'] : $dsnw['hostspec']);
 			echo '<label for="cfgdbhost">Database server (omit for sqlite)</label><br />';
 			echo $input_dbname->show($RCI->is_post ? $_POST['_dbname'] : $dsnw['database']);
@@ -124,9 +124,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Mail Host</dt>
-	<div class="hint">Description: Enter the mail host to be used for login. If left blank, a text box will be provided during login so the user can enter their host.</div>
-	<div class="hint">If the server utilizes encryption, add SSL or TLS to the beginning of the host. i.e. ssl://mail.excample.com</div>
-	<div class="hint">Note: Multiple hosts can be added through the admin panel and a dropdown box will be created upon login to choose from the host list.</div>
+	<div class="description"><strong>Description</strong>: Enter the mail host to be used for login. If left blank, a text box will be provided during login so the user can enter their host.</div>
 	<dd>
 		<div id="defaulthostlist">
 		<?php
@@ -147,8 +145,9 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		</div>
 		<div><a href="javascript:addhostfield()" class="addlink" title="Add another field">add</a></div>
 	</dd>
+		<div class="hint"><strong>Note:</strong> If the server utilizes encryption, add SSL or TLS to the beginning of the host. i.e. ssl://mail.excample.com. Multiple hosts can be added through the admin panel and a dropdown box will be created upon login to choose from the host list.</div>
 	<dt class="propname">Mail Host Port</dt>
-	<div class="hint">Description: Enter the mail host port number.</div>
+	<div class="description"><strong>Description</strong>: Enter the mail host port number.</div>
 	<dd>
 		<?php
 			$text_imapport = new html_inputfield(array('name' => '_default_port', 'size' => 6, 'id' => "cfgimapport"));
@@ -157,7 +156,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		Default IMAP port is 143
 	</dd>
 	<dt class="propname">IMAP Auth Type</dt>
-	<div class="hint">Description: If your IMAP server requires authentication, select here..</div>
+	<div class="description"><strong>Description</strong>: If your IMAP server requires authentication, select here..</div>
 	<dd>
 		<?php
 	   		$select_imapauth = new html_select(array('name' => '_imap_auth_type', 'id' => "cfgimapauth"));
@@ -165,26 +164,29 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	   		echo $select_imapauth->show(intval($RCI->getprop('imap_auth_type')));
 		?>
 	</dd>
+
 	<dt class="propname">SMTP Host</dt>
-	<div class="hint">Description: Enter the SMTP host to be used for mailing. If left blank, the PHP mail() function will be used.</div>
-	<div class="hint">Note: Use %h variable as a replacement for the user's IMAP hostname.</div>
+	<div class="description"><strong>Description</strong>: Enter the SMTP host to be used for mailing. If left blank, the PHP mail() function will be used.</div>
+	
 	<dd>
 		<?php
 			$text_smtphost = new html_inputfield(array('name' => '_smtp_server', 'size' => 30, 'id' => "cfgsmtphost"));
 			echo $text_smtphost->show($RCI->getprop('smtp_server'));
 		?>
 	</dd>
+	<div class="hint"><strong>Note:</strong> Use %h variable as a replacement for the user's IMAP hostname.</div>
 	<dt class="propname">SMTP Host Port</dt>
-	<div class="hint">Description: Enter the SMTP host port number.</div>
-	<div class="hint">Note: Default port(s) are 25; 465 for SSL; 587 for submission.</div>
+	<div class="description"><strong>Description</strong>: Enter the SMTP host port number.</div>
+	
 	<dd>
 		<?php
 			$text_smtpport = new html_inputfield(array('name' => '_smtp_port', 'size' => 6, 'id' => "cfgsmtpport"));
 			echo $text_smtpport->show($RCI->getprop('smtp_port'));
 		?>
 	</dd>
+	<div class="hint"><strong>Note:</strong> Default port(s) are 25; 465 for SSL; 587 for submission.</div>
 	<dt class="propname">SMTP User and Password</dt>
-	<div class="hint">Description: If your SMTP server requires authentication, enter it here.</div>
+	<div class="description"><strong>Description</strong>: If your SMTP server requires authentication, enter it here.</div>
 	<dd>
 		<?php
 			$check_smtpuser = new html_checkbox(array('name' => '_smtp_user_u', 'id' => "cfgsmtpuseru"));
@@ -201,7 +203,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">SMTP Auth Type</dt>
-	<div class="hint">Description: If your SMTP uses authentication, select it here.</div>
+	<div class="description"><strong>Description</strong>: If your SMTP uses authentication, select it here.</div>
 	<dd>
 		<?php
 	   		$select_smtpauth = new html_select(array('name' => '_smtp_auth_type', 'id' => "cfgsmtpauth"));
@@ -210,16 +212,17 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">SMTP HELO Host</dt>
-	<div class="hint">Description: If your SMTP server requires a host response for HELO or EHLO, enter it here.</div>
-	<div class="hint">Note: If you leave this blank, the either the variable for server_name or localhost will be passed.</div>
+	<div class="description"><strong>Description</strong>: If your SMTP server requires a host response for HELO or EHLO, enter it here.</div>
+	
 	<dd>
 		<?php
 			$text_helohost = new html_inputfield(array('name' => '_smtp_helo_host', 'size' => 30, 'id' => "cfghelohost"));
 			echo $text_helohost->show($RCI->getprop('smtp_helo_host'));
 		?>
 	</dd>
+	<div class="hint"><strong>Note:</strong> If you leave this blank, the either the variable for server_name or localhost will be passed.</div>
 	<dt class="propname">Mail Domain</dt>
-	<div class="hint">Description: This will be used to form email addresses of new users.</div>
+	<div class="description"><strong>Description</strong>: This will be used to form email addresses of new users.</div>
 	<dd>
 		<?php
 			$text_maildomain = new html_inputfield(array('name' => '_mail_domain', 'size' => 30, 'id' => "cfgmaildomain"));
@@ -227,7 +230,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Username Domain</dt>
-	<div class="hint">Description: If your server requires username+domain to authenticate, enter the domain here.</div>
+	<div class="description"><strong>Description</strong>: If your server requires username+domain to authenticate, enter the domain here.</div>
 	<dd>
 		<?php
 			$text_userdomain = new html_inputfield(array('name' => '_username_domain', 'size' => 30, 'id' => "cfguserdomain"));
@@ -235,7 +238,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Virtual Users</dt>
-	<div class="hint">Description: Path to virtual user table to resolve user names and email addresses.</div>
+	<div class="description"><strong>Description</strong>: Path to virtual user table to resolve user names and email addresses.</div>
 	<dd>
 		<?php
 			$text_virtfile = new html_inputfield(array('name' => '_virtuser_file', 'size' => 30, 'id' => "cfgvirtfile"));
@@ -243,32 +246,28 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Virtual Users Query</dt>
-	<div class="hint">Description: Query to resolve virtual users user names and email addresses.</div>
-	<div class="hint">Note: Use %u to replace the current username for login.</div>
-	<div class="hint">Note 2: The query expects the first column to be email address and the second column to be an optional identity name.</div>
+	<div class="description"><strong>Description</strong>: Query to resolve virtual users user names and email addresses.</div>
 	<dd>
 		<?php
 			$text_virtquery = new html_inputfield(array('name' => '_virtuser_query', 'size' => 30, 'id' => "cfgvirtquery"));
 			echo $text_virtquery->show($RCI->getprop('virtuser_query'));
 		?>
 	</dd>
-		
+		<div class="hint"><strong>Note:</strong> Use %u to replace the current username for login. The query expects the first column to be email address and the second column to be an optional identity name.</div>
 	<!-- These entries are not part of the installer but are required for the main.inc.php -->
 	<?php
 		$text_imaproot = new html_inputfield(array('name' => '_imap_root', 'size' => 30, 'id' => "cfgimaproot"));
 		$text_imapdelimiter = new html_inputfield(array('name' => '_imap_delimiter', 'size' => 30, 'id' => "cfgimapdelimiter"));
 	?>
+</dl>
 </fieldset>
-
-
 <div class="spacer"></div>
 
-<fieldset>
-<legend>Administrative & Security Configuration</legend>
+<fieldset class="rounded">
+<legend class="legend">Administrative & Security Configuration</legend>
 <dl class="configblock">
 	<dt class="propname">Admin Panel</dt>
-	<div class="hint">Description: This will enable the Administrative Panel.</div>
-	<div class="hint">Note: For some people this might pose a security risk.</div>
+	<div class="description"><strong>Description</strong>: This will enable the Administrative Panel.</div>
 	<dd>
 		<?php
 			$check_enableadmin = new html_checkbox(array('name' => '_enable_admin', 'id' => "cfgenableadmin"));
@@ -284,17 +283,18 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 				echo $text_adminpassword->show($RCI->getprop('admin_password'));
 		?>		
 	</dd>
+	<div class="hint"><strong>Note:</strong> For some people this might pose a security risk.</div>
 	<dt class="propname">Crystal Webmail Installer</dt>
-	<div class="hint">Description: This option allows you to keep the installer available after you complete this installation.</div>
-	<div class="hint">Note: THIS IS NOT RECOMMENDED AND POSES A MAJOR SECURITY RISK!!!</div>
+	<div class="description"><strong>Description</strong>: This option allows you to keep the installer available after you complete this installation.</div>
 	<dd>
 		<?php
 			$check_installer = new html_checkbox(array('name' => '_enable_installer', 'id' => "cfgenableinstaller"));
 			echo $check_installer->show(intval($RCI->getprop('enable_installer')), array('value' => 0));
 		?>Leave Crystal Installer Enabled (Not Recommended)
 	</dd>
+	<div class="hint"><strong>Note:</strong> THIS IS NOT RECOMMENDED AND POSES A MAJOR SECURITY RISK!!!</div>
 	<dt class="propname">Client IP Check</dt>
-	<div class="hint">Description: This will check the client IP in the session authorization.</div>
+	<div class="description"><strong>Description</strong>: This will check the client IP in the session authorization.</div>
 	<dd>
 		<?php
 			$check_ipcheck = new html_checkbox(array('name' => '_ip_check', 'id' => "cfgipcheck"));
@@ -302,17 +302,17 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>Check for Client IP Authorization
 	</dd>
 	<dt class="propname">Double Authorization</dt>
-	<div class="hint">Description: This will use an additional changing cookie to authorize users.</div>
-	<div class="hint">NOTE: There have been problems reported with this option when enabled.</div>
+	<div class="description"><strong>Description</strong>: This will use an additional changing cookie to authorize users.</div>
 	<dd>
 		<?php
 			$check_doubleauth = new html_checkbox(array('name' => '_double_auth', 'id' => "cfgdoubleauth"));
 			echo $check_doubleauth->show(intval($RCI->getprop('double_auth')), array('value' => 1));
 		?>Enable Double Authorization
 	</dd>
+	<div class="hint"><strong>Note:</strong> There have been problems reported with this option when enabled.</div>
 	<dt class="propname">Outgoing Email Message</dt>
-	<div class="hint">Description: This will is a message that will be added to the bottom of all outgoing messages.</div>
-	<div class="hint">NOTE: The message will be stored in 'footer.txt' in the config directory.</div>
+	<div class="description"><strong>Description</strong>: This will is a message that will be added to the bottom of all outgoing messages.</div>
+	
 	<dd>
 		<?php
 			$check_footer = new html_textarea(array('name' => '_message_footer', 'id' => "cfgfooter", 'cols' => "65", 'rows' => "10"));
@@ -320,17 +320,18 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?> 
 	
 	</dd>
+	<div class="hint"><strong>Note:</strong> The message will be stored in 'footer.txt' in the config directory.</div>
 	<dt class="propname">Add IP and Hostname to Header?</dt>
-	<div class="hint">Description: This will add the users IP and hostname to the header of outgoing messages.</div>
-	<div class="hint">Note: For some people this might pose a security risk.</div>
+	<div class="description"><strong>Description</strong>: This will add the users IP and hostname to the header of outgoing messages.</div>
 	<dd>
 		<?php
 			$check_receivedheader = new html_checkbox(array('name' => '_http_received_header', 'id' => "cfgreceivedheader"));
 			echo $check_receivedheader->show(intval($RCI->getprop('http_received_header')), array('value' => 1));
 		?>Enable Additional Header Information
 	</dd>
+	<div class="hint"><strong>Note:</strong> For some people this might pose a security risk.</div>
 	<dt class="propname">Encrypt IP and Hostname in Header?</dt>
-	<div class="hint">Description: This will encrypt the users IP and hostname in the header of outgoing messages.</div>
+	<div class="description"><strong>Description</strong>: This will encrypt the users IP and hostname in the header of outgoing messages.</div>
 	<dd>
 		<?php
 			$check_headerencrypt = new html_checkbox(array('name' => '_http_received_header_encrypt', 'id' => "cfgheaderencrypt"));
@@ -338,16 +339,16 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>Enable Header Encryption
 	</dd>
 	<dt class="propname">Load Host Specific Configuration?</dt>
-	<div class="hint">Description: This will load host specific configuration.</div>
-	<div class="hint">Note: See <a href="http://www.crystalwebmail.com/documentation" target="_blank">http://www.crystalwebmail.com/documentation</a> for more details..</div>
+	<div class="description"><strong>Description</strong>: This will load host specific configuration.</div>
 	<dd>
 		<?php
 			$check_hostspecific = new html_checkbox(array('name' => '_include_host_config', 'id' => "cfghostspecific"));
 			echo $check_hostspecific->show(intval($RCI->getprop('include_host_config')), array('value' => 1));
 		?>Enable Host Specific Configuration
 	</dd>
+	<div class="hint"><strong>Note:</strong> See <a href="http://www.crystalwebmail.com/documentation" target="_blank">http://www.crystalwebmail.com/documentation</a> for more details..</div>
 	<dt class="propname">Enable DNS checking for E-Mail Address Validation?</dt>
-	<div class="hint">Description: This will perform a DNS lookup to validate the senders e-mail address..</div>
+	<div class="description"><strong>Description</strong>: This will perform a DNS lookup to validate the senders e-mail address..</div>
 	<dd>
 		<?php
 			$check_dnscheck = new html_checkbox(array('name' => '_email_dns_check', 'id' => "cfgdnscheck"));
@@ -355,7 +356,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>Enable DNS Checking For Email Validation
 	</dd>
 	<dt class="propname">User Over-Rides</dt>
-	<div class="hint">Description: When the options below are checked, users will be unable to change these options.</div>
+	<div class="description"><strong>Description</strong>: When the options below are checked, users will be unable to change these options.</div>
 	<dd>
 		<?php
 		/*
@@ -393,16 +394,16 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<input name="des_key" size="30" id="des_key" value="<?php echo(createToken('', 1, 24)); ?>" type="hidden" />
 	<input name="generic_message_footer" size="30" id="generic_message_footer" value="config/footer.txt" type="hidden" />
 	<input name="mail_header_delimiter" size="30" id="mail_header_delimiter" value="null" type="hidden" />
+</dl>
 </fieldset>
 
 <div class="spacer"></div>
 
-<fieldset>
-<legend>Debugging & Logging Configuration</legend>
+<fieldset class="rounded">
+<legend class="legend">Debugging & Logging Configuration</legend>
 <dl class="configblock">
 	<dt class="propname">Debug Level</dt>
-	<div class="hint">Description: What level of logging should be performed.</div>
-	<div class="hint">Note: Anything other than one could expose sensitive information which be be a security risk.</div>
+	<div class="description"><strong>Description</strong>: What level of logging should be performed.</div>
 	<dd>
 		<?php
 			$value = $RCI->getprop('debug_level');
@@ -417,8 +418,9 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 			echo '<label for="cfgdebug8">Verbose display (enables debug console)</label><br />';
 		?>
 	</dd>
+	<div class="hint"><strong>Note:</strong> Anything other than one could expose sensitive information which be be a security risk.</div>
 	<dt class="propname">Log Driver</dt>
-	<div class="hint">Description: What driver should be used for logging.</div>
+	<div class="description"><strong>Description</strong>: What driver should be used for logging.</div>
 	<dd>
 		<?php
 			$select_log_driver = new html_select(array('name' => '_log_driver', 'id' => "cfglogdriver"));
@@ -427,16 +429,17 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Log Date Format</dt>
-	<div class="hint">Description: What format should the time be in for the log files.</div>
-	<div class="hint">Note: Check out <a href="http://php.net/manual/en/function.date.php" target="_blank">http://php.net/manual/en/function.date.php</a> for the various date formats.</div>
+	<div class="description"><strong>Description</strong>: What format should the time be in for the log files.</div>
 	<dd>
-		<?php
+	<?php
 			$input_logdateformat = new html_inputfield(array('name' => '_log_date_format', 'size' => 30, 'id' => "cfglogdateformat"));
 			echo $input_logdateformat->show($RCI->getprop('log_date_format'));
 		?> Example: [25-May-2010 17:34:14 -0400] 
 	</dd>
+	<div class="hint"><strong>Note:</strong> Check out <a href="http://php.net/manual/en/function.date.php" target="_blank">http://php.net/manual/en/function.date.php</a> for the various date formats.</div>
+	
 	<dt class="propname">Syslog ID</dt>
-	<div class="hint">Description: This is the name that will be used to identify log entries from Crystal Webmail.</div>
+	<div class="description"><strong>Description</strong>: This is the name that will be used to identify log entries from Crystal Webmail.</div>
 	<dd>
 		<?php
 			$input_syslogid = new html_inputfield(array('name' => '_syslog_id', 'size' => 30, 'id' => "cfgsyslogid"));
@@ -444,8 +447,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Syslog Facility</dt>
-	<div class="hint">Description: when using the syslog driver, what facility should ebe used?</div>
-	<div class="hint">Note: Check out <a href="http://php.net/manual/en/function.openlog.php" target="_blank">http://php.net/manual/en/function.openlog.php</a> for the possible values.</div>
+	<div class="description"><strong>Description</strong>: when using the syslog driver, what facility should ebe used?</div>
 	<dd>
 		<?php
 			$input_syslogfacility = new html_select(array('name' => '_syslog_facility', 'id' => "cfgsyslogfacility"));
@@ -462,26 +464,29 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 			echo $input_syslogfacility->show($RCI->getprop('syslog_facility'), LOG_USER);
 		?>
 	</dd>
+	<div class="hint"><strong>Note:</strong> Check out <a href="http://php.net/manual/en/function.openlog.php" target="_blank">http://php.net/manual/en/function.openlog.php</a> for the possible values.</div>
 	<dt class="propname">Log Folder</dt>
-	<div class="hint">Description: This is the folder where log files will be stored when using the 'file' log driver.</div>
-	<div class="hint">Note: This folder must have write access for the web server user. i.e. apache/www</div>
+	<div class="description"><strong>Description</strong>: This is the folder where log files will be stored when using the 'file' log driver.</div>
+	
 	<dd>
 		<?php
 			$input_logdir = new html_inputfield(array('name' => '_log_dir', 'size' => 30, 'id' => "cfglogdir"));
 			echo $input_logdir->show($RCI->getprop('log_dir'));
 		?>
 	</dd>
+	<div class="hint"><strong>Note:</strong> This folder must have write access for the web server user. i.e. apache/www</div>
 	<dt class="propname">Temporary Folder</dt>
-	<div class="hint">Description: This is the folder where temporary files will be stored like attachments</div>
-	<div class="hint">Note: This folder must have write access for the web server user. i.e. apache/www</div>
+	<div class="description"><strong>Description</strong>: This is the folder where temporary files will be stored like attachments</div>
+	
 	<dd>
 		<?php
 			$input_tempdir = new html_inputfield(array('name' => '_temp_dir', 'size' => 30, 'id' => "cfgtempdir"));
 			echo $input_tempdir->show($RCI->getprop('temp_dir'));
 		?>
 	</dd>
+	<div class="hint"><strong>Note:</strong> This folder must have write access for the web server user. i.e. apache/www</div>
 	<dt class="propname">Log Successful Logins</dt>
-	<div class="hint">Description: This will log all successful logins by users.</div>
+	<div class="description"><strong>Description</strong>: This will log all successful logins by users.</div>
 	<dd>
 		<?php
 			$check_loglogins = new html_checkbox(array('name' => '_log_logins', 'id' => "cfgloglogins"));
@@ -489,9 +494,8 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>Log Successful Logins
 	</dd>
 	<dt class="propname">Services Debugging</dt>
-	<div class="hint">Description: When the options below are checked, all input for each service is redirected to the logs.</div>
-	<div class="hint">Note: WARNING! If you enable IMAP debug, passwords are logged in clear text!</div>
-	<div class="hint">Note 2: SMTP logging will log every message sent including contents of the message. This will require a significant amout of disk space over time.</div>
+	<div class="description"><strong>Description</strong>: When the options below are checked, all input for each service is redirected to the logs.</div>
+
 	<dd>
 		<?php
 			echo "<table><tr>";
@@ -518,17 +522,18 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 			
 			echo "</table></tr>";
 		?>
-	</dd>
+	</dd>	
+	<div class="hint"><strong>Note:</strong> WARNING! If you enable IMAP debug, passwords are logged in clear text SMTP logging will log every message sent including contents of the message. This will require a significant amout of disk space over time.</div>
+	</dl>
 </fieldset>
 
 <div class="spacer"></div>
 
-<fieldset>
-<legend>General Configuration</legend>
+<fieldset class="rounded">
+<legend class="legend">General Configuration</legend>
 <dl class="configblock">
 	<dt class="propname">Plugins</dt>
-	<div class="hint">Description: When the options below are checked, the associated plugins are enabled.</div>
-	<div class="hint">Note: The default plugins selected have already been configured. If you enable additional ones, you may need to configure them.</div><br />
+	<div class="description"><strong>Description</strong>: When the options below are checked, the associated plugins are enabled.</div>
 	<div class="hint">The following Plugins were found on your system:</div>
 	<dd>
 		<?php 
@@ -546,17 +551,18 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 			} 
 		?>
 	</dd>
+		<div class="hint"><strong>Note:</strong> The default plugins selected have already been configured. If you enable additional ones, you may need to configure them.</div>
 	<dt class="propname">Automatically Create Users</dt>
-	<div class="hint">Description: This will automatically create a new user once the IMAP login has suceeded.</div>
-	<div class="hint">Note: It is recommended to leave this enabled otherwise only users that have logged into Crystal before will be able to login.</div>
+	<div class="description"><strong>Description</strong>: This will automatically create a new user once the IMAP login has suceeded.</div>
 	<dd>
 		<?php
 			$check_autocreate = new html_checkbox(array('name' => '_auto_create_user', 'id' => "cfgautocreate"));
 			echo $check_autocreate->show(intval($RCI->getprop('auto_create_user')), array('value' => 1));
 		?>Automatically Create Users (Recommended)
 	</dd>
+	<div class="hint"><strong>Note:</strong> It is recommended to leave this enabled otherwise only users that have logged into Crystal before will be able to login.</div>
 	<dt class="propname">Page Titles</dt>
-	<div class="hint">Description: This is the title you want to appear in the browser window title bar.</div>
+	<div class="description"><strong>Description</strong>: This is the title you want to appear in the browser window title bar.</div>
 	<dd>
 		<?php
 			$input_prodname = new html_inputfield(array('name' => '_product_name', 'size' => 30, 'id' => "cfgprodname"));
@@ -564,52 +570,56 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Folder Names: Drafts</dt>
-	<div class="hint">Description: This is the name of the folder used to store draft messages.</div>
-	<div class="hint">Note: If left blank, draft messages will not be stored.</div>
+	<div class="description"><strong>Description</strong>: This is the name of the folder used to store draft messages.</div>
+	
 	<dd>
 		<?php
 			$text_draftsmbox = new html_inputfield(array('name' => '_drafts_mbox', 'size' => 20, 'id' => "cfgdraftsmbox"));
 			echo $text_draftsmbox->show($RCI->getprop('drafts_mbox'));
 		?>
 	</dd>
+	<div class="hint"><strong>Note:</strong> If left blank, draft messages will not be stored.</div>
 	<dt class="propname">Folder Names: Junk</dt>
-	<div class="hint">Description: This is the name of the folder used to store junk messages.</div>
-	<div class="hint">Note: If left blank, junk messages will not be stored.</div>
+	<div class="description"><strong>Description</strong>: This is the name of the folder used to store junk messages.</div>
+
 	<dd>
 		<?php
 			$text_junkmbox = new html_inputfield(array('name' => '_junk_mbox', 'size' => 20, 'id' => "cfgjunkmbox"));
 			echo $text_junkmbox->show($RCI->getprop('junk_mbox'));
 		?>
 	</dd>
+	<div class="hint"><strong>Note:</strong> If left blank, junk messages will not be stored.</div>
 	<dt class="propname">Folder Names: Archive</dt>
-	<div class="hint">Description: This is the name of the folder used to store archive messages.</div>
-	<div class="hint">Note: If left blank, archive messages will not be stored.</div>
+	<div class="description"><strong>Description</strong>: This is the name of the folder used to store archive messages.</div>
 	<dd>
 		<?php
 			$text_archivembox = new html_inputfield(array('name' => '_archive_mbox', 'size' => 20, 'id' => "cfgarchivembox"));
 			echo $text_archivembox->show($RCI->getprop('archive_mbox'));
 		?>
 	</dd>
+	<div class="hint"><strong>Note:</strong> If left blank, archive messages will not be stored.</div>
 	<dt class="propname">Folder Names: Sent</dt>
-	<div class="hint">Description: This is the name of the folder used to store sent messages.</div>
-	<div class="hint">Note: If left blank, sent messages will not be stored.</div>
+	<div class="description"><strong>Description</strong>: This is the name of the folder used to store sent messages.</div>
+
 	<dd>
 		<?php
 			$text_sentmbox = new html_inputfield(array('name' => '_sent_mbox', 'size' => 20, 'id' => "cfgsentmbox"));
 			echo $text_sentmbox->show($RCI->getprop('sent_mbox'));
 		?>
 	</dd>
+	<div class="hint"><strong>Note:</strong> If left blank, sent messages will not be stored.</div>
 	<dt class="propname">Folder Names: Trash</dt>
-	<div class="hint">Description: This is the name of the folder used to store trash messages.</div>
-	<div class="hint">Note: If left blank, trash messages will not be stored.</div>
+	<div class="description"><strong>Description</strong>: This is the name of the folder used to store trash messages.</div>
+	
 	<dd>
 		<?php
 			$text_trashmbox = new html_inputfield(array('name' => '_trash_mbox', 'size' => 20, 'id' => "cfgtrashmbox"));
 			echo $text_trashmbox->show($RCI->getprop('trash_mbox'));
 		?>
 	</dd>
+	<div class="hint"><strong>Note:</strong> If left blank, trash messages will not be stored.</div>
 	<dt class="propname">Automaticvally Create Default Folders</dt>
-	<div class="hint">Description: This will automatically create the default IMAP folders after login.</div>
+	<div class="description"><strong>Description</strong>: This will automatically create the default IMAP folders after login.</div>
 	<dd>
 		<?php
 			$check_createfolders = new html_checkbox(array('name' => '_create_default_folders', 'size' => 20, 'id' => "cfgcreatefolders"));
@@ -617,7 +627,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>Create Default IMAP Folders Upon Successful Login
 	</dd>
 	<dt class="propname">Protect Default IMAP Folders</dt>
-	<div class="hint">Description: When this option is enabled, it will prevent users from renaming, deleting, or subscription changes to default IMAP folders.</div>
+	<div class="description"><strong>Description</strong>: When this option is enabled, it will prevent users from renaming, deleting, or subscription changes to default IMAP folders.</div>
 	<dd>
 		<?php
 			$check_protectfolders = new html_checkbox(array('name' => '_protect_default_folders', 'size' => 20, 'id' => "cfgprotectfolders"));
@@ -625,7 +635,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>Protect Default IMAP Folders From Modification
 	</dd>
 	<dt class="propname">Delivery Notification</dt>
-	<div class="hint">Description: Choose the default behavior when a delivery notification (read receipt) is requested.</div>
+	<div class="description"><strong>Description</strong>: Choose the default behavior when a delivery notification (read receipt) is requested.</div>
 	<dd>
 		<?php
 			$select_mdnreq = new html_select(array('name' => '_mdn_requests', 'id' => "cfgmdnreq"));
@@ -634,7 +644,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Identities</dt>
-	<div class="hint">Description: This will determine to what extent a users identity may be modified.</div>
+	<div class="description"><strong>Description</strong>: This will determine to what extent a users identity may be modified.</div>
 	<dd>
 		<?php
 			$input_ilevel = new html_select(array('name' => '_identities_level', 'id' => "cfgidentitieslevel"));
@@ -648,18 +658,19 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	
 	<!-- These entries are not part of the config but are required for the main.inc.php -->
 	<input name="check_all_folders" size="5" id="check_all_folders" value="true" type="hidden" />
+</dl>
 </fieldset>
 
 
 
 <div class="spacer"></div>
 
-<fieldset>
-<legend>Miscellaneous Configuration</legend>
+<fieldset class="rounded">
+<legend class="legend">Miscellaneous Configuration</legend>
 <dl class="configblock">
 	<dt class="propname">Caching</dt>
-	<div class="hint">Description: When this option is enabled, messages will be cached in the local database.</div>
-	<div class="hint">Note: This is recommended to improve speed if your IMAP server resides on a different host.</div>
+	<div class="description"><strong>Description</strong>: When this option is enabled, messages will be cached in the local database.</div>
+	
 	<dd>
 		<?php
 			$check_caching = new html_checkbox(array('name' => '_enable_caching', 'id' => "cfgcache"));
@@ -667,9 +678,10 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 		Enable Message Caching
 	</dd>
+	<div class="hint"><strong>Note:</strong> This is recommended to improve speed if your IMAP server resides on a different host.</div>
 	<dt class="propname">Message Cache Lifetime</dt>
-	<div class="hint">Description: When message caching is enabled, this will determine the length of time that the cach is valid for.</div>
-	<div class="hint">Note: Enter 's'(seconds), 'm' (minutes), 'h' (hours), 'd' (days), 'w' (weeks).</div>
+	<div class="description"><strong>Description</strong>: When message caching is enabled, this will determine the length of time that the cach is valid for.</div>
+	<div class="hint"><strong>Note:</strong> Enter 's'(seconds), 'm' (minutes), 'h' (hours), 'd' (days), 'w' (weeks).</div>
 	<dd>
 		<?php
 			$text_cachelifetime = new html_inputfield(array('name' => '_message_cache_lifetime', 'size' => 20, 'id' => "cfgcachelifetime"));
@@ -677,7 +689,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Force HTTPS</dt>
-	<div class="hint">Description: When this option is enabled, Crystal will force the connection over HTTPS.</div>
+	<div class="description"><strong>Description</strong>: When this option is enabled, Crystal will force the connection over HTTPS.</div>
 	<dd>
 		<?php
 			$check_forcehttps = new html_checkbox(array('name' => '_force_https', 'id' => "cfgforcehttps"));
@@ -685,7 +697,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?> Force Communication Over HTTPS Only
 	</dd>
 	<dt class="propname">Sendmail Delay</dt>
-	<div class="hint">Description: This options sets the number of seconds a user must wait between sending emails.</div>
+	<div class="description"><strong>Description</strong>: This options sets the number of seconds a user must wait between sending emails.</div>
 	<dd>
 		<?php
 			$text_sendmaildelay = new html_inputfield(array('name' => '_sendmail_delay', 'size' => 20, 'id' => "cfgsendmaildelay"));
@@ -693,34 +705,36 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Session Lifetime</dt>
-	<div class="hint">Description: This options sets the number of seconds a users session is active.</div>
-	<div class="hint">Note: The value must be greater than the 'Keep Alive'.</div>
+	<div class="description"><strong>Description</strong>: This options sets the number of seconds a users session is active.</div>
+	
 	<dd>
 		<?php
 			$text_seesionlifetime = new html_inputfield(array('name' => '_session_lifetime', 'size' => 20, 'id' => "cfgseesionlifetime"));
 			echo $text_seesionlifetime->show($RCI->getprop('session_lifetime'));
 		?>
 	</dd>
+	<div class="hint"><strong>Note:</strong> The value must be greater than the 'Keep Alive'.</div>
 	<dt class="propname">Keep Alive Minimum</dt>
-	<div class="hint">Description: This options sets the minimum number of seconds a users keep alive is active.</div>
-	<div class="hint">Note: The value must be lesser than the 'Session Lifetime'.</div>
+	<div class="description"><strong>Description</strong>: This options sets the minimum number of seconds a users keep alive is active.</div>
+	
 	<dd>
 		<?php
 			$text_minkeepalive = new html_inputfield(array('name' => '_min_keep_alive', 'size' => 20, 'id' => "cfgminkeepalive"));
 			echo $text_minkeepalive->show($RCI->getprop('min_keep_alive'));
 		?>
 	</dd>
+	<div class="hint"><strong>Note:</strong> The value must be lesser than the 'Session Lifetime'.</div>
 	<dt class="propname">Keep Alive</dt>
-	<div class="hint">Description: This options sets the number of seconds a users keep alive is active.</div>
-	<div class="hint">Note: The value must be greater than or equal to the 'Keep Alive Minimum'.</div>
-	<dd>
+	<div class="description"><strong>Description</strong>: This options sets the number of seconds a users keep alive is active.</div>
+		<dd>
 		<?php
 			$text_keepalive = new html_inputfield(array('name' => '_keep_alive', 'size' => 20, 'id' => "cfgkeepalive"));
 			echo $text_keepalive->show($RCI->getprop('keep_alive'));
 		?>
 	</dd>
+	<div class="hint"><strong>Note:</strong> The value must be greater than or equal to the 'Keep Alive Minimum'.</div>
 	<dt class="propname">User Agent</dt>
-	<div class="hint">Description: This options sets the user agent that is added to the message headers.</div>
+	<div class="description"><strong>Description</strong>: This options sets the user agent that is added to the message headers.</div>
 	<dd>
 		<?php
 			$text_useragent = new html_inputfield(array('name' => '_useragent', 'size' => 50, 'id' => "cfguseragent"));
@@ -728,16 +742,16 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Zero Quota</dt>
-	<div class="hint">Description: This setting allows for using zero (0) as a no limit indicator.</div>
-	<div class="hint">Description: If your system uses 0 to signify 'no limit', then set this option to 'true'.</div>
+	<div class="description"><strong>Description</strong>: This setting allows for using zero (0) as a no limit indicator.</div>
 	<dd>
 		<?php
 			$check_quotazero = new html_checkbox(array('name' => '_quota_zero_as_unlimited', 'id' => "cfgquotazero"));
 			echo $check_quotazero->show(intval($RCI->getprop('quota_zero_as_unlimited')), array('value' => 1));
 		?> Zero (0) Means No Quota Limit
 	</dd>
+	<div class="hint"><strong>Note:</strong> If your system uses 0 to signify 'no limit', then set this option to 'true'.</div>
 	<dt class="propname">Default Character Set</dt>
-	<div class="hint">Description: This options sets the default character set to use as a fallback for message decoding.</div>
+	<div class="description"><strong>Description</strong>: This options sets the default character set to use as a fallback for message decoding.</div>
 	<dd>
 		<?php
 			$text_charset = new html_inputfield(array('name' => '_default_charset', 'size' => 50, 'id' => "cfgcharset"));
@@ -745,9 +759,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Spell Checker Enabled?</dt>
-	<div class="hint">Description: This setting allows you to use the built in spell checker from GoogieSpell.</div>
-	<div class="hint">Note: Since Googie spell utilizes https for transmission, your PHP installation requires OpenSSL support for this to work.</div>
-	<div class="hint">Note 2: The OpenSSL dependency should have been identified on the previous page.</div>
+	<div class="description"><strong>Description</strong>: This setting allows you to use the built in spell checker from GoogieSpell.</div>
 	<dd>
 		<?php
 			$check_spell = new html_checkbox(array('name' => '_enable_spellcheck', 'id' => "cfgspellcheck"));
@@ -755,10 +767,9 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 		Enable Spell Checker
 	</dd>
+	<div class="hint"><strong>Note:</strong> Since Googie spell utilizes https for transmission, your PHP installation requires OpenSSL support for this to work. The OpenSSL dependency should have been identified on the previous page.</div>
 	<dt class="propname">Spell Checker Choice</dt>
-	<div class="hint">Description: This setting allows you to choose which spell checker to use.</div>
-	<div class="hint">Note: If you use Nox Spell, choose googie.</div>
-	<div class="hint">Note 2: If you use PSpell, ensure the PSpell extensions are installed for PHP.</div>
+	<div class="description"><strong>Description</strong>: This setting allows you to choose which spell checker to use.</div>
 	<dd>
 		<?php
 			$select_spell = new html_select(array('name' => '_spellcheck_engine', 'id' => "cfgspellcheckengine"));
@@ -768,17 +779,19 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	  		echo $select_spell->show($RCI->is_post ? $_POST['_spellcheck_engine'] : 'googie');
 	  	?>
 	</dd>
+		<div class="hint"><strong>Note:</strong> If you use Nox Spell, choose googie. If you use PSpell, ensure the PSpell extensions are installed for PHP.</div>
 	<dt class="propname">Spell Check URI</dt>
-	<div class="hint">Description: If you have a locally installed Nox Spell Server, specify the URI to call it here.</div>
-	<div class="hint">Note: If you use Googie, leave this blank.</div>
+	<div class="description"><strong>Description</strong>: If you have a locally installed Nox Spell Server, specify the URI to call it here.</div>
+	
 	<dd>
 		<?php
 			$text_spellcheckuri = new html_inputfield(array('name' => '_spellcheck_uri', 'size' => 50, 'id' => "cfgspellcheckuri"));
 			echo $text_spellcheckuri->show($RCI->getprop('spellcheck_uri'));
 		?>
 	</dd>
+	<div class="hint"><strong>Note:</strong> If you use Googie, leave this blank.</div>
 	<dt class="propname">Session Domain</dt>
-	<div class="hint">Description: This is the domain that is added to the session ID.</div>
+	<div class="description"><strong>Description</strong>: This is the domain that is added to the session ID.</div>
 	<dd>
 		<?php
 			$text_sessiondomain = new html_inputfield(array('name' => '_session_domain', 'size' => 50, 'id' => "cfgsessiondomain"));
@@ -786,16 +799,16 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Delete Always</dt>
-	<div class="hint">Description: This will allow for messages to always be marked as deleted even if moving to the "Trash" fails.</div>
-	<div class="hint">Note: Some setups require this if users do not have a trash folder or if they are over their quota.</div>
+	<div class="description"><strong>Description</strong>: This will allow for messages to always be marked as deleted even if moving to the "Trash" fails.</div>
 	<dd>
 		<?php
 			$check_deletealways = new html_checkbox(array('name' => '_delete_always', 'id' => "cfgdeletealways"));
 			echo $check_deletealways->show(intval($RCI->getprop('delete_always')), array('value' => 1));
 		?> Always Mark Messages As Deleted
 	</dd>
+	<div class="hint"><strong>Note:</strong> Some setups require this if users do not have a trash folder or if they are over their quota.</div>
 	<dt class="propname">Draft Autosave</dt>
-	<div class="hint">Description: This is the length of time before a draft message is save to the 'Drafts' folder.</div>
+	<div class="description"><strong>Description</strong>: This is the length of time before a draft message is save to the 'Drafts' folder.</div>
 	<dd>
 		<?php
 			$select_autosave = new html_select(array('name' => '_draft_autosave', 'id' => 'cfgautosave'));
@@ -806,25 +819,26 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	  	?>
 	</dd>
 	<dt class="propname">Empty Trash On Logout</dt>
-	<div class="hint">Description: If set, this option will clear a users trash folder when they logout.</div>
-	<div class="hint">Note: This setting can be overridden by the user.</div>
-	<dd>
+	<div class="description"><strong>Description</strong>: If set, this option will clear a users trash folder when they logout.</div>
+		<dd>
 		<?php
 			$check_logoutpurge = new html_checkbox(array('name' => '_logout_purge', 'id' => "cfglogoutpurge"));
 			echo $check_logoutpurge->show(intval($RCI->getprop('logout_purge')), array('value' => 1));
 		?> Empty Trash Upon Logout
 	</dd>
+	<div class="hint"><strong>Note:</strong> This setting can be overridden by the user.</div>
 	<dt class="propname">Compact Inbox On Logout</dt>
-	<div class="hint">Description: If set, this option will compcat the users inbox folder when they logout.</div>
-	<div class="hint">Note: This setting can be overridden by the user.</div>
+	<div class="description"><strong>Description</strong>: If set, this option will compcat the users inbox folder when they logout.</div>
+	
 	<dd>
 		<?php
 			$check_logoutexpunge = new html_checkbox(array('name' => '_logout_expunge', 'id' => "cfglogoutexpunge"));
 			echo $check_logoutexpunge->show(intval($RCI->getprop('logout_expunge')), array('value' => 1));
 		?> Compact Inbox Upon Logout
 	</dd>
+	<div class="hint"><strong>Note:</strong> This setting can be overridden by the user.</div>
 	<dt class="propname">Flag For Deletion</dt>
-	<div class="hint">Description: If set, this option will immediately remove flagged messages for deletion.</div>
+	<div class="description"><strong>Description</strong>: If set, this option will immediately remove flagged messages for deletion.</div>
 	<dd>
 		<?php
 			$check_flagdelete = new html_checkbox(array('name' => '_flag_for_deletion', 'id' => "cfgflagdelete"));
@@ -832,7 +846,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?> Delete Messages Flagged For Deletion
 	</dd>
 	<dt class="propname">Mime Magic Database</dt>
-	<div class="hint">Description: This is the location of the mime magic database.</div>
+	<div class="description"><strong>Description</strong>: This is the location of the mime magic database.</div>
 	<dd>
 		<?php
 			$text_mimemagic = new html_inputfield(array('name' => '_mime_magic', 'size' => 50, 'id' => "cfgmimemagic"));
@@ -843,6 +857,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<!-- These entries are not part of the config but are required for the main.inc.php -->
 	<input name="skin_include_php" size="5" id="skin_include_php" value="true" type="hidden" />
 	<input name="spellcheck_languages" size="50" id="spellcheck_languages" value="" type="hidden" />
+</dl>
 </fieldset>
 
 
@@ -852,11 +867,11 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 <div class="spacer"></div>
 
 
-<fieldset>
-<legend>Appearance Configuration</legend>
+<fieldset class="rounded">
+<legend class="legend">Appearance Configuration</legend>
 <dl class="configblock">
 	<dt class="propname">Theme</dt>
-	<div class="hint">Description: Choose the theme Crystal should use.</div>
+	<div class="description"><strong>Description</strong>: Choose the theme Crystal should use.</div>
 	<dd>
 		<?php
 			$input_skin = new html_select(array('name' => '_skin', 'id' => "cfgskin"));
@@ -870,7 +885,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Email Columns</dt>
-	<div class="hint">Description: This is a list of the columns that should be displayed when viewing the inbox.</div>
+	<div class="description"><strong>Description</strong>: This is a list of the columns that should be displayed when viewing the inbox.</div>
 	<dd>
 		<?php 
 			include ('../config/main.inc.php.dist'); 
@@ -886,7 +901,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Date: Short</dt>
-	<div class="hint">Description: This is the display format for the date in a short format.</div>
+	<div class="description"><strong>Description</strong>: This is the display format for the date in a short format.</div>
 	<dd>
 		<?php
 			$text_dateshort = new html_inputfield(array('name' => '_date_short', 'size' => 20, 'id' => "cfgdateshort"));
@@ -894,7 +909,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Date: Long</dt>
-	<div class="hint">Description: This is the display format for the date in a long format.</div>
+	<div class="description"><strong>Description</strong>: This is the display format for the date in a long format.</div>
 	<dd>
 		<?php
 			$text_datelong = new html_inputfield(array('name' => '_date_long', 'size' => 20, 'id' => "cfgdatelong"));
@@ -902,7 +917,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Date: Today</dt>
-	<div class="hint">Description: This is the display format for the date format today.</div>
+	<div class="description"><strong>Description</strong>: This is the display format for the date format today.</div>
 	<dd>
 		<?php
 			$text_datetoday = new html_inputfield(array('name' => '_date_today', 'size' => 20, 'id' => "cfgdatetoday"));
@@ -910,7 +925,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Date: Date Only</dt>
-	<div class="hint">Description: This is the display format for the date only and does not include time.</div>
+	<div class="description"><strong>Description</strong>: This is the display format for the date only and does not include time.</div>
 	<dd>
 		<?php
 			$text_dateonly = new html_inputfield(array('name' => '_date_only', 'size' => 20, 'id' => "cfgdateonly"));
@@ -918,7 +933,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Default IMAP Folders</dt>
-	<div class="hint">Description: This is a list of the default IMAP folders that will be displayed when viewing the inbox.</div>
+	<div class="description"><strong>Description</strong>: This is a list of the default IMAP folders that will be displayed when viewing the inbox.</div>
 	<dd>
 		<?php 
 			include ('../config/main.inc.php.dist'); 
@@ -934,7 +949,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Display Next Message After Deletion</dt>
-	<div class="hint">Description: If set, this option will display the next message after deleting a message.</div>
+	<div class="description"><strong>Description</strong>: If set, this option will display the next message after deleting a message.</div>
 	<dd>
 		<?php
 			$check_displaynext = new html_checkbox(array('name' => '_display_next', 'id' => "cfgdisplaynext"));
@@ -942,7 +957,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?> Display Next Message After Deletion
 	</dd>
 	<dt class="propname">Sort Messages By?</dt>
-	<div class="hint">Description: This option chooses whether messages should be sorted by index number or date.</div>
+	<div class="description"><strong>Description</strong>: This option chooses whether messages should be sorted by index number or date.</div>
 	<dd>
 		<?php
 			$check_indexsort = new html_checkbox(array('name' => '_index_sort', 'id' => "cfgindexsort"));
@@ -950,7 +965,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?> Sort Message By Index
 	</dd>
 	<dt class="propname">Display Images Inline</dt>
-	<div class="hint">Description: This option chooses whether images should be displayed inline or below the message body.</div>
+	<div class="description"><strong>Description</strong>: This option chooses whether images should be displayed inline or below the message body.</div>
 	<dd>
 		<?php
 			$check_inlineimages = new html_checkbox(array('name' => '_inline_images', 'id' => "cfginlineimages"));
@@ -958,7 +973,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?> Display Images Inline
 	</dd>
 	<dt class="propname">Display Remote Images</dt>
-	<div class="hint">Description: This option chooses whether iremote images should be displayed.</div>
+	<div class="description"><strong>Description</strong>: This option chooses whether iremote images should be displayed.</div>
 	<dd>
 		<?php
 			$select_show_images = new html_select(array('name' => '_show_images', 'id' => "cfgshow_images"));
@@ -969,7 +984,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Attachment Encoding</dt>
-	<div class="hint">Description: This option chooses the encoding format used for attachments.</div>
+	<div class="description"><strong>Description</strong>: This option chooses the encoding format used for attachments.</div>
 	<dd>
 		<?php
 			$select_param_folding = new html_select(array('name' => '_mime_param_folding', 'id' => "cfgmimeparamfolding"));
@@ -980,7 +995,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Show Deleted Messages</dt>
-	<div class="hint">Description: This option chooses whether deleted messages are still shown in the users inbox.</div>
+	<div class="description"><strong>Description</strong>: This option chooses whether deleted messages are still shown in the users inbox.</div>
 	<dd>
 		<?php
 			$check_skip_deleted = new html_checkbox(array('name' => '_skip_deleted', 'id' => "cfgskip_deleted"));
@@ -988,7 +1003,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?> Show Deleted Messages
 	</dd>
 	<dt class="propname">Mark Messages As Read When Deleted</dt>
-	<div class="hint">Description: This option chooses whether read messages are considered read upon deletion.</div>
+	<div class="description"><strong>Description</strong>: This option chooses whether read messages are considered read upon deletion.</div>
 	<dd>
 		<?php
 			$check_read_when_deleted = new html_checkbox(array('name' => '_read_when_deleted', 'id' => "cfgread_when_deleted"));
@@ -996,7 +1011,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?> Mark Messages As Read When Deleted
 	</dd>
 	<dt class="propname">Preview Pane</dt>
-	<div class="hint">Description: This option chooses whether a preview pane is displayed for viewing messages.</div>
+	<div class="description"><strong>Description</strong>: This option chooses whether a preview pane is displayed for viewing messages.</div>
 	<dd>
 		<?php
 			$check_prevpane = new html_checkbox(array('name' => '_preview_pane', 'id' => "cfgprevpane", 'value' => 1));
@@ -1004,7 +1019,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>Enable Preview Pane
 	</dd>
 	<dt class="propname">Focus Window When New Message Arrives</dt>
-	<div class="hint">Description: This bring the browser window/tab to your attention when a new message arrives.</div>
+	<div class="description"><strong>Description</strong>: This bring the browser window/tab to your attention when a new message arrives.</div>
 	<dd>
 		<?php
 			$check_focus_on_new_message = new html_checkbox(array('name' => '_focus_on_new_message', 'id' => "cfgfocus_on_new_message", 'value' => 1));
@@ -1012,7 +1027,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>Focus Window When New Message Arrives
 	</dd>
 	<dt class="propname">Default Sort Column</dt>
-	<div class="hint">Description: Choose the default column that messages should be sorted by.</div>
+	<div class="description"><strong>Description</strong>: Choose the default column that messages should be sorted by.</div>
 	<dd>
 		<?php
 			$select_message_sort_col = new html_select(array('name' => '_message_sort_col', 'id' => "cfgmessage_sort_col"));
@@ -1028,7 +1043,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Default Sort Order</dt>
-	<div class="hint">Description: This is the default sort order for messages.</div>
+	<div class="description"><strong>Description</strong>: This is the default sort order for messages.</div>
 	<dd>
 		<?php
 			$select_message_sort_order = new html_select(array('name' => '_message_sort_order', 'id' => "cfgmessage_sort_order"));
@@ -1038,16 +1053,17 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Default Number of Messages Displayed</dt>
-	<div class="hint">Description: This number determines the number of messages displayed per page when viewing message folders.</div>
-	<div class="hint">Note: This setting can be overridden by the user.</div>
-	<dd>
+	<div class="description"><strong>Description</strong>: This number determines the number of messages displayed per page when viewing message folders.</div>
+		<dd>
 		<?php
 			$input_pagesize = new html_inputfield(array('name' => '_pagesize', 'size' => 6, 'id' => "cfgpagesize"));
 			echo $input_pagesize->show($RCI->getprop('pagesize'));
 		?>
+		
 	</dd>
+	<div class="hint"><strong>Note:</strong> This setting can be overridden by the user.</div>
 	<dt class="propname">Max Number of Messages Displayed</dt>
-	<div class="hint">Description: This number determines the maximum number of messages displayed per page when viewing message folders.</div>
+	<div class="description"><strong>Description</strong>: This number determines the maximum number of messages displayed per page when viewing message folders.</div>
 	<dd>
 		<?php
 			$input_max_pagesize = new html_inputfield(array('name' => '_max_pagesize', 'size' => 6, 'id' => "cfgmax_pagesize"));
@@ -1055,27 +1071,30 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">HTML Messages</dt>
-	<div class="hint">Description: This will display HTML messages by default.</div>
-	<div class="hint">Note: This setting can be overridden by the user.</div>
+	<div class="description"><strong>Description</strong>: This will display HTML messages by default.</div>
+	
 	<dd>
 		<?php
 			$check_htmlview = new html_checkbox(array('name' => '_prefer_html', 'id' => "cfghtmlview", 'value' => 1));
 			echo $check_htmlview->show(intval($RCI->getprop('prefer_html')));
 		?>Allow HTML Messages
 	</dd>
+	<div class="hint"><strong>Note:</strong> This setting can be overridden by the user.</div>
 	<dt class="propname">HTML Editor</dt>
-	<div class="hint">Description: This will allow messages to be edited using the HTML editor.</div>
-	<div class="hint">Note: This setting can be overridden by the user.</div>
+	<div class="description"><strong>Description</strong>: This will allow messages to be edited using the HTML editor.</div>
+	
 	<dd>
 		<?php
 			$check_htmlcomp = new html_checkbox(array('name' => '_htmleditor', 'id' => "cfghtmlcompose", 'value' => 1));
 			echo $check_htmlcomp->show(intval($RCI->getprop('htmleditor')));
 		?>Use the HTML Editor
 	</dd>
+	<div class="hint"><strong>Note:</strong> This setting can be overridden by the user.</div>
 	<!-- These entries are not part of the config but are required for the main.inc.php -->
 	<input name="language" size="5" id="language" value="" type="hidden" />
 	<input name="timezone" size="5" id="timezone" value="auto" type="hidden" />
 	<input name="dst_active" size="5" id="dst_active" value="auto" type="hidden" />
+</dl>
 </fieldset>
 
 
@@ -1084,10 +1103,10 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 <div class="spacer"></div>
 
 <fieldset>
-<legend>Address Book Configuration</legend>
+<legend class="legend">Address Book Configuration</legend>
 <dl class="configblock">
 	<dt class="propname">What type of Address Books to Use</dt>
-	<div class="hint">Description: You can choose two types of address books currently; SQL and/or LDAP.</div>
+	<div class="description"><strong>Description</strong>: You can choose two types of address books currently; SQL and/or LDAP.</div>
 	<dd>
 		<?php
 			//$select_address_book_type = new html_select(array('name' => '_address_book_type', 'id' => "cfgaddress_book_type"));
@@ -1098,7 +1117,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>
 	</dd>
 	<dt class="propname">Name of LDAP Address Books</dt>
-	<div class="hint">Description: What should this address book be called?</div>
+	<div class="description"><strong>Description</strong>: What should this address book be called?</div>
 	<dd>
 		<?php
 			//$input_ldap_name = new html_inputfield(array('name' => '_ldap_name', 'size' => 6, 'id' => "cfgldap_name"));
@@ -1106,7 +1125,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?> Example: My Contacts<br />
 	</dd>
 	<dt class="propname">LDAP Server</dt>
-	<div class="hint">Description: List the hostname(s) for the LDAP server(s).</div>
+	<div class="description"><strong>Description</strong>: List the hostname(s) for the LDAP server(s).</div>
 	<dd>
 		<div id="defaulthostlist">
 		<?php
@@ -1130,7 +1149,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		<div><a href="javascript:addhostfield()" class="addlink" title="Add another field">add</a></div>
 	</dd>
 	<dt class="propname">LDAP Port</dt>
-	<div class="hint">Description: LDAP port to connect on.</div>
+	<div class="description"><strong>Description</strong>: LDAP port to connect on.</div>
 	<dd>
 		<?php
 			//$input_ldap_port = new html_inputfield(array('name' => '_ldap_port', 'size' => 6, 'id' => "cfgldap_port"));
@@ -1138,7 +1157,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?> 
 	</dd>
 	<dt class="propname">LDAP Version</dt>
-	<div class="hint">Description: What version of LDAP should be used?</div>
+	<div class="description"><strong>Description</strong>: What version of LDAP should be used?</div>
 	<dd>
 		<select name="ldap_version" id="ldap_version">
 			<option value="2" selected="selected">LDAP Version 2</option>
@@ -1146,7 +1165,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		</select>
 	</dd>
 	<dt class="propname">LDAP StartTLS</dt>
-	<div class="hint">Description: Enable this is your server requires StartTLS authentication.</div>
+	<div class="description"><strong>Description</strong>: Enable this is your server requires StartTLS authentication.</div>
 	<dd>
 		<select name="ldap_tls" id="ldap_tls">
 			<option value="false" selected="selected">No, do not use StartTLS.</option>
@@ -1154,7 +1173,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		</select>
 	</dd>
 	<dt class="propname">LDAP Search Scope</dt>
-	<div class="hint">Description: Determine what level searches should go to for the LDAP server.</div>
+	<div class="description"><strong>Description</strong>: Determine what level searches should go to for the LDAP server.</div>
 	<dd>
 		<select name="ldap_scope" id="ldap_scope">
 			<option value="sub" selected="selected">SUB</option>
@@ -1163,7 +1182,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		</select>
 	</dd>
 	<dt class="propname">LDAP Search Type</dt>
-	<div class="hint">Description: Does the LDAP server allow for wildcard (fuzzy) searches?</div>
+	<div class="description"><strong>Description</strong>: Does the LDAP server allow for wildcard (fuzzy) searches?</div>
 	<dd>
 		<select name="ldap_fuzzy" id="ldap_fuzzy">
 			<option value="true" selected="selected">Yes, the LDAP server supports wildcards.</option>
@@ -1171,7 +1190,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		</select>
 	</dd>
 	<dt class="propname">Bind As User</dt>
-	<div class="hint">Note: This will use the users username and password as well as the base DN to authenticate.</div>
+	<div class="hint"><strong>Note:</strong> This will use the users username and password as well as the base DN to authenticate.</div>
 	<dd>
 		<select name="ldap_userbind" id="ldap_userbind">
 			<option value="false" selected="selected">No, do not bind as user.</option>
@@ -1179,22 +1198,22 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		</select><br /><br />
 	</dd>
 	<dt class="propname">Base DN</dt>
-	<div class="hint">Description: Base DN of LDAP server.</div>
+	<div class="description"><strong>Description</strong>: Base DN of LDAP server.</div>
 	<dd>
 		<input name="ldap_base" size="50" id="ldap_base" value="" type="text" />Example: ou=people,dc=example,dc=com
 	</dd>
 	<dt class="propname">Bind DN</dt>
-	<div class="hint">Description: Bind DN of LDAP server.</div>
+	<div class="description"><strong>Description</strong>: Bind DN of LDAP server.</div>
 	<dd>
 		<input name="ldap_bind" size="50" id="ldap_bind" value="" type="text" />Example: cn=search,dc=example,dc=com
 	</dd>
 	<dt class="propname">Bind Password</dt>
-	<div class="hint">Description: Bind Password of LDAP server.</div>
+	<div class="description"><strong>Description</strong>: Bind Password of LDAP server.</div>
 	<dd>
 		<input name="ldap_password" size="50" id="ldap_password" value="" type="password" />
 	</dd>
 	<dt class="propname">Address Book Writeable?</dt>
-	<div class="hint">Description: Do users have write access to the address book?</div>
+	<div class="description"><strong>Description</strong>: Do users have write access to the address book?</div>
 	<dd>
 		<select name=ldap_writeable" id="ldap_writeable">
 				<option value="false" selected="selected">No, LDAP is not writeable.</option>
@@ -1202,54 +1221,54 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		</select><br /><br />
 	</dd>
 	<dt class="propname">LDAP Object Classes</dt>
-	<div class="hint">Description: Provide a comma seperated list of LDAP object classes to be used when creating a new address book entry.</div>
+	<div class="description"><strong>Description</strong>: Provide a comma seperated list of LDAP object classes to be used when creating a new address book entry.</div>
 	<dd>
 		<input name="ldap_objectclass" size="50" id="ldap_objectclass" value="" type="text" /> Example: top, inetOrgPerson
 	</dd>
 	<dt class="propname">LDAP Required Fields</dt>
-	<div class="hint">Description: Provide a comma seperated list of LDAP required fields from the object classes above when creating a new address book entry.</div>
-	<div class="hint">Note: This can also include additional fields not required by the object classes.</div>
+	<div class="description"><strong>Description</strong>: Provide a comma seperated list of LDAP required fields from the object classes above when creating a new address book entry.</div>
+	<div class="hint"><strong>Note:</strong> This can also include additional fields not required by the object classes.</div>
 	<dd>
 		<input name="ldap_required" size="50" id="ldap_required" value="" type="text" /> Example: cn, sn, mail
 	</dd>
 	<dt class="propname">LDAP Search Fields</dt>
-	<div class="hint">Description: Provide a comma seperated list of LDAP search fields for searching the address book.</div>
+	<div class="description"><strong>Description</strong>: Provide a comma seperated list of LDAP search fields for searching the address book.</div>
 	<dd>
 		<input name="ldap_search" size="50" id="ldap_search" value="" type="text" /> Example: cn, mail
 	</dd>
 	<dt class="propname">LDAP RDN</dt>
-	<div class="hint">Description: This is the RDN that is used for new entries. This field must be one of the searchable fields.</div>
-	<div class="hint">Note: The base DN is appended to the RDN to insert into the address book.</div>
+	<div class="description"><strong>Description</strong>: This is the RDN that is used for new entries. This field must be one of the searchable fields.</div>
+	<div class="hint"><strong>Note:</strong> The base DN is appended to the RDN to insert into the address book.</div>
 	<dd>
 		<input name="ldap_rdn" size="50" id="ldap_rdn" value="" type="text" /> Example: mail
 	</dd>
 	<dt class="propname">LDAP New Entry: First Name</dt>
-	<div class="hint">Description: This is the attribute used to store the First Name of address book entries.</div>
+	<div class="description"><strong>Description</strong>: This is the attribute used to store the First Name of address book entries.</div>
 	<dd>
 		<input name="ldap_fname" size="50" id="ldap_fname" value="" type="text" /> Example: gn
 	</dd>	
 	<dt class="propname">LDAP New Entry: Last Name</dt>
-	<div class="hint">Description: This is the attribute used to store the Last Name of address book entries.</div>
+	<div class="description"><strong>Description</strong>: This is the attribute used to store the Last Name of address book entries.</div>
 	<dd>
 		<input name="ldap_lname" size="50" id="ldap_lname" value="" type="text" /> Example: sn
 	</dd>	
 	<dt class="propname">LDAP New Entry: Full Name</dt>
-	<div class="hint">Description: This is the attribute used to store the Full Name of address book entries.</div>
+	<div class="description"><strong>Description</strong>: This is the attribute used to store the Full Name of address book entries.</div>
 	<dd>
 		<input name="ldap_fullname" size="50" id="ldap_fullname" value="" type="text" /> Example: cn
 	</dd>	
 	<dt class="propname">LDAP New Entry: Email Address</dt>
-	<div class="hint">Description: This is the attribute used to store the Email Address of address book entries.</div>
+	<div class="description"><strong>Description</strong>: This is the attribute used to store the Email Address of address book entries.</div>
 	<dd>
 		<input name="ldap_email" size="50" id="ldap_email" value="" type="text" /> Example: mail
 	</dd>	
 	<dt class="propname">LDAP Entry Sort</dt>
-	<div class="hint">Description: This is the attribute used sort address book entries.</div>
+	<div class="description"><strong>Description</strong>: This is the attribute used sort address book entries.</div>
 	<dd>
 		<input name="ldap_sort" size="50" id="ldap_sort" value="" type="text" /> Example: cn
 	</dd>	
 	<dt class="propname">LDAP Filter</dt>
-	<div class="hint">Description: This is the attribute used to filter out address book entries from display.</div>
+	<div class="description"><strong>Description</strong>: This is the attribute used to filter out address book entries from display.</div>
 	<dd>
 		<input name="ldap_filter" size="50" id="ldap_filter" value="" type="text" /> Example: accountStatus=active
 	</dd>	
@@ -1257,12 +1276,14 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<!-- These entries are not part of the config but are required for the main.inc.php -->
 	<input name="autocomplete_addressbooks" size="5" id="autocomplete_addressbooks" value="sql" type="hidden" />
 <!--
-</fieldset>
 </dl>
+</fieldset>
+
 -->
 <?php
 
-echo '<p><div id="button"><input type="submit" name="submit" value="' . ($RCI->configured ? 'UPDATE' : 'CREATE') . ' CONFIG" ' . ($RCI->failures ? 'disabled' : '') . ' /></div></p>';
+echo '<p><div id="button"><input type="submit" name="submit" value="' . ($RCI->configured ? 'Update' : 'Create') . ' Configuration Files" ' . ($RCI->failures ? 'disabled' : '') . ' /></div></p><br>';
 
 ?>
 </form>
+</div>
