@@ -72,8 +72,8 @@ if ($RCI->configured && empty($_REQUEST['_step'])) {
 	<?php
 		$installer_enabled =  $RCI->getprop('enable_installer');
 		if ($installer_enabled == '0'){
-			echo '<h1 class="fail"><center>DENIED!!!</center></h1>';
-			echo 'The installer is disabled! To enable, change the variable "enable_installer" to "true" in your main.inc.php';
+			echo '<div id="rounded" class="rounded"><h1 class="fail"><center>DENIED!!!</center></h1>';
+			echo '<center>The installer is disabled! To enable, change the variable "enable_installer" to "true" in your main.inc.php</center></div>';
 			exit;
 	}
 	?>
