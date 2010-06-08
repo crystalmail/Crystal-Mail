@@ -1,103 +1,71 @@
-<?php
-// load settings
-include_once('settings.php');
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Crystal Mail Admin - Login</title>
+	<meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="robots" content="index,follow" />
+	<!--[if IE]><link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection" /><![endif]-->
+    <link rel="stylesheet" type="text/css" media="all" href="css/style.css" />
+	<link rel="Stylesheet" type="text/css" href="css/smoothness/jquery-ui-1.7.1.custom.css"  />	
+	<!--[if IE]>
+		<style type="text/css">
+		  .clearfix {
+		    zoom: 1;     /* triggers hasLayout */
+		    display: block;     /* resets display for IE/Win */
+		    }  /* Only IE can see inside the conditional comment
+		    and read this CSS rule. Don't ever use a normal HTML
+		    comment inside the CC or it will close prematurely. */
+		</style>
+	<![endif]-->
+	<!-- JavaScript -->
+    <script type="text/javascript" src="js/jquery-1.3.2.min.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-1.7.1.custom.min.js"></script>
+		<script type="text/javascript" src="js/custom.js"></script>
+	</head>
+	 <!--[if IE]><script language="javascript" type="text/javascript" src="excanvas.pack.js"></script><![endif]-->
+</head>
+<body>
+<div  id="login_container">
+    <div  id="header">
+   
+		<div id="logo"><h1><a href="/">Crystal Webmail Admin</a></h1></div>
+		
+    </div><!-- end header -->
+	   
+	    <div id="login" class="section">
+	    	
+	    	<form name="loginform" id="loginform" method="post">
+			
+			
+			<font color="red"><?php
+			if ($_GET['failed'] == '1') {
+echo '<div id="fail" class="info_div"><span class="ico_cancel">Incorrect username or password!</span></div>';
+}			if ($_GET['failed'] == '2') {
+echo '<div id="fail" class="info_div"><span class="ico_cancel">Your session has expired.</span></div>';
+}		
+			?></font><br />
 
-// list of users
-$users = @file(USERS_LIST_FILE);
-if (!$users) die('ERROR: ADM100');
-// remove php "die" statement (hackers protection)
-unset($users[0]);
+            <label><strong>Username</strong></label><input type="text" name="user" id="user_login" size="22"  class="input"/>
 
-// prepare users list and redirects
-$LOGIN_INFORMATION = array();
-$REDIRECTS = array();
-foreach ($users as $user) {
-  $u = explode(',',$user);
-  if (USE_USERNAME) {
-    $LOGIN_INFORMATION[trim($u[0])] = trim($u[1]);
-    $REDIRECTS[trim($u[0])] = isset($u[3]) ? trim($u[3]) : '';
-  }
-  else {
-    $LOGIN_INFORMATION[] = trim($u[0]);
-  }
-}
+			<br />
+			<label><strong>Password</strong></label><input type="password" name="pass" id="user_pass"  size="22" class="input"/>
+			
+			<br />
+		<br>
+			<input id="save" class="loginbutton" type="submit" class="submit" value="Log In" />
+			
+			</form>
+			
+			<a href="reminder.php" id="passwordrecoverylink">Forgot your username or password?</a>
+	    </div>
+	
+	    
+		    
 
-// timeout in seconds
-$timeout = (TIMEOUT_MINUTES == 0 ? 0 : time() + TIMEOUT_MINUTES * 60);
 
-// logout?
-if(isset($_GET['logout'])) {
-  setcookie("verify", '', $timeout, '/'); // clear password;
-  header('Location: ' . LOGOUT_URL);
-  exit();
-}
+</div><!-- end container -->
 
-if(!function_exists('showLoginPasswordProtect')) {
-
-// show login form
-function showLoginPasswordProtect($error_msg) {
-  include('login_form.php');
-
-  // stop at this point
-  die();
-}
-}
-
-// user provided password
-if (isset($_POST['access_password'])) {
-
-  $login = isset($_POST['access_login']) ? $_POST['access_login'] : '';
-  $pass = $_POST['access_password'];
-  if (!USE_USERNAME && !in_array($pass, $LOGIN_INFORMATION)
-  || (USE_USERNAME && ( !array_key_exists($login, $LOGIN_INFORMATION) || $LOGIN_INFORMATION[$login] != $pass ) ) 
-  ) {
-    showLoginPasswordProtect('<div id="fail" class="info_div"><span class="ico_cancel">Incorrect username or password!</span></div>');
-  }
-  else {
-    // set cookie if password was validated
-    setcookie("verify", md5($login.'%'.$pass), $timeout, '/');
-    
-    // Some programs (like Form1 Bilder) check $_POST array to see if parameters passed
-    // So need to clear password protector variables
-    unset($_POST['access_login']);
-    unset($_POST['access_password']);
-    unset($_POST['Submit']);
-
-    // need to be redirected?
-    if (isset($REDIRECTS[$login]) && !empty($REDIRECTS[$login])) {
-      header('Location: ' 
-             . ((REDIRECT_PREFIX != '') && (strpos($REDIRECTS[$login], 'http') !== false) ? '' : REDIRECT_PREFIX) 
-             . $REDIRECTS[$login]);
-      exit();
-    }
-  }
-
-}
-
-else {
-
-  // check if password cookie is set
-  if (!isset($_COOKIE['verify'])) {
-    showLoginPasswordProtect("");
-  }
-
-  // check if cookie is good
-  $found = false;
-  foreach($LOGIN_INFORMATION as $key=>$val) {
-    $lp = (USE_USERNAME ? $key : '') .'%'.$val;
-    if ($_COOKIE['verify'] == md5($lp)) {
-      $found = true;
-      // prolong timeout
-      if (TIMEOUT_CHECK_ACTIVITY) {
-        setcookie("verify", md5($lp), $timeout, '/');
-      }
-      break;
-    }
-  }
-  if (!$found) {
-    showLoginPasswordProtect("");
-  }
-
-}
-
-?>
+</body>
+</html>

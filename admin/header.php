@@ -1,20 +1,6 @@
 <?php
-include("login.php");
-// Database file, i.e. file with real data
-$data_file = USERS_LIST_FILE;
-
-// Database definition file. You have to describe database format in this file.
-// See flatfile.inc.php header for sample.
-$structure_file = 'users.def';
-
-// Fields delimiter
-$delimiter = ',';
-
-// Number of lines to skip
-$skip_lines = 1;
-
-include("../config/admin.inc.php");
-include("../config/version.php");
+include ('../config/main.inc.php');
+include ('auth.php');
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -76,7 +62,9 @@ include("../config/version.php");
     	<div id="profile_info">
 			<img src="img/avatar.jpg" id="avatar" alt="avatar" />
 			<br>
-			<p>Welcome <strong>Admin</strong>. <a href="?logout=1">Log out?</a></p>
+		
+			
+			<p>Welcome <strong>Admin. <a href="?action=logout">Log out?</a></p>
 			<p>System Version:&nbsp; <?php echo $version; ?></p>
 		</div>
 		<div id="logo"><h1><a href="/">AdmintTheme</a></h1></div>
