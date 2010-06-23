@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_smtp.php                                        |
+ | program/include/crystal_smtp.php                                        |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2005-2007, RoundCube Dev. - Switzerland                 |
@@ -12,17 +12,17 @@
  |   Provide SMTP functionality using socket connections                 |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
- $Id: rcube_smtp.php 3358 2010-03-12 13:54:56Z alec $
+ $Id: crystal_smtp.php 3358 2010-03-12 13:54:56Z alec $
 
 */
 
 // define headers delimiter
 define('SMTP_MIME_CRLF', "\r\n");
 
-class rcube_smtp {
+class crystal_smtp {
 
   private $conn = null;
   private $response;
@@ -46,7 +46,7 @@ class rcube_smtp {
    */
   public function connect()
   {
-    $RCMAIL = rcmail::get_instance();
+    $CMAIL = cmail::get_instance();
   
     // disconnect/destroy $this->conn
     $this->disconnect();
@@ -55,14 +55,14 @@ class rcube_smtp {
     $this->error = $this->response = null;
   
     // let plugins alter smtp connection config
-    $CONFIG = $RCMAIL->plugins->exec_hook('smtp_connect', array(
-      'smtp_server' => $RCMAIL->config->get('smtp_server'),
-      'smtp_port'   => $RCMAIL->config->get('smtp_port', 25),
-      'smtp_user'   => $RCMAIL->config->get('smtp_user'),
-      'smtp_pass'   => $RCMAIL->config->get('smtp_pass'),
-      'smtp_auth_type' => $RCMAIL->config->get('smtp_auth_type'),
-      'smtp_helo_host' => $RCMAIL->config->get('smtp_helo_host'),
-      'smtp_timeout'   => $RCMAIL->config->get('smtp_timeout'),
+    $CONFIG = $CMAIL->plugins->exec_hook('smtp_connect', array(
+      'smtp_server' => $CMAIL->config->get('smtp_server'),
+      'smtp_port'   => $CMAIL->config->get('smtp_port', 25),
+      'smtp_user'   => $CMAIL->config->get('smtp_user'),
+      'smtp_pass'   => $CMAIL->config->get('smtp_pass'),
+      'smtp_auth_type' => $CMAIL->config->get('smtp_auth_type'),
+      'smtp_helo_host' => $CMAIL->config->get('smtp_helo_host'),
+      'smtp_timeout'   => $CMAIL->config->get('smtp_timeout'),
     ));
 
     $smtp_host = str_replace('%h', $_SESSION['imap_host'], $CONFIG['smtp_server']);
@@ -97,7 +97,7 @@ class rcube_smtp {
 
     $this->conn = new Net_SMTP($smtp_host, $smtp_port, $helo_host);
 
-    if($RCMAIL->config->get('smtp_debug'))
+    if($CMAIL->config->get('smtp_debug'))
       $this->conn->setDebug(true, array($this, 'debug_handler'));
     
     // try to connect to server and exit on failure
@@ -111,7 +111,7 @@ class rcube_smtp {
     }
 
     $smtp_user = str_replace('%u', $_SESSION['username'], $CONFIG['smtp_user']);
-    $smtp_pass = str_replace('%p', $RCMAIL->decrypt($_SESSION['password']), $CONFIG['smtp_pass']);
+    $smtp_pass = str_replace('%p', $CMAIL->decrypt($_SESSION['password']), $CONFIG['smtp_pass']);
     $smtp_auth_type = empty($CONFIG['smtp_auth_type']) ? NULL : $CONFIG['smtp_auth_type'];
     
     // attempt to authenticate to the SMTP server
@@ -391,7 +391,7 @@ class rcube_smtp {
       $recipients = implode(', ', $recipients);
     
     $addresses = array();
-    $recipients = rcube_explode_quoted_string(',', $recipients);
+    $recipients = crystal_explode_quoted_string(',', $recipients);
 
     reset($recipients);
     while (list($k, $recipient) = each($recipients))

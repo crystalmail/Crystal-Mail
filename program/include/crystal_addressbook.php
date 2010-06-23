@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_addressbook.php                                 |
+ | program/include/crystal_addressbook.php                                 |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2006-2009, RoundCube Dev. - Switzerland                 |
@@ -12,10 +12,10 @@
  |   Interface to the local address book database                        |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
- $Id: rcube_addressbook.php 3452 2010-03-31 15:57:20Z thomasb $
+ $Id: crystal_addressbook.php 3452 2010-03-31 15:57:20Z thomasb $
 
 */
 
@@ -25,7 +25,7 @@
  *
  * @package Addressbook
  */
-abstract class rcube_addressbook
+abstract class crystal_addressbook
 {
     /** public properties */
     var $primary_key;
@@ -94,14 +94,14 @@ abstract class rcube_addressbook
     /**
      * Count number of available contacts in database
      *
-     * @return object rcube_result_set Result set with values for 'count' and 'first'
+     * @return object crystal_result_set Result set with values for 'count' and 'first'
      */
     abstract function count();
 
     /**
      * Return the last result set
      *
-     * @return object rcube_result_set Current result set or NULL if nothing selected yet
+     * @return object crystal_result_set Current result set or NULL if nothing selected yet
      */
     abstract function get_result();
 

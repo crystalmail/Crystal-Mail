@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_session.php                                     |
+ | program/include/crystal_session.php                                     |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2005-2009, RoundCube Dev. - Switzerland                 |
@@ -12,7 +12,7 @@
  |   Provide database supported session management                       |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  | Author: Aleksander Machniak <alec@alec.pl>                            |
  +-----------------------------------------------------------------------+
 
@@ -20,7 +20,7 @@
 
 */
 
-class rcube_session
+class crystal_session
 {
   private $db;
   private $ip;
@@ -187,7 +187,7 @@ class rcube_session
     $cookie   = session_get_cookie_params();
     $lifetime = $cookie['lifetime'] ? time() + $cookie['lifetime'] : 0;
 
-    rcmail::setcookie(session_name(), $random, $lifetime);
+    cmail::setcookie(session_name(), $random, $lifetime);
 
     return true;
   }

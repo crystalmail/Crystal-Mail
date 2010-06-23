@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_message.php                                     |
+ | program/include/crystal_message.php                                     |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2008-2009, RoundCube Dev. - Switzerland                 |
@@ -12,10 +12,10 @@
  |   Logical representation of a mail message with all its data          |
  |   and related functions                                               |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
- $Id: rcube_message.php 3212 2010-01-18 19:15:28Z alec $
+ $Id: crystal_message.php 3212 2010-01-18 19:15:28Z alec $
 
 */
 
@@ -25,9 +25,9 @@
  * and related functions
  *
  * @package    Mail
- * @author     Thomas Bruederli <roundcube@gmail.com>
+ * @author     Thomas Bruederli <crystalmail@gmail.com>
  */
-class rcube_message
+class crystal_message
 {
   private $app;
   private $imap;
@@ -53,28 +53,28 @@ class rcube_message
    *
    * @param string $uid The message UID.
    *
-   * @uses rcmail::get_instance()
-   * @uses rcube_imap::decode_mime_string()
+   * @uses cmail::get_instance()
+   * @uses crystal_imap::decode_mime_string()
    * @uses self::set_safe()
    *
    * @see self::$app, self::$imap, self::$opt, self::$structure
    */
   function __construct($uid)
   {
-    $this->app = rcmail::get_instance();
+    $this->app = cmail::get_instance();
     $this->imap = $this->app->imap;
     
     $this->uid = $uid;
     $this->headers = $this->imap->get_headers($uid, NULL, true, true);
 
-    $this->subject = rcube_imap::decode_mime_string($this->headers->subject, $this->headers->charset);
+    $this->subject = crystal_imap::decode_mime_string($this->headers->subject, $this->headers->charset);
     list(, $this->sender) = each($this->imap->decode_address_list($this->headers->from));
     
     $this->set_safe((intval($_GET['_safe']) || $_SESSION['safe_messages'][$uid]));
     $this->opt = array(
       'safe' => $this->is_safe,
       'prefer_html' => $this->app->config->get('prefer_html'),
-      'get_url' => rcmail_url('get', array('_mbox' => $this->imap->get_mailbox_name(), '_uid' => $uid))
+      'get_url' => cmail_url('get', array('_mbox' => $this->imap->get_mailbox_name(), '_uid' => $uid))
     );
 
     if ($this->structure = $this->imap->get_structure($uid, $this->headers->body_structure)) {
@@ -222,7 +222,7 @@ class rcube_message
    * Raad the message structure returend by the IMAP server
    * and build flat lists of content parts and attachments
    *
-   * @param object rcube_message_part Message structure node
+   * @param object crystal_message_part Message structure node
    * @param bool  True when called recursively
    */
   private function parse_structure($structure, $recursive = false)
@@ -307,7 +307,7 @@ class rcube_message
       else if ($html_part !== null && empty($this->parts)) {
         $c = new stdClass;
         $c->type = 'content';
-        $c->body = rcube_label('htmlmessage');
+        $c->body = crystal_label('htmlmessage');
         $c->ctype_primary = 'text';
         $c->ctype_secondary = 'plain';
 
@@ -317,7 +317,7 @@ class rcube_message
       // add html part as attachment
       if ($html_part !== null && $structure->parts[$html_part] !== $print_part) {
         $html_part = &$structure->parts[$html_part];
-        $html_part->filename = rcube_label('htmlmessage');
+        $html_part->filename = crystal_label('htmlmessage');
         $html_part->mimetype = 'text/html';
 
         $this->attachments[] = $html_part;
@@ -329,7 +329,7 @@ class rcube_message
       $p->type = 'content';
       $p->ctype_primary = 'text';
       $p->ctype_secondary = 'plain';
-      $p->body = rcube_label('encryptedmessage');
+      $p->body = crystal_label('encryptedmessage');
       $p->size = strlen($p->body);
       
       // maybe some plugins are able to decode this encrypted message part
@@ -461,7 +461,7 @@ class rcube_message
   /**
    * Fill aflat array with references to all parts, indexed by part numbers
    *
-   * @param object rcube_message_part Message body structure
+   * @param object crystal_message_part Message body structure
    */
   private function get_mime_numbers(&$part)
   {

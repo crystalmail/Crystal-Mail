@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_plugin_api.php                                  |
+ | program/include/crystal_plugin_api.php                                  |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2008-2009, RoundCube Dev. - Switzerland                 |
@@ -12,10 +12,10 @@
  |   Plugins repository                                                  |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
- $Id: rcube_plugin_api.php 3296 2010-03-01 19:04:34Z alec $
+ $Id: crystal_plugin_api.php 3296 2010-03-01 19:04:34Z alec $
 
 */
 
@@ -24,7 +24,7 @@
  *
  * @package Core
  */
-class rcube_plugin_api
+class crystal_plugin_api
 {
   static private $instance;
   
@@ -45,12 +45,12 @@ class rcube_plugin_api
   /**
    * This implements the 'singleton' design pattern
    *
-   * @return object rcube_plugin_api The one and only instance if this class
+   * @return object crystal_plugin_api The one and only instance if this class
    */
   static function get_instance()
   {
     if (!self::$instance) {
-      self::$instance = new rcube_plugin_api();
+      self::$instance = new crystal_plugin_api();
     }
 
     return self::$instance;
@@ -69,16 +69,16 @@ class rcube_plugin_api
   /**
    * Load and init all enabled plugins
    *
-   * This has to be done after rcmail::load_gui() or rcmail::json_init()
-   * was called because plugins need to have access to rcmail->output
+   * This has to be done after cmail::load_gui() or cmail::json_init()
+   * was called because plugins need to have access to cmail->output
    */
   public function init()
   {
-    $rcmail = rcmail::get_instance();
-    $this->output = $rcmail->output;
+    $cmail = cmail::get_instance();
+    $this->output = $cmail->output;
     
     $plugins_dir = dir($this->dir);
-    $plugins_enabled = (array)$rcmail->config->get('plugins', array());
+    $plugins_enabled = (array)$cmail->config->get('plugins', array());
     
     foreach ($plugins_enabled as $plugin_name) {
       $fn = $plugins_dir->path . DIRECTORY_SEPARATOR . $plugin_name . DIRECTORY_SEPARATOR . $plugin_name . '.php';
@@ -90,7 +90,7 @@ class rcube_plugin_api
         if (class_exists($plugin_name, false)) {
           $plugin = new $plugin_name($this);
           // check inheritance and task specification
-          if (is_subclass_of($plugin, 'rcube_plugin') && (!$plugin->task || preg_match('/^('.$plugin->task.')$/i', $rcmail->task))) {
+          if (is_subclass_of($plugin, 'crystal_plugin') && (!$plugin->task || preg_match('/^('.$plugin->task.')$/i', $cmail->task))) {
             $plugin->init();
             $this->plugins[] = $plugin;
           }
@@ -127,8 +127,8 @@ class rcube_plugin_api
           if (class_exists($plugin_name, false)) {
             $plugin = new $plugin_name($this);
             // check inheritance
-            if (is_subclass_of($plugin, 'rcube_plugin')) {
-	      if (!$plugin->task || preg_match('/('.$plugin->task.')/i', $rcmail->task)) {
+            if (is_subclass_of($plugin, 'crystal_plugin')) {
+	      if (!$plugin->task || preg_match('/('.$plugin->task.')/i', $cmail->task)) {
                 $plugin->init();
                 $this->plugins[] = $plugin;
               }

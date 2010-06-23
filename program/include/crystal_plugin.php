@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_plugin.php                                      |
+ | program/include/crystal_plugin.php                                      |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2008-2009, RoundCube Dev. - Switzerland                 |
@@ -12,10 +12,10 @@
  |  Abstract plugins interface/class                                     |
  |  All plugins need to extend this class                                |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
- $Id: rcube_plugin.php 3274 2010-02-18 18:01:53Z thomasb $
+ $Id: crystal_plugin.php 3274 2010-02-18 18:01:53Z thomasb $
 
 */
 
@@ -24,7 +24,7 @@
  *
  * @package Core
  */
-abstract class rcube_plugin
+abstract class crystal_plugin
 {
   public $ID;
   public $api;
@@ -58,8 +58,8 @@ abstract class rcube_plugin
   public function load_config($fname = 'config.inc.php')
   {
     $fpath = $this->home.'/'.$fname;
-    $rcmail = rcmail::get_instance();
-    if (is_file($fpath) && !$rcmail->config->load_from_file($fpath)) {
+    $cmail = cmail::get_instance();
+    if (is_file($fpath) && !$cmail->config->load_from_file($fpath)) {
       raise_error(array('code' => 527, 'type' => 'php',
         'file' => __FILE__, 'line' => __LINE__,
         'message' => "Failed to load config from $fpath"), true, false);
@@ -105,26 +105,26 @@ abstract class rcube_plugin
       foreach ($texts as $key => $value)
         $add[$domain.'.'.$key] = $value;
 
-      $rcmail = rcmail::get_instance();
-      $rcmail->load_language($lang, $add);
+      $cmail = cmail::get_instance();
+      $cmail->load_language($lang, $add);
       
       // add labels to client
       if ($add2client) {
         $js_labels = is_array($add2client) ? array_map(array($this, 'label_map_callback'), $add2client) : array_keys($add);
-        $rcmail->output->add_label($js_labels);
+        $cmail->output->add_label($js_labels);
       }
     }
   }
   
   /**
-   * Wrapper for rcmail::gettext() adding the plugin ID as domain
+   * Wrapper for cmail::gettext() adding the plugin ID as domain
    *
    * @return string Localized text
-   * @see rcmail::gettext()
+   * @see cmail::gettext()
    */
   public function gettext($p)
   {
-    return rcmail::get_instance()->gettext($p, $this->ID);
+    return cmail::get_instance()->gettext($p, $this->ID);
   }
 
   /**
@@ -139,13 +139,13 @@ abstract class rcube_plugin
         'file' => __FILE__, 'line' => __LINE__,
         'message' => "Invalid task name: $task. Only characters [a-z0-9_.-] are allowed"), true, false);
     }
-    else if (in_array(rcmail::$main_tasks, $task)) {
+    else if (in_array(cmail::$main_tasks, $task)) {
       raise_error(array('code' => 526, 'type' => 'php',
         'file' => __FILE__, 'line' => __LINE__,
         'message' => "Cannot register taks $task; already taken by another plugin or the application itself"), true, false);
     }
     else {
-      rcmail::$main_tasks[] = $task;
+      cmail::$main_tasks[] = $task;
     }
   }
 
@@ -165,7 +165,7 @@ abstract class rcube_plugin
   /**
    * Register a handler function for a template object
    *
-   * When parsing a template for display, tags like <roundcube:object name="plugin.myobject" />
+   * When parsing a template for display, tags like <crystalmail:object name="plugin.myobject" />
    * will be replaced by the return value if the registered callback function.
    *
    * @param string Object name (should be unique and start with 'plugin.')
@@ -201,7 +201,7 @@ abstract class rcube_plugin
    *
    * @param array Hash array with named parameters (as used in skin templates)
    * @param string Container name where the buttons should be added to
-   * @see rcube_remplate::button()
+   * @see crystal_remplate::button()
    */
   public function add_button($p, $container)
   {

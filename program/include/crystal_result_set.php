@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_result_set.php                                  |
+ | program/include/crystal_result_set.php                                  |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2006-2009, RoundCube Dev. - Switzerland                 |
@@ -12,10 +12,10 @@
  |   Class representing an address directory result set                  |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
- $Id: rcube_result_set.php 3212 2010-01-18 19:15:28Z alec $
+ $Id: crystal_result_set.php 3212 2010-01-18 19:15:28Z alec $
 
 */
 
@@ -26,7 +26,7 @@
  *
  * @package Addressbook
  */
-class rcube_result_set
+class crystal_result_set
 {
   var $count = 0;
   var $first = 0;

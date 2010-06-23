@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_config.php                                      |
+ | program/include/crystal_config.php                                      |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2008-2009, RoundCube Dev. - Switzerland                 |
@@ -12,10 +12,10 @@
  |   Class to read configuration settings                                |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
- $Id: rcube_config.php 3274 2010-02-18 18:01:53Z thomasb $
+ $Id: crystal_config.php 3274 2010-02-18 18:01:53Z thomasb $
 
 */
 
@@ -24,7 +24,7 @@
  *
  * @package Core
  */
-class rcube_config
+class crystal_config
 {
   private $prop = array();
   private $errors = array();
@@ -52,11 +52,11 @@ class rcube_config
     ob_start();
     
     // load main config file
-    if (!$this->load_from_file(RCMAIL_CONFIG_DIR . '/main.inc.php'))
+    if (!$this->load_from_file(cmail_CONFIG_DIR . '/main.inc.php'))
       $this->errors[] = 'main.inc.php was not found.';
 
     // load database config
-    if (!$this->load_from_file(RCMAIL_CONFIG_DIR . '/db.inc.php'))
+    if (!$this->load_from_file(cmail_CONFIG_DIR . '/db.inc.php'))
       $this->errors[] = 'db.inc.php was not found.';
     
     // load host-specific configuration
@@ -74,11 +74,11 @@ class rcube_config
     
     // fix default imap folders encoding
     foreach (array('drafts_mbox', 'junk_mbox', 'sent_mbox', 'trash_mbox') as $folder)
-      $this->prop[$folder] = rcube_charset_convert($this->prop[$folder], RCMAIL_CHARSET, 'UTF7-IMAP');
+      $this->prop[$folder] = crystal_charset_convert($this->prop[$folder], cmail_CHARSET, 'UTF7-IMAP');
 
     if (!empty($this->prop['default_imap_folders']))
       foreach ($this->prop['default_imap_folders'] as $n => $folder)
-        $this->prop['default_imap_folders'][$n] = rcube_charset_convert($folder, RCMAIL_CHARSET, 'UTF7-IMAP');
+        $this->prop['default_imap_folders'][$n] = crystal_charset_convert($folder, cmail_CHARSET, 'UTF7-IMAP');
 
     // set PHP error logging according to config
     if ($this->prop['debug_level'] & 1) {
@@ -121,7 +121,7 @@ class rcube_config
     }
 
     if ($fname) {
-      $this->load_from_file(RCMAIL_CONFIG_DIR . '/' . $fname);
+      $this->load_from_file(cmail_CONFIG_DIR . '/' . $fname);
     }
   }
   
@@ -137,8 +137,8 @@ class rcube_config
   {
     if (is_file($fpath) && is_readable($fpath)) {
       include($fpath);
-      if (is_array($rcmail_config)) {
-        $this->prop = array_merge($this->prop, $rcmail_config, $this->userprefs);
+      if (is_array($cmail_config)) {
+        $this->prop = array_merge($this->prop, $cmail_config, $this->userprefs);
         return true;
       }
     }

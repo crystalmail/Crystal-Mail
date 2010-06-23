@@ -1,7 +1,7 @@
 <?php
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_ldap.php                                        |
+ | program/include/crystal_ldap.php                                        |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2006-2009, RoundCube Dev. - Switzerland                 |
@@ -11,10 +11,10 @@
  |   Interface to an LDAP address directory                              |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
- $Id: rcube_ldap.php 3520 2010-04-21 13:44:14Z alec $
+ $Id: crystal_ldap.php 3520 2010-04-21 13:44:14Z alec $
 
 */
 
@@ -24,7 +24,7 @@
  *
  * @package Addressbook
  */
-class rcube_ldap extends rcube_addressbook
+class crystal_ldap extends crystal_addressbook
 {
   var $conn;
   var $prop = array();
@@ -80,7 +80,7 @@ class rcube_ldap extends rcube_addressbook
    */
   function connect()
   {
-    global $RCMAIL;
+    global $CMAIL;
     
     if (!function_exists('ldap_connect'))
       raise_error(array('code' => 100, 'type' => 'ldap',
@@ -124,11 +124,11 @@ class rcube_ldap extends rcube_addressbook
       if ($this->prop['user_specific']) {
         // No password set, use the session password
         if (empty($this->prop['bind_pass'])) {
-          $this->prop['bind_pass'] = $RCMAIL->decrypt($_SESSION['password']);
+          $this->prop['bind_pass'] = $CMAIL->decrypt($_SESSION['password']);
         }
 
         // Get the pieces needed for variable replacement.
-        $fu = $RCMAIL->user->get_username();
+        $fu = $CMAIL->user->get_username();
         list($u, $d) = explode('@', $fu);
         
         // Replace the bind_dn and base_dn variables.
@@ -313,7 +313,7 @@ class rcube_ldap extends rcube_addressbook
     if ($fields == 'ID' || $fields == $this->primary_key)
     {
       $ids = explode(',', $value);
-      $result = new rcube_result_set();
+      $result = new crystal_result_set();
       foreach ($ids as $id)
         if ($rec = $this->get_record($id, true))
         {
@@ -329,13 +329,13 @@ class rcube_ldap extends rcube_addressbook
     if (is_array($this->prop['search_fields']))
     {
       foreach ($this->prop['search_fields'] as $k => $field)
-        $filter .= "($field=$wc" . rcube_ldap::quote_string($value) . "$wc)";
+        $filter .= "($field=$wc" . crystal_ldap::quote_string($value) . "$wc)";
     }
     else
     {
       foreach ((array)$fields as $field)
         if ($f = $this->_map_field($field))
-          $filter .= "($f=$wc" . rcube_ldap::quote_string($value) . "$wc)";
+          $filter .= "($f=$wc" . crystal_ldap::quote_string($value) . "$wc)";
     }
     $filter .= ')';
     
@@ -384,7 +384,7 @@ class rcube_ldap extends rcube_addressbook
   /**
    * Count number of available contacts in database
    *
-   * @return object rcube_result_set Resultset with values for 'count' and 'first'
+   * @return object crystal_result_set Resultset with values for 'count' and 'first'
    */
   function count()
   {
@@ -404,14 +404,14 @@ class rcube_ldap extends rcube_addressbook
       } // end if
     } // end else
 
-    return new rcube_result_set($count, ($this->list_page-1) * $this->page_size);
+    return new crystal_result_set($count, ($this->list_page-1) * $this->page_size);
   }
 
 
   /**
    * Return the last result set
    *
-   * @return object rcube_result_set Current resultset or NULL if nothing selected yet
+   * @return object crystal_result_set Current resultset or NULL if nothing selected yet
    */
   function get_result()
   {
@@ -424,7 +424,7 @@ class rcube_ldap extends rcube_addressbook
    *
    * @param mixed   Record identifier
    * @param boolean Return as associative array
-   * @return mixed  Hash array or rcube_result_set with all record fields
+   * @return mixed  Hash array or crystal_result_set with all record fields
    */
   function get_record($dn, $assoc=false)
   {
@@ -449,7 +449,7 @@ class rcube_ldap extends rcube_addressbook
         // Add in the dn for the entry.
         $rec['dn'] = $dn;
         $res = $this->_ldap2result($rec);
-        $this->result = new rcube_result_set(1);
+        $this->result = new crystal_result_set(1);
         $this->result->add($res);
       }
     }
@@ -478,7 +478,7 @@ class rcube_ldap extends rcube_addressbook
     } // end foreach
 
     // Verify that the required fields are set.
-    // We know that the email address is required as a default of rcube, so
+    // We know that the email address is required as a default of crystal, so
     // we will default its value into any unfilled required fields.
     foreach ($this->prop['required_fields'] as $fld) {
       if (!isset($newentry[$fld])) {
@@ -487,7 +487,7 @@ class rcube_ldap extends rcube_addressbook
     } // end foreach
 
     // Build the new entries DN.
-    $dn = $this->prop['LDAP_rdn'].'='.rcube_ldap::quote_string($newentry[$this->prop['LDAP_rdn']], true)
+    $dn = $this->prop['LDAP_rdn'].'='.crystal_ldap::quote_string($newentry[$this->prop['LDAP_rdn']], true)
       .','.$this->prop['base_dn'];
 
     $this->_debug("C: Add [dn: $dn]: ".print_r($newentry, true));
@@ -562,11 +562,11 @@ class rcube_ldap extends rcube_addressbook
       // Handle RDN change
       if ($replacedata[$this->prop['LDAP_rdn']]) {
         $newdn = $this->prop['LDAP_rdn'].'='
-	  .rcube_ldap::quote_string($replacedata[$this->prop['LDAP_rdn']], true)
+	  .crystal_ldap::quote_string($replacedata[$this->prop['LDAP_rdn']], true)
 	  .','.$this->prop['base_dn']; 
         if ($dn != $newdn) {
           $newrdn = $this->prop['LDAP_rdn'].'='
-	    .rcube_ldap::quote_string($replacedata[$this->prop['LDAP_rdn']], true);
+	    .crystal_ldap::quote_string($replacedata[$this->prop['LDAP_rdn']], true);
           unset($replacedata[$this->prop['LDAP_rdn']]);
         }
       }
@@ -666,7 +666,7 @@ class rcube_ldap extends rcube_addressbook
    */
   private function _ldap2result($rec)
   {
-    global $RCMAIL;
+    global $CMAIL;
 
     $out = array();
     

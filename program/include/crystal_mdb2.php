@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_mdb2.php                                        |
+ | program/include/crystal_mdb2.php                                        |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2005-2009, RoundCube Dev. - Switzerland                 |
@@ -16,7 +16,7 @@
  | Author: Lukas Kahwe Smith <smith@pooteeweet.org>                      |
  +-----------------------------------------------------------------------+
 
- $Id: rcube_mdb2.php 3528 2010-04-22 11:21:03Z alec $
+ $Id: crystal_mdb2.php 3528 2010-04-22 11:21:03Z alec $
 
 */
 
@@ -28,12 +28,12 @@
  *
  * @package    Database
  * @author     David Saez Padros <david@ols.es>
- * @author     Thomas Bruederli <roundcube@gmail.com>
+ * @author     Thomas Bruederli <crystalmail@gmail.com>
  * @author     Lukas Kahwe Smith <smith@pooteeweet.org>
  * @version    1.16
  * @link       http://pear.php.net/package/MDB2
  */
-class rcube_mdb2
+class crystal_mdb2
   {
   var $db_dsnw;               // DSN for write operations
   var $db_dsnr;               // DSN for read operations
@@ -442,8 +442,8 @@ class rcube_mdb2
    *
    * @param  string  Value to quote
    * @return string  Quoted string for use in query
-   * @deprecated     Replaced by rcube_MDB2::quote_identifier
-   * @see            rcube_mdb2::quote_identifier
+   * @deprecated     Replaced by crystal_MDB2::quote_identifier
+   * @see            crystal_mdb2::quote_identifier
    * @access public
    */
   function quoteIdentifier($str)
@@ -718,17 +718,17 @@ class rcube_mdb2
    */
   function _sqlite_prepare()
     {
-    include_once('include/rcube_sqlite.inc');
+    include_once('include/crystal_sqlite.inc');
 
     // we emulate via callback some missing MySQL function
-    sqlite_create_function($this->db_handle->connection, "from_unixtime", "rcube_sqlite_from_unixtime");
-    sqlite_create_function($this->db_handle->connection, "unix_timestamp", "rcube_sqlite_unix_timestamp");
-    sqlite_create_function($this->db_handle->connection, "now", "rcube_sqlite_now");
-    sqlite_create_function($this->db_handle->connection, "md5", "rcube_sqlite_md5");
+    sqlite_create_function($this->db_handle->connection, "from_unixtime", "crystal_sqlite_from_unixtime");
+    sqlite_create_function($this->db_handle->connection, "unix_timestamp", "crystal_sqlite_unix_timestamp");
+    sqlite_create_function($this->db_handle->connection, "now", "crystal_sqlite_now");
+    sqlite_create_function($this->db_handle->connection, "md5", "crystal_sqlite_md5");
     }
 
 
-  }  // end class rcube_db
+  }  // end class crystal_db
 
 
 /* this is our own debug handler for the MDB2 connection */

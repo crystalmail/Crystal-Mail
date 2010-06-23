@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_html_page.php                                   |
+ | program/include/crystal_html_page.php                                   |
  |                                                                       |
  | This file is part of the RoundCube PHP suite                          |
  | Copyright (C) 2005-2009, RoundCube Dev. - Switzerland                 |
@@ -12,10 +12,10 @@
  |   Class to build XHTML page output                                    |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
- $Id: rcube_html_page.php 3235 2010-01-28 14:46:26Z alec $
+ $Id: crystal_html_page.php 3235 2010-01-28 14:46:26Z alec $
 
 */
 
@@ -24,12 +24,12 @@
  *
  * @package HTML
  */
-class rcube_html_page
+class crystal_html_page
 {
     protected $scripts_path = '';
     protected $script_files = array();
     protected $scripts = array();
-    protected $charset = RCMAIL_CHARSET;
+    protected $charset = cmail_CHARSET;
 
     protected $script_tag_file = "<script type=\"text/javascript\" src=\"%s\"></script>\n";
     protected $script_tag  =  "<script type=\"text/javascript\">\n/* <![CDATA[ */\n%s\n/* ]]> */\n</script>";
@@ -255,8 +255,8 @@ class rcube_html_page
 	    array($this, 'file_callback'), $output);
         $output = str_replace('$__skin_path', $base_path, $output);
 
-        if ($this->charset != RCMAIL_CHARSET)
-	    echo rcube_charset_convert($output, RCMAIL_CHARSET, $this->charset);
+        if ($this->charset != cmail_CHARSET)
+	    echo crystal_charset_convert($output, cmail_CHARSET, $this->charset);
 	else
 	    echo $output;
     }

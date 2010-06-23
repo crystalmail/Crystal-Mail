@@ -3,7 +3,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_mime_struct.php                                 |
+ | program/include/crystal_mime_struct.php                                 |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2005-2010, RoundCube Dev. - Switzerland                 |
@@ -24,7 +24,7 @@
 */
 
                     
-class rcube_mime_struct
+class crystal_mime_struct
 {
     private $structure;
 

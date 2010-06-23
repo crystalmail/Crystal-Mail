@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | rcube_shared.inc                                                      |
+ | crystal_shared.inc                                                      |
  |                                                                       |
  | This file is part of the RoundCube PHP suite                          |
  | Copyright (C) 2005-2007, RoundCube Dev. - Switzerland                 |
@@ -12,10 +12,10 @@
  |   Shared functions and classes used in PHP projects                   |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
- $Id: rcube_shared.inc 3367 2010-03-17 12:24:09Z thomasb $
+ $Id: crystal_shared.inc 3367 2010-03-17 12:24:09Z thomasb $
 
 */
 
@@ -43,7 +43,7 @@ function send_nocacheing_headers()
   header("X-DNS-Prefetch-Control: off");
   
   // We need to set the following headers to make downloads work using IE in HTTPS mode.
-  if (rcube_https_check()) {
+  if (crystal_https_check()) {
     header('Pragma: ');
     header('Cache-Control: ');
   }
@@ -189,17 +189,17 @@ function show_bytes($bytes)
   if ($bytes > 1073741824)
   {
     $gb = $bytes/1073741824;
-    $str = sprintf($gb>=10 ? "%d " : "%.1f ", $gb) . rcube_label('GB');
+    $str = sprintf($gb>=10 ? "%d " : "%.1f ", $gb) . crystal_label('GB');
   }
   else if ($bytes > 1048576)
   {
     $mb = $bytes/1048576;
-    $str = sprintf($mb>=10 ? "%d " : "%.1f ", $mb) . rcube_label('MB');
+    $str = sprintf($mb>=10 ? "%d " : "%.1f ", $mb) . crystal_label('MB');
   }
   else if ($bytes > 1024)
-    $str = sprintf("%d ",  round($bytes/1024)) . rcube_label('KB');
+    $str = sprintf("%d ",  round($bytes/1024)) . crystal_label('KB');
   else
-    $str = sprintf('%d ', $bytes) . rcube_label('B');
+    $str = sprintf('%d ', $bytes) . crystal_label('B');
 
   return $str;
 }
@@ -437,8 +437,8 @@ function abbreviate_string($str, $maxlength, $place_holder='...')
 function rc_mime_content_type($path, $name, $failover = 'application/octet-stream')
 {
     $mime_type = null;
-    $mime_magic = rcmail::get_instance()->config->get('mime_magic');
-    $mime_ext = @include(RCMAIL_CONFIG_DIR . '/mimetypes.php');
+    $mime_magic = cmail::get_instance()->config->get('mime_magic');
+    $mime_ext = @include(cmail_CONFIG_DIR . '/mimetypes.php');
     $suffix = $name ? substr($name, strrpos($name, '.')+1) : '*';
 
     // use file name suffix with hard-coded mime-type map
@@ -587,7 +587,7 @@ function json_serialize($input)
  * @param string Delimiter expression string for preg_match()
  * @param string Input string
  */
-function rcube_explode_quoted_string($delimiter, $string)
+function crystal_explode_quoted_string($delimiter, $string)
 {
   $result = array();
   $strlen = strlen($string);

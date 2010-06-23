@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_imap.php                                        |
+ | program/include/crystal_imap.php                                        |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2005-2010, RoundCube Dev. - Switzerland                 |
@@ -12,11 +12,11 @@
  |   IMAP Engine                                                         |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  | Author: Aleksander Machniak <alec@alec.pl>                            |
  +-----------------------------------------------------------------------+
 
- $Id: rcube_imap.php 3494 2010-04-15 12:21:03Z alec $
+ $Id: crystal_imap.php 3494 2010-04-15 12:21:03Z alec $
 
 */
 
@@ -25,10 +25,10 @@
  * Interface class for accessing an IMAP server
  *
  * @package    Mail
- * @author     Thomas Bruederli <roundcube@gmail.com>
+ * @author     Thomas Bruederli <crystalmail@gmail.com>
  * @version    1.6
  */
-class rcube_imap
+class crystal_imap
 {
     public $debug_level = 1;
     public $error_code = 0;
@@ -39,7 +39,7 @@ class rcube_imap
     public $delimiter = NULL;
     public $threading = false;
     public $fetch_add_headers = '';
-    public $conn; // rcube_imap_generic object
+    public $conn; // crystal_imap_generic object
 
     private $db;
     private $root_ns = '';
@@ -74,7 +74,7 @@ class rcube_imap
     function __construct($db_conn)
     {
         $this->db = $db_conn;
-        $this->conn = new rcube_imap_generic();
+        $this->conn = new crystal_imap_generic();
     }
 
 
@@ -105,7 +105,7 @@ class rcube_imap
 
         $attempt = 0;
         do {
-            $data = rcmail::get_instance()->plugins->exec_hook('imap_connect',
+            $data = cmail::get_instance()->plugins->exec_hook('imap_connect',
                 array('host' => $host, 'user' => $user, 'attempt' => ++$attempt));
             
             if (!empty($data['pass']))
@@ -177,7 +177,7 @@ class rcube_imap
     }
 
     /**
-     * Set options to be used in rcube_imap_generic::connect()
+     * Set options to be used in crystal_imap_generic::connect()
      */
     function set_options($opt)
     {
@@ -425,7 +425,7 @@ class rcube_imap
      * Private method for getting nr of messages
      *
      * @access  private
-     * @see     rcube_imap::messagecount()
+     * @see     crystal_imap::messagecount()
      */
     private function _messagecount($mailbox='', $mode='ALL', $force=false)
     {
@@ -502,7 +502,7 @@ class rcube_imap
      * Private method for getting nr of threads
      *
      * @access  private
-     * @see     rcube_imap::messagecount()
+     * @see     crystal_imap::messagecount()
      */
     private function _threadcount($mailbox, &$msg_count)
     {
@@ -541,7 +541,7 @@ class rcube_imap
      * Private method for listing message headers
      *
      * @access  private
-     * @see     rcube_imap::list_headers
+     * @see     crystal_imap::list_headers
      */
     private function _list_headers($mailbox='', $page=NULL, $sort_field=NULL, $sort_order=NULL, $recursive=false, $slice=0)
     {
@@ -645,7 +645,7 @@ class rcube_imap
             return array();
     
         // use this class for message sorting
-        $sorter = new rcube_header_sorter();
+        $sorter = new crystal_header_sorter();
         $sorter->set_sequence_numbers($msg_index);
         $sorter->sort_headers($a_msg_headers);
 
@@ -660,7 +660,7 @@ class rcube_imap
      * Private method for listing message headers using threads
      *
      * @access  private
-     * @see     rcube_imap::list_headers
+     * @see     crystal_imap::list_headers
      */
     private function _list_thread_headers($mailbox, $page=NULL, $sort_field=NULL, $sort_order=NULL, $recursive=false, $slice=0)
     {
@@ -747,7 +747,7 @@ class rcube_imap
             return array();
     
         // use this class for message sorting
-        $sorter = new rcube_header_sorter();
+        $sorter = new crystal_header_sorter();
         $sorter->set_sequence_numbers($all_ids);
         $sorter->sort_headers($a_msg_headers);
 
@@ -800,7 +800,7 @@ class rcube_imap
      * @param   boolean  Number of slice items to extract from result array
      * @return  array    Indexed array with message header objects
      * @access  private
-     * @see     rcube_imap::list_header_set()
+     * @see     crystal_imap::list_header_set()
      */
     private function _list_header_set($mailbox, $page=NULL, $sort_field=NULL, $sort_order=NULL, $slice=0)
     {
@@ -837,7 +837,7 @@ class rcube_imap
             $this->_fetch_headers($mailbox, join(',',$msgs), $a_msg_headers, NULL);
 
             // I didn't found in RFC that FETCH always returns messages sorted by index
-            $sorter = new rcube_header_sorter();
+            $sorter = new crystal_header_sorter();
             $sorter->set_sequence_numbers($msgs);
             $sorter->sort_headers($a_msg_headers);
 
@@ -866,7 +866,7 @@ class rcube_imap
             // fetch headers
             $this->_fetch_headers($mailbox, join(',',$msgs), $a_msg_headers, NULL);
 
-            $sorter = new rcube_header_sorter();
+            $sorter = new crystal_header_sorter();
             $sorter->set_sequence_numbers($msgs);
             $sorter->sort_headers($a_msg_headers);
 
@@ -889,7 +889,7 @@ class rcube_imap
                 if (!is_array($a_msg_headers) || empty($a_msg_headers))
                     return array();
 
-                $sorter = new rcube_header_sorter();
+                $sorter = new crystal_header_sorter();
                 $sorter->set_sequence_numbers($msgs);
                 $sorter->sort_headers($a_msg_headers);
 
@@ -930,7 +930,7 @@ class rcube_imap
      * @param   boolean  Number of slice items to extract from result array
      * @return  array    Indexed array with message header objects
      * @access  private
-     * @see     rcube_imap::list_header_set()
+     * @see     crystal_imap::list_header_set()
      */
     private function _list_thread_header_set($mailbox, $page=NULL, $sort_field=NULL, $sort_order=NULL, $slice=0)
     {
@@ -1332,7 +1332,7 @@ class rcube_imap
                 {
                     $string_offset = $m[1] + strlen($m[0]) + 4; // {}\r\n
                     $string = substr($str, $string_offset - 1, $m[0]);
-                    $string = rcube_charset_convert($string, $charset, 'US-ASCII');
+                    $string = crystal_charset_convert($string, $charset, 'US-ASCII');
                     if (!$string)
                         continue;
                     $res .= sprintf("%s{%d}\r\n%s", substr($str, $last, $m[1] - $last - 1), strlen($string), $string);
@@ -1358,7 +1358,7 @@ class rcube_imap
      *
      * @return array   search results as list of message ids
      * @access private
-     * @see rcube_imap::search()
+     * @see crystal_imap::search()
      */
     private function _search_index($mailbox, $criteria='ALL', $charset=NULL, $sort_field=NULL)
     {
@@ -1436,7 +1436,7 @@ class rcube_imap
      * Sort thread
      *
      * @param string Mailbox name
-     * @param  array Unsorted thread tree (rcube_imap_generic::thread() result)
+     * @param  array Unsorted thread tree (crystal_imap_generic::thread() result)
      * @param  array Message IDs if we know what we need (e.g. search result)
      * @return array Sorted roots IDs
      * @access private
@@ -1598,7 +1598,7 @@ class rcube_imap
      *
      * @param int Message UID to fetch
      * @param string Message BODYSTRUCTURE string (optional)
-     * @return object rcube_message_part Message part tree or False on failure
+     * @return object crystal_message_part Message part tree or False on failure
      */
     function &get_structure($uid, $structure_str='')
     {
@@ -1613,7 +1613,7 @@ class rcube_imap
         if (!$structure_str) {
             $structure_str = $this->conn->fetchStructureString($this->mailbox, $uid, true);
         }
-        $structure = rcube_mime_struct::parseStructure($structure_str);
+        $structure = crystal_mime_struct::parseStructure($structure_str);
         $struct = false;
 
         // parse structure and add headers
@@ -1663,7 +1663,7 @@ class rcube_imap
      */
     function &_structure_part($part, $count=0, $parent='', $mime_headers=null, $raw_headers=null)
     {
-        $struct = new rcube_message_part;
+        $struct = new crystal_message_part;
         $struct->mime_id = empty($parent) ? (string)$count : "$parent.$count";
 
         // multipart
@@ -1814,7 +1814,7 @@ class rcube_imap
      * Set attachment filename from message part structure 
      *
      * @access private
-     * @param  object rcube_message_part Part object
+     * @param  object crystal_message_part Part object
      * @param  string Part's raw headers
      */
     private function _set_part_filename(&$part, $headers=null)
@@ -1916,7 +1916,7 @@ class rcube_imap
 
         // decode filename
         if (!empty($filename_mime)) {
-            $part->filename = rcube_imap::decode_mime_string($filename_mime, 
+            $part->filename = crystal_imap::decode_mime_string($filename_mime, 
                 $part->charset ? $part->charset : ($this->struct_charset ? $this->struct_charset :
                 rc_detect_encoding($filename_mime, $this->default_charset)));
         } 
@@ -1926,7 +1926,7 @@ class rcube_imap
                 $filename_charset = $fmatches[1];
                 $filename_encoded = $fmatches[2];
             }
-            $part->filename = rcube_charset_convert(urldecode($filename_encoded), $filename_charset);
+            $part->filename = crystal_charset_convert(urldecode($filename_encoded), $filename_charset);
         }
     }
 
@@ -1953,7 +1953,7 @@ class rcube_imap
      *
      * @param  int    Message UID
      * @param  string Part number
-     * @param  object rcube_message_part Part object created by get_structure()
+     * @param  object crystal_message_part Part object created by get_structure()
      * @param  mixed  True to print part, ressource to write part contents in
      * @param  resource File pointer to save the message part
      * @return string Message/part body if not printed
@@ -1963,13 +1963,13 @@ class rcube_imap
         // get part encoding if not provided
         if (!is_object($o_part)) {
             $structure_str = $this->conn->fetchStructureString($this->mailbox, $uid, true); 
-            $structure = new rcube_mime_struct();
+            $structure = new crystal_mime_struct();
             // error or message not found
             if (!$structure->loadStructure($structure_str)) {
                 return false;
             }
 
-            $o_part = new rcube_message_part;
+            $o_part = new crystal_message_part;
             $o_part->ctype_primary = strtolower($structure->getPartType($part));
             $o_part->encoding      = strtolower($structure->getPartEncoding($part));
             $o_part->charset       = $structure->getPartCharset($part);
@@ -1991,7 +1991,7 @@ class rcube_imap
             if (empty($o_part->charset) || strtolower($o_part->charset) == 'us-ascii')
                 $o_part->charset = $this->default_charset;
 
-            $body = rcube_charset_convert($body, $o_part->charset);
+            $body = crystal_charset_convert($body, $o_part->charset);
         }
     
         return $body;
@@ -2003,12 +2003,12 @@ class rcube_imap
      *
      * @param  int    Message UID
      * @return string Message/part body
-     * @see    rcube_imap::get_message_part()
+     * @see    crystal_imap::get_message_part()
      */
     function &get_body($uid, $part=1)
     {
         $headers = $this->get_headers($uid);
-        return rcube_charset_convert($this->get_message_part($uid, $part, NULL),
+        return crystal_charset_convert($this->get_message_part($uid, $part, NULL),
             $headers->charset ? $headers->charset : $this->default_charset);
     }
 
@@ -2123,7 +2123,7 @@ class rcube_imap
         // make sure mailbox exists
         if ($this->mailbox_exists($mbox_name, true)) {
             if ($is_file) {
-                $separator = rcmail::get_instance()->config->header_delimiter();
+                $separator = cmail::get_instance()->config->header_delimiter();
                 $saved = $this->conn->appendFromFile($mailbox, $message,
                     $headers, $separator.$separator);
             }
@@ -2170,7 +2170,7 @@ class rcube_imap
         }
 
         // flag messages as read before moving them
-        $config = rcmail::get_instance()->config;
+        $config = cmail::get_instance()->config;
         if ($config->get('read_when_deleted') && $tbox == $config->get('trash_mbox')) {
             // don't flush cache (4th argument)
             $this->set_flag($uids, 'SEEN', $fbox, true);
@@ -2367,7 +2367,7 @@ class rcube_imap
      * @param mixed    Message UIDs as array or comma-separated string, or '*'
      * @return boolean True on success
      * @access private
-     * @see rcube_imap::expunge()
+     * @see crystal_imap::expunge()
      */
     private function _expunge($mailbox, $clear_cache=true, $uids=NULL)
     {
@@ -2499,7 +2499,7 @@ class rcube_imap
      * Private method for mailbox listing
      *
      * @return  array   List of mailboxes/folders
-     * @see     rcube_imap::list_mailboxes()
+     * @see     crystal_imap::list_mailboxes()
      * @access  private
      */
     private function _list_mailboxes($root='', $filter='*')
@@ -2512,7 +2512,7 @@ class rcube_imap
             return $a_mboxes;
 
         // Give plugins a chance to provide a list of mailboxes
-        $data = rcmail::get_instance()->plugins->exec_hook('list_mailboxes',
+        $data = cmail::get_instance()->plugins->exec_hook('list_mailboxes',
             array('root'=>$root,'filter'=>$filter));
     
         if (isset($data['folders'])) {
@@ -3318,9 +3318,9 @@ class rcube_imap
     /**
      * Decode a Microsoft Outlook TNEF part (winmail.dat)
      *
-     * @param object rcube_message_part Message part to decode
+     * @param object crystal_message_part Message part to decode
      * @param string UID of the message
-     * @return array List of rcube_message_parts extracted from windmail.dat
+     * @return array List of crystal_message_parts extracted from windmail.dat
      */
     function tnef_decode(&$part, $uid)
     {
@@ -3334,7 +3334,7 @@ class rcube_imap
         $tnef_arr = tnef_decode($part->body);
     
         foreach ($tnef_arr as $winatt) {
-            $tpart = new rcube_message_part;
+            $tpart = new crystal_message_part;
             $tpart->filename = $winatt["name"];
             $tpart->encoding = 'stream';
             $tpart->ctype_primary = $winatt["type0"];
@@ -3361,7 +3361,7 @@ class rcube_imap
      */
     function decode_header($input, $remove_quotes=false)
     {
-        $str = rcube_imap::decode_mime_string((string)$input, $this->default_charset);
+        $str = crystal_imap::decode_mime_string((string)$input, $this->default_charset);
         if ($str{0}=='"' && $remove_quotes)
             $str = str_replace('"', '', $str);
     
@@ -3408,20 +3408,20 @@ class rcube_imap
                 $input = substr($input, $end_pos+2);
 
                 // Decode the string fragement
-                $out .= rcube_imap::_decode_mime_string_part($encstr);
+                $out .= crystal_imap::_decode_mime_string_part($encstr);
             }
 
             // Deocde the rest (if any)
             if (strlen($input) != 0)
-                $out .= rcube_imap::decode_mime_string($input, $fallback);
+                $out .= crystal_imap::decode_mime_string($input, $fallback);
 
             // return the results
             return $out;
         }
 
         // no encoding information, use fallback
-        return rcube_charset_convert($input, 
-            !empty($fallback) ? $fallback : rcmail::get_instance()->config->get('default_charset', 'ISO-8859-1'));
+        return crystal_charset_convert($input, 
+            !empty($fallback) ? $fallback : cmail::get_instance()->config->get('default_charset', 'ISO-8859-1'));
     }
 
 
@@ -3447,7 +3447,7 @@ class rcube_imap
                 $rest = quoted_printable_decode($rest);
             }
 
-            return rcube_charset_convert($rest, $a[0]);
+            return crystal_charset_convert($rest, $a[0]);
         }
 
         // we dont' know what to do with this  
@@ -3482,7 +3482,7 @@ class rcube_imap
 
 
     /**
-     * Convert body charset to RCMAIL_CHARSET according to the ctype_parameters
+     * Convert body charset to cmail_CHARSET according to the ctype_parameters
      *
      * @param string Part body to decode
      * @param string Charset to convert from
@@ -3491,10 +3491,10 @@ class rcube_imap
     function charset_decode($body, $ctype_param)
     {
         if (is_array($ctype_param) && !empty($ctype_param['charset']))
-            return rcube_charset_convert($body, $ctype_param['charset']);
+            return crystal_charset_convert($body, $ctype_param['charset']);
 
         // defaults to what is specified in the class header
-        return rcube_charset_convert($body,  $this->default_charset);
+        return crystal_charset_convert($body,  $this->default_charset);
     }
 
 
@@ -3532,7 +3532,7 @@ class rcube_imap
             if (($p = array_search($folder, $this->default_folders)) !== false && !$a_defaults[$p])
                 $a_defaults[$p] = $folder;
             else
-                $folders[$folder] = rcube_charset_convert($folder, 'UTF7-IMAP');
+                $folders[$folder] = crystal_charset_convert($folder, 'UTF7-IMAP');
         }
 
         // sort folders and place defaults on the top
@@ -3720,12 +3720,12 @@ class rcube_imap
     private function _parse_address_list($str, $decode=true)
     {
         // remove any newlines and carriage returns before
-        $a = rcube_explode_quoted_string('[,;]', preg_replace( "/[\r\n]/", " ", $str));
+        $a = crystal_explode_quoted_string('[,;]', preg_replace( "/[\r\n]/", " ", $str));
         $result = array();
 
         foreach ($a as $key => $val) {
             $val = preg_replace("/([\"\w])</", "$1 <", $val);
-            $sub_a = rcube_explode_quoted_string(' ', $decode ? $this->decode_header($val) : $val);
+            $sub_a = crystal_explode_quoted_string(' ', $decode ? $this->decode_header($val) : $val);
             $result[$key]['name'] = '';
 
             foreach ($sub_a as $k => $v) {
@@ -3745,7 +3745,7 @@ class rcube_imap
         return $result;
     }
 
-}  // end class rcube_imap
+}  // end class crystal_imap
 
 
 /**
@@ -3753,7 +3753,7 @@ class rcube_imap
  *
  * @package Mail
  */
-class rcube_message_part
+class crystal_message_part
 {
     var $mime_id = '';
     var $ctype_primary = 'text';
@@ -3779,12 +3779,12 @@ class rcube_message_part
 
 
 /**
- * Class for sorting an array of rcube_mail_header objects in a predetermined order.
+ * Class for sorting an array of crystal_mail_header objects in a predetermined order.
  *
  * @package Mail
  * @author Eric Stadtherr
  */
-class rcube_header_sorter
+class crystal_header_sorter
 {
     var $sequence_numbers = array();
    
@@ -3801,7 +3801,7 @@ class rcube_header_sorter
     /**
      * Sort the array of header objects
      *
-     * @param array Array of rcube_mail_header objects indexed by UID
+     * @param array Array of crystal_mail_header objects indexed by UID
      */
     function sort_headers(&$headers)
     {

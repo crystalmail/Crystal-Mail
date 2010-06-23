@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcmail.php                                            |
+ | program/include/cmail.php                                            |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2008-2010, RoundCube Dev. - Switzerland                 |
@@ -12,10 +12,10 @@
  |   Application class providing core functions and holding              |
  |   instances of all 'global' objects like db- and imap-connections     |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
- $Id: rcmail.php 3466 2010-04-01 15:54:57Z alec $
+ $Id: cmail.php 3466 2010-04-01 15:54:57Z alec $
 
 */
 
@@ -26,7 +26,7 @@
  *
  * @package Core
  */
-class rcmail
+class cmail
 {
   static public $main_tasks = array('mail','settings','addressbook','login','logout','dummy');
   
@@ -50,12 +50,12 @@ class rcmail
   /**
    * This implements the 'singleton' design pattern
    *
-   * @return object rcmail The one and only instance
+   * @return object cmail The one and only instance
    */
   static function get_instance()
   {
     if (!self::$instance) {
-      self::$instance = new rcmail();
+      self::$instance = new cmail();
       self::$instance->startup();  // init AFTER object was linked with self::$instance
     }
 
@@ -69,7 +69,7 @@ class rcmail
   private function __construct()
   {
     // load configuration
-    $this->config = new rcube_config();
+    $this->config = new crystal_config();
     
     register_shutdown_function(array($this, 'shutdown'));
   }
@@ -85,7 +85,7 @@ class rcmail
   {
     // initialize syslog
     if ($this->config->get('log_driver') == 'syslog') {
-      $syslog_id = $this->config->get('syslog_id', 'roundcube');
+      $syslog_id = $this->config->get('syslog_id', 'crystalmail');
       $syslog_facility = $this->config->get('syslog_facility', LOG_USER);
       openlog($syslog_id, LOG_ODELAY, $syslog_facility);
     }
@@ -97,14 +97,14 @@ class rcmail
     $this->session_init();
 
     // create user object
-    $this->set_user(new rcube_user($_SESSION['user_id']));
+    $this->set_user(new crystal_user($_SESSION['user_id']));
 
     // configure session (after user config merge!)
     $this->session_configure();
 
     // set task and action properties
-    $this->set_task(get_input_value('_task', RCUBE_INPUT_GPC));
-    $this->action = asciiwords(get_input_value('_action', RCUBE_INPUT_GPC));
+    $this->set_task(get_input_value('_task', crystal_INPUT_GPC));
+    $this->action = asciiwords(get_input_value('_action', crystal_INPUT_GPC));
 
     // reset some session parameters when changing task
     if ($_SESSION['task'] != $this->task)
@@ -120,7 +120,7 @@ class rcmail
       $GLOBALS['OUTPUT'] = $this->load_gui(!empty($_REQUEST['_framed']));
 
     // create plugin API and load plugins
-    $this->plugins = rcube_plugin_api::get_instance();
+    $this->plugins = crystal_plugin_api::get_instance();
 
     // init plugins
     $this->plugins->init();
@@ -152,7 +152,7 @@ class rcmail
   /**
    * Setter for system user object
    *
-   * @param object rcube_user Current user instance
+   * @param object crystal_user Current user instance
    */
   public function set_user($user)
   {
@@ -183,7 +183,7 @@ class rcmail
    */
   private function language_prop($lang)
   {
-    static $rcube_languages, $rcube_language_aliases;
+    static $crystal_languages, $crystal_language_aliases;
     
     // user HTTP_ACCEPT_LANGUAGE if no language is specified
     if (empty($lang) || $lang == 'auto') {
@@ -191,29 +191,29 @@ class rcmail
        $lang = str_replace('-', '_', $accept_langs[0]);
      }
      
-    if (empty($rcube_languages)) {
+    if (empty($crystal_languages)) {
       @include(INSTALL_PATH . 'program/localization/index.inc');
     }
     
     // check if we have an alias for that language
-    if (!isset($rcube_languages[$lang]) && isset($rcube_language_aliases[$lang])) {
-      $lang = $rcube_language_aliases[$lang];
+    if (!isset($crystal_languages[$lang]) && isset($crystal_language_aliases[$lang])) {
+      $lang = $crystal_language_aliases[$lang];
     }
     // try the first two chars
-    else if (!isset($rcube_languages[$lang])) {
+    else if (!isset($crystal_languages[$lang])) {
       $short = substr($lang, 0, 2);
      
       // check if we have an alias for the short language code
-      if (!isset($rcube_languages[$short]) && isset($rcube_language_aliases[$short])) {
-        $lang = $rcube_language_aliases[$short];
+      if (!isset($crystal_languages[$short]) && isset($crystal_language_aliases[$short])) {
+        $lang = $crystal_language_aliases[$short];
       }
       // expand 'nn' to 'nn_NN'
-      else if (!isset($rcube_languages[$short])) {
+      else if (!isset($crystal_languages[$short])) {
         $lang = $short.'_'.strtoupper($short);
       }
     }
 
-    if (!isset($rcube_languages[$lang]) || !is_dir(INSTALL_PATH . 'program/localization/' . $lang)) {
+    if (!isset($crystal_languages[$lang]) || !is_dir(INSTALL_PATH . 'program/localization/' . $lang)) {
       $lang = 'en_US';
     }
 
@@ -224,14 +224,14 @@ class rcmail
   /**
    * Get the current database connection
    *
-   * @return object rcube_mdb2  Database connection object
+   * @return object crystal_mdb2  Database connection object
    */
   public function get_dbh()
   {
     if (!$this->db) {
       $config_all = $this->config->all();
 
-      $this->db = new rcube_mdb2($config_all['db_dsnw'], $config_all['db_dsnr'], $config_all['db_persistent']);
+      $this->db = new crystal_mdb2($config_all['db_dsnw'], $config_all['db_dsnr'], $config_all['db_persistent']);
       $this->db->sqlite_initials = INSTALL_PATH . 'SQL/sqlite.initial.sql';
       $this->db->set_debug((bool)$config_all['sql_debug']);
       $this->db->db_connect('w');
@@ -246,7 +246,7 @@ class rcmail
    *
    * @param string  Address book identifier
    * @param boolean True if the address book needs to be writeable
-   * @return object rcube_contacts Address book object
+   * @return object crystal_contacts Address book object
    */
   public function get_address_book($id, $writeable = false)
   {
@@ -256,27 +256,27 @@ class rcmail
 
     $plugin = $this->plugins->exec_hook('get_address_book', array('id' => $id, 'writeable' => $writeable));
     
-    // plugin returned instance of a rcube_addressbook
-    if ($plugin['instance'] instanceof rcube_addressbook) {
+    // plugin returned instance of a crystal_addressbook
+    if ($plugin['instance'] instanceof crystal_addressbook) {
       $contacts = $plugin['instance'];
     }
     else if ($id && $ldap_config[$id]) {
-      $contacts = new rcube_ldap($ldap_config[$id], $this->config->get('ldap_debug'), $this->config->mail_domain($_SESSION['imap_host']));
+      $contacts = new crystal_ldap($ldap_config[$id], $this->config->get('ldap_debug'), $this->config->mail_domain($_SESSION['imap_host']));
     }
     else if ($id === '0') {
-      $contacts = new rcube_contacts($this->db, $this->user->ID);
+      $contacts = new crystal_contacts($this->db, $this->user->ID);
     }
     else if ($abook_type == 'ldap') {
       // Use the first writable LDAP address book.
       foreach ($ldap_config as $id => $prop) {
         if (!$writeable || $prop['writable']) {
-          $contacts = new rcube_ldap($prop, $this->config->get('ldap_debug'), $this->config->mail_domain($_SESSION['imap_host']));
+          $contacts = new crystal_ldap($prop, $this->config->get('ldap_debug'), $this->config->mail_domain($_SESSION['imap_host']));
           break;
         }
       }
     }
     else { // $id == 'sql'
-      $contacts = new rcube_contacts($this->db, $this->user->ID);
+      $contacts = new crystal_contacts($this->db, $this->user->ID);
     }
     
     return $contacts;
@@ -298,10 +298,10 @@ class rcmail
 
     // We are using the DB address book
     if ($abook_type != 'ldap') {
-      $contacts = new rcube_contacts($this->db, null);
+      $contacts = new crystal_contacts($this->db, null);
       $list['0'] = array(
         'id' => 0,
-        'name' => rcube_label('personaladrbook'),
+        'name' => crystal_label('personaladrbook'),
         'groups' => $contacts->groups,
         'readonly' => false,
         'autocomplete' => in_array('sql', $autocomplete)
@@ -337,17 +337,17 @@ class rcmail
   
   /**
    * Init output object for GUI and add common scripts.
-   * This will instantiate a rcmail_template object and set
+   * This will instantiate a cmail_template object and set
    * environment vars according to the current session and configuration
    *
    * @param boolean True if this request is loaded in a (i)frame
-   * @return object rcube_template Reference to HTML output object
+   * @return object crystal_template Reference to HTML output object
    */
   public function load_gui($framed = false)
   {
     // init output page
-    if (!($this->output instanceof rcube_template))
-      $this->output = new rcube_template($this->task, $framed);
+    if (!($this->output instanceof crystal_template))
+      $this->output = new crystal_template($this->task, $framed);
 
     // set keep-alive/check-recent interval
     if ($keep_alive = $this->session->get_keep_alive()) {
@@ -362,7 +362,7 @@ class rcmail
     $this->output->set_env('task', $this->task);
     $this->output->set_env('action', $this->action);
     $this->output->set_env('comm_path', $this->comm_path);
-    $this->output->set_charset(RCMAIL_CHARSET);
+    $this->output->set_charset(cmail_CHARSET);
 
     // add some basic label to client
     $this->output->add_label('loading', 'servererror');
@@ -374,12 +374,12 @@ class rcmail
   /**
    * Create an output object for JSON responses
    *
-   * @return object rcube_json_output Reference to JSON output object
+   * @return object crystal_json_output Reference to JSON output object
    */
   public function json_init()
   {
-    if (!($this->output instanceof rcube_json_output))
-      $this->output = new rcube_json_output($this->task);
+    if (!($this->output instanceof crystal_json_output))
+      $this->output = new crystal_json_output($this->task);
     
     return $this->output;
   }
@@ -392,7 +392,7 @@ class rcmail
    */
   public function smtp_init($connect = false)
   {
-    $this->smtp = new rcube_smtp();
+    $this->smtp = new crystal_smtp();
   
     if ($connect)
       $this->smtp->connect();
@@ -411,7 +411,7 @@ class rcmail
     if (is_object($this->imap))
       return;
       
-    $this->imap = new rcube_imap($this->db);
+    $this->imap = new crystal_imap($this->db);
     $this->imap->debug_level = $this->config->get('debug_level');
     $this->imap->skip_deleted = $this->config->get('skip_deleted');
 
@@ -446,7 +446,7 @@ class rcmail
     if ($connect) {
       $this->imap_connect();
       raise_error(array('code' => 800, 'type' => 'imap', 'file' => __FILE__,
-        'message' => "rcube::imap_init(true) is deprecated, use rcube::imap_connect() instead"), true, false);
+        'message' => "crystal::imap_init(true) is deprecated, use crystal::imap_connect() instead"), true, false);
     }
   }
 
@@ -492,18 +492,18 @@ class rcmail
       ini_set('session.gc_maxlifetime', $lifetime * 2);
     }
 
-    ini_set('session.cookie_secure', rcube_https_check());
-    ini_set('session.name', 'roundcube_sessid');
+    ini_set('session.cookie_secure', crystal_https_check());
+    ini_set('session.name', 'crystalmail_sessid');
     ini_set('session.use_cookies', 1);
     ini_set('session.use_only_cookies', 1);  
     ini_set('session.serialize_handler', 'php');
 
     // use database for storing session data
-    $this->session = new rcube_session($this->get_dbh(), $lifetime);
+    $this->session = new crystal_session($this->get_dbh(), $lifetime);
 
-    $this->session->register_gc_handler('rcmail_temp_gc');
+    $this->session->register_gc_handler('cmail_temp_gc');
     if ($this->config->get('enable_caching'))
-      $this->session->register_gc_handler('rcmail_cache_gc');
+      $this->session->register_gc_handler('cmail_cache_gc');
 
     // start PHP session (if not in CLI mode)
     if ($_SERVER['REMOTE_ADDR'])
@@ -595,7 +595,7 @@ class rcmail
 
     // try to resolve email address from virtuser table
     if (strpos($username, '@'))
-      if ($virtuser = rcube_user::email2user($username))
+      if ($virtuser = crystal_user::email2user($username))
         $username = $virtuser;
 
     // lowercase username if it's an e-mail address (#1484473)
@@ -603,7 +603,7 @@ class rcmail
       $username = mb_strtolower($username);
 
     // user already registered -> overwrite username
-    if ($user = rcube_user::query($username, $host))
+    if ($user = crystal_user::query($username, $host))
       $username = $user->data['username'];
 
     if (!$this->imap)
@@ -624,7 +624,7 @@ class rcmail
     }
     // create new system user
     else if ($config['auto_create_user']) {
-      if ($created = rcube_user::create($username, $host)) {
+      if ($created = crystal_user::create($username, $host)) {
         $user = $created;
         // create default folders on first login
         if ($config['create_default_folders'])
@@ -678,7 +678,7 @@ class rcmail
    */
   public function set_imap_prop()
   {
-    $this->imap->set_charset($this->config->get('default_charset', RCMAIL_CHARSET));
+    $this->imap->set_charset($this->config->get('default_charset', cmail_CHARSET));
 
     if ($default_folders = $this->config->get('default_imap_folders')) {
       $this->imap->set_default_mailboxes($default_folders);
@@ -707,7 +707,7 @@ class rcmail
     $host = null;
     
     if (is_array($default_host)) {
-      $post_host = get_input_value('_host', RCUBE_INPUT_POST);
+      $post_host = get_input_value('_host', crystal_INPUT_POST);
       
       // direct match in default_host array
       if ($default_host[$post_host] || in_array($post_host, array_values($default_host))) {
@@ -715,7 +715,7 @@ class rcmail
       }
       
       // try to select host by mail domain
-      list($user, $domain) = explode('@', get_input_value('_user', RCUBE_INPUT_POST));
+      list($user, $domain) = explode('@', get_input_value('_user', crystal_INPUT_POST));
       if (!empty($domain)) {
         foreach ($default_host as $imap_host => $mail_domains) {
           if (is_array($mail_domains) && in_array($domain, $mail_domains)) {
@@ -731,7 +731,7 @@ class rcmail
       }
     }
     else if (empty($default_host)) {
-      $host = get_input_value('_host', RCUBE_INPUT_POST);
+      $host = get_input_value('_host', crystal_INPUT_POST);
     }
     else
       $host = $default_host;
@@ -868,7 +868,7 @@ class rcmail
           if ($name{0}=='.' || !is_dir(INSTALL_PATH . 'program/localization/' . $name))
             continue;
 
-          if ($label = $rcube_languages[$name])
+          if ($label = $crystal_languages[$name])
             $sa_languages[$name] = $label;
         }
         closedir($dh);
@@ -896,7 +896,7 @@ class rcmail
       if (!$valid || ($_SERVER['REQUEST_METHOD']!='POST' && $now - $_SESSION['auth_time'] > 300)) {
         $_SESSION['last_auth'] = $_SESSION['auth_time'];
         $_SESSION['auth_time'] = $now;
-        rcmail::setcookie('sessauth', $this->get_auth_hash(session_id(), $now), 0);
+        cmail::setcookie('sessauth', $this->get_auth_hash(session_id(), $now), 0);
       }
     }
     else {
@@ -923,7 +923,7 @@ class rcmail
     
     $this->session->remove();
     $_SESSION = array('language' => $this->user->language, 'auth_time' => time(), 'temp' => true);
-    rcmail::setcookie('sessauth', '-del-', time() - 60);
+    cmail::setcookie('sessauth', '-del-', time() - 60);
     $this->user->reset();
   }
 
@@ -980,7 +980,7 @@ class rcmail
         $mem .= '/'.show_bytes(memory_get_peak_usage());
 
       $log = $this->task . ($this->action ? '/'.$this->action : '') . ($mem ? " [$mem]" : '');
-      rcube_print_time(RCMAIL_START, $log);
+      crystal_print_time(cmail_START, $log);
     }
   }
   
@@ -1007,7 +1007,7 @@ class rcmail
    * @param int Request method
    * @return boolean True if request token is valid false if not
    */
-  public function check_request($mode = RCUBE_INPUT_POST)
+  public function check_request($mode = crystal_INPUT_POST)
   {
     $token = get_input_value('_token', $mode);
     return !empty($token) && $_SESSION['request_tokens'][$this->task] == $token;
@@ -1023,7 +1023,7 @@ class rcmail
    */
   private function get_auth_hash($sess_id, $ts)
   {
-    $auth_string = sprintf('rcmail*sess%sR%s*Chk:%s;%s',
+    $auth_string = sprintf('cmail*sess%sR%s*Chk:%s;%s',
       $sess_id,
       $ts,
       $this->config->get('ip_check') ? $_SERVER['REMOTE_ADDR'] : '***.***.***.***',
@@ -1133,7 +1133,7 @@ class rcmail
 
     /*-
      * Trim PHP's padding and the canary byte; see note in
-     * rcmail::encrypt() and http://php.net/mcrypt_generic#68082
+     * cmail::encrypt() and http://php.net/mcrypt_generic#68082
      */
     $clear = substr(rtrim($clear, "\0"), 0, -1);
   
@@ -1184,7 +1184,7 @@ class rcmail
     $cookie = session_get_cookie_params();
 
     setcookie($name, $value, $exp, $cookie['path'], $cookie['domain'],
-      rcube_https_check(), true);
+      crystal_https_check(), true);
   }
 }
 

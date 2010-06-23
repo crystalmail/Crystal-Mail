@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_vcard.php                                       |
+ | program/include/crystal_vcard.php                                       |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2008-2009, RoundCube Dev. - Switzerland                 |
@@ -11,10 +11,10 @@
  | PURPOSE:                                                              |
  |   Logical representation of a vcard address record                    |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
- $Id: rcube_vcard.php 3224 2010-01-26 07:19:56Z thomasb $
+ $Id: crystal_vcard.php 3224 2010-01-26 07:19:56Z thomasb $
 
 */
 
@@ -24,9 +24,9 @@
  * Provides functions to parse and export vCard data format
  *
  * @package    Addressbook
- * @author     Thomas Bruederli <roundcube@gmail.com>
+ * @author     Thomas Bruederli <crystalmail@gmail.com>
  */
-class rcube_vcard
+class crystal_vcard
 {
   private $raw = array(
     'FN' => array(),
@@ -56,7 +56,7 @@ class rcube_vcard
   /**
    * Constructor
    */
-  public function __construct($vcard = null, $charset = RCMAIL_CHARSET)
+  public function __construct($vcard = null, $charset = cmail_CHARSET)
   {
     if (!empty($vcard))
       $this->load($vcard, $charset);
@@ -68,7 +68,7 @@ class rcube_vcard
    *
    * @param string vCard string to parse
    */
-  public function load($vcard, $charset = RCMAIL_CHARSET)
+  public function load($vcard, $charset = cmail_CHARSET)
   {
     $this->raw = self::vcard_decode($vcard);
     
@@ -335,7 +335,7 @@ class rcube_vcard
         if (is_array($subnode) && $subnode['charset'] && ($charset = $subnode['charset'][0])) {
           foreach ($subnode as $j => $value) {
             if (is_numeric($j) && is_string($value))
-              $card[$key][$i][$j] = rcube_charset_convert($value, $charset);
+              $card[$key][$i][$j] = crystal_charset_convert($value, $charset);
           }
           unset($card[$key][$i]['charset']);
         }
@@ -350,7 +350,7 @@ class rcube_vcard
    * Factory method to import a vcard file
    *
    * @param string vCard file content
-   * @return array List of rcube_vcard objects
+   * @return array List of crystal_vcard objects
    */
   public static function import($data)
   {
@@ -360,10 +360,10 @@ class rcube_vcard
     if (preg_match('/charset=/i', substr($data, 0, 2048)))
       $charset = null;
     // detect charset and convert to utf-8
-    else if (($charset = self::detect_encoding($data)) && $charset != RCMAIL_CHARSET) {
-      $data = rcube_charset_convert($data, $charset);
+    else if (($charset = self::detect_encoding($data)) && $charset != cmail_CHARSET) {
+      $data = crystal_charset_convert($data, $charset);
       $data = preg_replace(array('/^[\xFE\xFF]{2}/', '/^\xEF\xBB\xBF/', '/^\x00+/'), '', $data); // also remove BOM
-      $charset = RCMAIL_CHARSET;
+      $charset = cmail_CHARSET;
     }
 
     $vcard_block = '';
@@ -375,7 +375,7 @@ class rcube_vcard
 
       if (trim($line) == 'END:VCARD') {
         // parse vcard
-        $obj = new rcube_vcard(self::cleanup($vcard_block), $charset);
+        $obj = new crystal_vcard(self::cleanup($vcard_block), $charset);
         if (!empty($obj->displayname))
           $out[] = $obj;
 
@@ -625,7 +625,7 @@ class rcube_vcard
         )*\z/xs', substr($string, 0, 2048)))
       return 'UTF-8';
 
-    return rcmail::get_instance()->config->get('default_charset', 'ISO-8859-1'); # fallback to Latin-1
+    return cmail::get_instance()->config->get('default_charset', 'ISO-8859-1'); # fallback to Latin-1
   }
 
 }

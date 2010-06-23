@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_user.inc                                        |
+ | program/include/crystal_user.inc                                        |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2005-2009, RoundCube Dev. - Switzerland                 |
@@ -13,10 +13,10 @@
  |   to the related database records.                                    |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
- $Id: rcube_user.php 3489 2010-04-15 06:33:30Z thomasb $
+ $Id: crystal_user.php 3489 2010-04-15 06:33:30Z thomasb $
 
 */
 
@@ -25,9 +25,9 @@
  * Class representing a system user
  *
  * @package    Core
- * @author     Thomas Bruederli <roundcube@gmail.com>
+ * @author     Thomas Bruederli <crystalmail@gmail.com>
  */
-class rcube_user
+class crystal_user
 {
   public $ID = null;
   public $data = null;
@@ -43,7 +43,7 @@ class rcube_user
    */
   function __construct($id = null, $sql_arr = null)
   {
-    $this->db = rcmail::get_instance()->get_dbh();
+    $this->db = cmail::get_instance()->get_dbh();
     
     if ($id && !$sql_arr)
     {
@@ -99,7 +99,7 @@ class rcube_user
     if (!$this->ID)
       return false;
       
-    $config = rcmail::get_instance()->config;
+    $config = cmail::get_instance()->config;
     $old_prefs = (array)$this->get_prefs();
 
     // merge (partial) prefs array with existing settings
@@ -323,11 +323,11 @@ class rcube_user
    *
    * @param string IMAP user name
    * @param string IMAP host name
-   * @return object rcube_user New user instance
+   * @return object crystal_user New user instance
    */
   static function query($user, $host)
   {
-    $dbh = rcmail::get_instance()->get_dbh();
+    $dbh = cmail::get_instance()->get_dbh();
     
     // query for matching user name
     $query = "SELECT * FROM ".get_table_name('users')." WHERE mail_host=? AND %s=?";
@@ -341,31 +341,31 @@ class rcube_user
     
     // user already registered -> overwrite username
     if ($sql_arr)
-      return new rcube_user($sql_arr['user_id'], $sql_arr);
+      return new crystal_user($sql_arr['user_id'], $sql_arr);
     else
       return false;
   }
   
   
   /**
-   * Create a new user record and return a rcube_user instance
+   * Create a new user record and return a crystal_user instance
    *
    * @param string IMAP user name
    * @param string IMAP host
-   * @return object rcube_user New user instance
+   * @return object crystal_user New user instance
    */
   static function create($user, $host)
   {
     $user_name  = '';
     $user_email = '';
-    $rcmail = rcmail::get_instance();
+    $cmail = cmail::get_instance();
 
     // try to resolve user in virtuser table and file
     if ($email_list = self::user2email($user, false, true)) {
       $user_email = is_array($email_list[0]) ? $email_list[0]['email'] : $email_list[0];
     }
 
-    $data = $rcmail->plugins->exec_hook('create_user',
+    $data = $cmail->plugins->exec_hook('create_user',
 	array('user'=>$user, 'user_name'=>$user_name, 'user_email'=>$user_email));
 
     // plugin aborted this operation
@@ -375,7 +375,7 @@ class rcube_user
     $user_name = $data['user_name'];
     $user_email = $data['user_email'];
 
-    $dbh = $rcmail->get_dbh();
+    $dbh = $cmail->get_dbh();
 
     $dbh->query(
       "INSERT INTO ".get_table_name('users')."
@@ -388,11 +388,11 @@ class rcube_user
 
     if ($user_id = $dbh->insert_id('users'))
     {
-      // create rcube_user instance to make plugin hooks work
-      $user_instance = new rcube_user($user_id);
-      $rcmail->user = $user_instance;
+      // create crystal_user instance to make plugin hooks work
+      $user_instance = new crystal_user($user_id);
+      $cmail->user = $user_instance;
 
-      $mail_domain = $rcmail->config->mail_domain($host);
+      $mail_domain = $cmail->config->mail_domain($host);
 
       if ($user_email=='')
         $user_email = strpos($user, '@') ? $user : sprintf('%s@%s', $user, $mail_domain);
@@ -404,7 +404,7 @@ class rcube_user
       if (empty($email_list))
         $email_list[] = strip_newlines($user_email);
       // identities_level check
-      else if (count($email_list) > 1 && $rcmail->config->get('identities_level', 0) > 1)
+      else if (count($email_list) > 1 && $cmail->config->get('identities_level', 0) > 1)
         $email_list = array($email_list[0]);
 
       // create new identities records
@@ -425,11 +425,11 @@ class rcube_user
         $record['user_id'] = $user_id;
         $record['standard'] = $standard;
 
-        $plugin = $rcmail->plugins->exec_hook('create_identity',
+        $plugin = $cmail->plugins->exec_hook('create_identity',
 	  array('login' => true, 'record' => $record));
           
         if (!$plugin['abort'] && $plugin['record']['email']) {
-          $rcmail->user->insert_identity($plugin['record']);
+          $cmail->user->insert_identity($plugin['record']);
         }
         $standard = 0;
       }
@@ -456,8 +456,8 @@ class rcube_user
    */
   static function email2user($email)
   {
-    $rcmail = rcmail::get_instance();
-    $plugin = $rcmail->plugins->exec_hook('email2user',
+    $cmail = cmail::get_instance();
+    $plugin = $cmail->plugins->exec_hook('email2user',
       array('email' => $email, 'user' => NULL));
 
     return $plugin['user'];
@@ -474,8 +474,8 @@ class rcube_user
    */
   static function user2email($user, $first=true, $extended=false)
   {
-    $rcmail = rcmail::get_instance();
-    $plugin = $rcmail->plugins->exec_hook('user2email',
+    $cmail = cmail::get_instance();
+    $plugin = $cmail->plugins->exec_hook('user2email',
       array('email' => NULL, 'user' => $user,
         'first' => $first, 'extended' => $extended));
 

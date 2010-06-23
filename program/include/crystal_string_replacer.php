@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_string_replacer.php                             |
+ | program/include/crystal_string_replacer.php                             |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2009, RoundCube Dev. - Switzerland                      |
@@ -12,10 +12,10 @@
  |   Handle string replacements based on preg_replace_callback           |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
- $Id: rcube_string_replacer.php 3212 2010-01-18 19:15:28Z alec $
+ $Id: crystal_string_replacer.php 3212 2010-01-18 19:15:28Z alec $
 
 */
 
@@ -25,7 +25,7 @@
  *
  * @package Core
  */
-class rcube_string_replacer
+class crystal_string_replacer
 {
   public static $pattern = '/##str_replacement\[([0-9]+)\]##/';
   public $mailto_pattern;

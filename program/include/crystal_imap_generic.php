@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_imap_generic.php                                |
+ | program/include/crystal_imap_generic.php                                |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2005-2010, RoundCube Dev. - Switzerland                 |
@@ -21,12 +21,12 @@
  | Author: Ryo Chijiiwa <Ryo@IlohaMail.org>                              |
  +-----------------------------------------------------------------------+
 
- $Id: rcube_imap_generic.php 3462 2010-04-01 12:04:59Z alec $
+ $Id: crystal_imap_generic.php 3462 2010-04-01 12:04:59Z alec $
 
 */
 
 
-class rcube_mail_header
+class crystal_mail_header
 {
 	public $id;
 	public $uid;
@@ -66,11 +66,11 @@ class rcube_mail_header
 }
 
 // For backward compatibility with cached messages (#1486602)
-class iilBasicHeader extends rcube_mail_header
+class iilBasicHeader extends crystal_mail_header
 {
 }
 
-class rcube_imap_generic
+class crystal_imap_generic
 {
     public $error;
     public $errornum;
@@ -494,7 +494,7 @@ class rcube_imap_generic
 		    $line = $this->readLine(500);
 		    if ($line[0] == '*') {
 			    $line = rtrim($line);
-			    $a = rcube_explode_quoted_string(' ', $this->unEscape($line));
+			    $a = crystal_explode_quoted_string(' ', $this->unEscape($line));
 			    if ($a[0] == '*') {
 			        $delimiter = str_replace('"', '', $a[count($a)-2]);
         		}
@@ -1090,7 +1090,7 @@ class rcube_imap_generic
 		    if (($line[0] == '*') && ($a[2] == 'FETCH')) {
 			    $id = $a[1];
             
-			    $result[$id]            = new rcube_mail_header;
+			    $result[$id]            = new crystal_mail_header;
 			    $result[$id]->id        = $id;
 			    $result[$id]->subject   = '';
 			    $result[$id]->messageID = 'mid:' . $id;
@@ -1108,7 +1108,7 @@ class rcube_imap_generic
 
 				    // swap parents with quotes, then explode
 				    $str = preg_replace('/[()]/', '"', $str);
-				    $a = rcube_explode_quoted_string(' ', $str);
+				    $a = crystal_explode_quoted_string(' ', $str);
 
 				    // did we get the right number of replies?
 				    $parts_count = count($a);
@@ -1191,7 +1191,7 @@ class rcube_imap_generic
 	    		} while ($line[0] != ')' && !$this->startsWith($line, $key, true));
 
     			if (strncmp($line, $key, strlen($key))) { 
-	    			// process header, fill rcube_mail_header obj.
+	    			// process header, fill crystal_mail_header obj.
 		    		// initialize
 			    	if (is_array($headers)) {
 				    	reset($headers);
@@ -1627,7 +1627,7 @@ class rcube_imap_generic
 		    if (($line[0] == '*') && ($a[1] == 'LIST')) {
 			    $line = rtrim($line);
         		// split one line
-			    $a = rcube_explode_quoted_string(' ', $line);
+			    $a = crystal_explode_quoted_string(' ', $line);
         		// last string is folder name
 			    $folders[$i] = preg_replace(array('/^"/', '/"$/'), '', $this->unEscape($a[count($a)-1]));
 		        // second from last is delimiter
@@ -1684,7 +1684,7 @@ class rcube_imap_generic
 			    $line = rtrim($line);
             
         		// split one line
-			    $a = rcube_explode_quoted_string(' ', $line);
+			    $a = crystal_explode_quoted_string(' ', $line);
         		// last string is folder name
     			$folder = preg_replace(array('/^"/', '/"$/'), '', $this->UnEscape($a[count($a)-1]));
 	    		// @TODO: do we need this check???

@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_json_output.php                                 |
+ | program/include/crystal_json_output.php                                 |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2008-2009, RoundCube Dev. - Switzerland                 |
@@ -10,13 +10,13 @@
  |                                                                       |
  | PURPOSE:                                                              |
  |   Class to handle HTML page output using a skin template.             |
- |   Extends rcube_html_page class from rcube_shared.inc                 |
+ |   Extends crystal_html_page class from crystal_shared.inc                 |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
- $Id: rcube_json_output.php 3212 2010-01-18 19:15:28Z alec $
+ $Id: crystal_json_output.php 3212 2010-01-18 19:15:28Z alec $
 
 */
 
@@ -26,10 +26,10 @@
  *
  * @package View
  */
-class rcube_json_output
+class crystal_json_output
 {
     private $config;
-    private $charset = RCMAIL_CHARSET;
+    private $charset = cmail_CHARSET;
     private $env = array();
     private $texts = array();
     private $commands = array();
@@ -45,7 +45,7 @@ class rcube_json_output
      */
     public function __construct($task)
     {
-        $this->config = rcmail::get_instance()->config;
+        $this->config = cmail::get_instance()->config;
     }
     
     
@@ -142,7 +142,7 @@ class rcube_json_output
             $args = $args[0];
         
         foreach ($args as $name) {
-            $this->texts[$name] = rcube_label($name);
+            $this->texts[$name] = crystal_label($name);
         }
     }
     
@@ -162,7 +162,7 @@ class rcube_json_output
             $this->message = $message;
             $this->command(
                 'display_message',
-                rcube_label(array('name' => $message, 'vars' => $vars)),
+                crystal_label(array('name' => $message, 'vars' => $vars)),
                 $type
             );
         }
@@ -182,11 +182,11 @@ class rcube_json_output
      * Redirect to a certain url
      *
      * @param mixed Either a string with the action or url parameters as key-value pairs
-     * @see rcmail::url()
+     * @see cmail::url()
      */
     public function redirect($p = array(), $delay = 1)
     {
-        $location = rcmail::get_instance()->url($p);
+        $location = cmail::get_instance()->url($p);
         $this->remote_response("window.setTimeout(\"location.href='{$location}'\", $delay);");
         exit;
     }
@@ -223,8 +223,8 @@ class rcube_json_output
         // unset default env vars
         unset($this->env['task'], $this->env['action'], $this->env['comm_path']);
 
-        $rcmail = rcmail::get_instance();
-        $response = array('action' => $rcmail->action, 'unlock' => (bool)$_REQUEST['_unlock']);
+        $cmail = cmail::get_instance();
+        $response = array('action' => $cmail->action, 'unlock' => (bool)$_REQUEST['_unlock']);
         
         if (!empty($this->env))
           $response['env'] = $this->env;

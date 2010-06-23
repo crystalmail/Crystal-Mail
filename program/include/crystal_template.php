@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_template.php                                    |
+ | program/include/crystal_template.php                                    |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2006-2009, RoundCube Dev. - Switzerland                 |
@@ -10,13 +10,13 @@
  |                                                                       |
  | PURPOSE:                                                              |
  |   Class to handle HTML page output using a skin template.             |
- |   Extends rcube_html_page class from rcube_shared.inc                 |
+ |   Extends crystal_html_page class from crystal_shared.inc                 |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
- $Id: rcube_template.php 3519 2010-04-21 10:30:47Z alec $
+ $Id: crystal_template.php 3519 2010-04-21 10:30:47Z alec $
 
  */
 
@@ -26,9 +26,9 @@
  *
  * @package View
  * @todo Documentation
- * @uses rcube_html_page
+ * @uses crystal_html_page
  */
-class rcube_template extends rcube_html_page
+class crystal_template extends crystal_html_page
 {
     var $app;
     var $config;
@@ -47,15 +47,15 @@ class rcube_template extends rcube_html_page
      * Constructor
      *
      * @todo   Use jQuery's $(document).ready() here.
-     * @todo   Replace $this->config with the real rcube_config object
+     * @todo   Replace $this->config with the real crystal_config object
      */
     public function __construct($task, $framed = false)
     {
         parent::__construct();
 
-        $this->app = rcmail::get_instance();
+        $this->app = cmail::get_instance();
         $this->config = $this->app->config->all();
-        $this->browser = new rcube_browser();
+        $this->browser = new crystal_browser();
         
         //$this->framed = $framed;
         $this->set_env('task', $task);
@@ -65,7 +65,7 @@ class rcube_template extends rcube_html_page
         $this->set_skin($this->config['skin']);
 
         // add common javascripts
-        $javascript = 'var '.JS_OBJECT_NAME.' = new rcube_webmail();';
+        $javascript = 'var '.JS_OBJECT_NAME.' = new crystal_webmail();';
 
         // don't wait for page onload. Call init at the bottom of the page (delayed)
         $javascript_foot = '$(document).ready(function(){ '.JS_OBJECT_NAME.'.init(); });';
@@ -123,7 +123,7 @@ class rcube_template extends rcube_html_page
             $title = $this->pagetitle;
         }
         else if ($this->env['task'] == 'login') {
-            $title = rcube_label(array('name' => 'welcome', 'vars' => array('product' => $this->config['product_name'])));
+            $title = crystal_label(array('name' => 'welcome', 'vars' => array('product' => $this->config['product_name'])));
         }
         else {
             $title = ucfirst($this->env['task']);
@@ -218,7 +218,7 @@ class rcube_template extends rcube_html_page
           $args = $args[0];
         
         foreach ($args as $name) {
-            $this->command('add_label', $name, rcube_label($name));
+            $this->command('add_label', $name, crystal_label($name));
         }
     }
 
@@ -238,7 +238,7 @@ class rcube_template extends rcube_html_page
             $this->message = $message;
             $this->command(
                 'display_message',
-                rcube_label(array('name' => $message, 'vars' => $vars)),
+                crystal_label(array('name' => $message, 'vars' => $vars)),
                 $type);
         }
     }
@@ -248,7 +248,7 @@ class rcube_template extends rcube_html_page
      * Delete all stored env variables and commands
      *
      * @return void
-     * @uses   rcube_html::reset()
+     * @uses   crystal_html::reset()
      * @uses   self::$env
      * @uses   self::$js_env
      * @uses   self::$js_commands
@@ -268,7 +268,7 @@ class rcube_template extends rcube_html_page
      * Redirect to a certain url
      *
      * @param mixed Either a string with the action or url parameters as key-value pairs
-     * @see rcmail::url()
+     * @see cmail::url()
      */
     public function redirect($p = array())
     {
@@ -315,7 +315,7 @@ class rcube_template extends rcube_html_page
      * Process template and write to stdOut
      *
      * @param string HTML template
-     * @see rcube_html_page::write()
+     * @see crystal_html_page::write()
      * @override
      */
     public function write($template = '')
@@ -455,7 +455,7 @@ class rcube_template extends rcube_html_page
      */
     private function parse_with_globals($input)
     {
-        $GLOBALS['__version'] = Q(RCMAIL_VERSION);
+        $GLOBALS['__version'] = Q(cmail_VERSION);
         $GLOBALS['__comm_path'] = Q($this->app->comm_path);
         return preg_replace_callback('/\$(__[a-z0-9_\-]+)/',
 	    array($this, 'globals_callback'), $input);
@@ -474,7 +474,7 @@ class rcube_template extends rcube_html_page
      *
      * @param  string $input
      * @return string
-     * @uses   rcube_template::parse_xml()
+     * @uses   crystal_template::parse_xml()
      * @since  0.1-rc1
      */
     public function just_parse($input)
@@ -490,7 +490,7 @@ class rcube_template extends rcube_html_page
      */
     private function parse_conditions($input)
     {
-        $matches = preg_split('/<roundcube:(if|elseif|else|endif)\s+([^>]+)>/is', $input, 2, PREG_SPLIT_DELIM_CAPTURE);
+        $matches = preg_split('/<crystalmail:(if|elseif|else|endif)\s+([^>]+)>/is', $input, 2, PREG_SPLIT_DELIM_CAPTURE);
         if ($matches && count($matches) == 4) {
             if (preg_match('/^(else|endif)$/i', $matches[1])) {
                 return $matches[0] . $this->parse_conditions($matches[3]);
@@ -498,13 +498,13 @@ class rcube_template extends rcube_html_page
             $attrib = parse_attrib_string($matches[2]);
             if (isset($attrib['condition'])) {
                 $condmet = $this->check_condition($attrib['condition']);
-                $submatches = preg_split('/<roundcube:(elseif|else|endif)\s+([^>]+)>/is', $matches[3], 2, PREG_SPLIT_DELIM_CAPTURE);
+                $submatches = preg_split('/<crystalmail:(elseif|else|endif)\s+([^>]+)>/is', $matches[3], 2, PREG_SPLIT_DELIM_CAPTURE);
                 if ($condmet) {
                     $result = $submatches[0];
-                    $result.= ($submatches[1] != 'endif' ? preg_replace('/.*<roundcube:endif\s+[^>]+>/Uis', '', $submatches[3], 1) : $submatches[3]);
+                    $result.= ($submatches[1] != 'endif' ? preg_replace('/.*<crystalmail:endif\s+[^>]+>/Uis', '', $submatches[3], 1) : $submatches[3]);
                 }
                 else {
-                    $result = "<roundcube:$submatches[1] $submatches[2]>" . $submatches[3];
+                    $result = "<crystalmail:$submatches[1] $submatches[2]>" . $submatches[3];
                 }
                 return $matches[0] . $this->parse_conditions($result);
             }
@@ -572,7 +572,7 @@ class rcube_template extends rcube_html_page
                 "\$_SESSION['\\1']",
                 "\$this->app->config->get('\\1',get_boolean('\\3'))",
                 "\$this->env['\\1']",
-                "get_input_value('\\1', RCUBE_INPUT_GPC)",
+                "get_input_value('\\1', crystal_INPUT_GPC)",
                 "\$_COOKIE['\\1']",
                 "\$this->browser->{'\\1'}"
             ),
@@ -591,7 +591,7 @@ class rcube_template extends rcube_html_page
      */
     private function parse_xml($input)
     {
-        return preg_replace_callback('/<roundcube:([-_a-z]+)\s+([^>]+)>/Ui', array($this, 'xml_command'), $input);
+        return preg_replace_callback('/<crystalmail:([-_a-z]+)\s+([^>]+)>/Ui', array($this, 'xml_command'), $input);
     }
 
 
@@ -624,7 +624,7 @@ class rcube_template extends rcube_html_page
             // show a label
             case 'label':
                 if ($attrib['name'] || $attrib['command']) {
-                    return Q(rcube_label($attrib + array('vars' => array('product' => $this->config['product_name']))));
+                    return Q(crystal_label($attrib + array('vars' => array('product' => $this->config['product_name']))));
                 }
                 break;
 
@@ -678,7 +678,7 @@ class rcube_template extends rcube_html_page
                     $content = Q($name);
                 }
                 else if ($object == 'version') {
-                    $ver = (string)RCMAIL_VERSION;
+                    $ver = (string)cmail_VERSION;
                     if (is_file(INSTALL_PATH . '.svn/entries')) {
                         if (preg_match('/Revision:\s(\d+)/', @shell_exec('svn info'), $regs))
                           $ver .= ' [SVN r'.$regs[1].']';
@@ -720,7 +720,7 @@ class rcube_template extends rcube_html_page
                         }
                         break;
                     case 'request':
-                        $value = get_input_value($name, RCUBE_INPUT_GPC);
+                        $value = get_input_value($name, crystal_INPUT_GPC);
                         break;
                     case 'session':
                         $value = $_SESSION[$name];
@@ -812,13 +812,13 @@ class rcube_template extends rcube_html_page
         }
         // get localized text for labels and titles
         if ($attrib['title']) {
-            $attrib['title'] = Q(rcube_label($attrib['title'], $attrib['domain']));
+            $attrib['title'] = Q(crystal_label($attrib['title'], $attrib['domain']));
         }
         if ($attrib['label']) {
-            $attrib['label'] = Q(rcube_label($attrib['label'], $attrib['domain']));
+            $attrib['label'] = Q(crystal_label($attrib['label'], $attrib['domain']));
         }
         if ($attrib['alt']) {
-            $attrib['alt'] = Q(rcube_label($attrib['alt'], $attrib['domain']));
+            $attrib['alt'] = Q(crystal_label($attrib['alt'], $attrib['domain']));
         }
 
         // set title to alt attribute for IE browsers
@@ -845,11 +845,11 @@ class rcube_template extends rcube_html_page
             ));
 
             // make valid href to specific buttons
-            if (in_array($attrib['command'], rcmail::$main_tasks)) {
-                $attrib['href'] = rcmail_url(null, null, $attrib['command']);
+            if (in_array($attrib['command'], cmail::$main_tasks)) {
+                $attrib['href'] = cmail_url(null, null, $attrib['command']);
             }
             else if (in_array($attrib['command'], $a_static_commands)) {
-                $attrib['href'] = rcmail_url($attrib['command']);
+                $attrib['href'] = cmail_url($attrib['command']);
             }
             else if ($attrib['command'] == 'permaurl' && !empty($this->env['permaurl'])) {
               $attrib['href'] = $this->env['permaurl'];
@@ -1012,7 +1012,7 @@ class rcube_template extends rcube_html_page
         $_SESSION['temp'] = true;
         
         // save original url
-        $url = get_input_value('_url', RCUBE_INPUT_POST);
+        $url = get_input_value('_url', crystal_INPUT_POST);
         if (empty($url) && !preg_match('/_(task|action)=logout/', $_SERVER['QUERY_STRING']))
             $url = $_SERVER['QUERY_STRING'];
 
@@ -1051,16 +1051,16 @@ class rcube_template extends rcube_html_page
         // create HTML table with two cols
         $table = new html_table(array('cols' => 2));
 
-        $table->add('title', html::label('rcmloginuser', Q(rcube_label('username'))));
-        $table->add(null, $input_user->show(get_input_value('_user', RCUBE_INPUT_POST)));
+        $table->add('title', html::label('rcmloginuser', Q(crystal_label('username'))));
+        $table->add(null, $input_user->show(get_input_value('_user', crystal_INPUT_POST)));
 
-        $table->add('title', html::label('rcmloginpwd', Q(rcube_label('password'))));
+        $table->add('title', html::label('rcmloginpwd', Q(crystal_label('password'))));
         $table->add(null, $input_pass->show());
 
         // add host selection row
         if (is_object($input_host) && !$hide_host) {
-            $table->add('title', html::label('rcmloginhost', Q(rcube_label('server'))));
-            $table->add(null, $input_host->show(get_input_value('_host', RCUBE_INPUT_POST)));
+            $table->add('title', html::label('rcmloginhost', Q(crystal_label('server'))));
+            $table->add(null, $input_host->show(get_input_value('_host', crystal_INPUT_POST)));
         }
 
         $out = $input_action->show();
@@ -1178,39 +1178,39 @@ class rcube_template extends rcube_html_page
         }
 
         $charsets = array(
-            'UTF-8'        => 'UTF-8 ('.rcube_label('unicode').')',
-            'US-ASCII'     => 'ASCII ('.rcube_label('english').')',
-            'ISO-8859-1'   => 'ISO-8859-1 ('.rcube_label('westerneuropean').')',
-            'ISO-8859-2'   => 'ISO-8895-2 ('.rcube_label('easterneuropean').')',
-            'ISO-8859-4'   => 'ISO-8895-4 ('.rcube_label('baltic').')',
-            'ISO-8859-5'   => 'ISO-8859-5 ('.rcube_label('cyrillic').')',
-            'ISO-8859-6'   => 'ISO-8859-6 ('.rcube_label('arabic').')',
-            'ISO-8859-7'   => 'ISO-8859-7 ('.rcube_label('greek').')',
-            'ISO-8859-8'   => 'ISO-8859-8 ('.rcube_label('hebrew').')',
-            'ISO-8859-9'   => 'ISO-8859-9 ('.rcube_label('turkish').')',
-            'ISO-8859-10'   => 'ISO-8859-10 ('.rcube_label('nordic').')',
-            'ISO-8859-11'   => 'ISO-8859-11 ('.rcube_label('thai').')',
-            'ISO-8859-13'   => 'ISO-8859-13 ('.rcube_label('baltic').')',
-            'ISO-8859-14'   => 'ISO-8859-14 ('.rcube_label('celtic').')',
-            'ISO-8859-15'   => 'ISO-8859-15 ('.rcube_label('westerneuropean').')',
-            'ISO-8859-16'   => 'ISO-8859-16 ('.rcube_label('southeasterneuropean').')',
-            'WINDOWS-1250' => 'Windows-1250 ('.rcube_label('easterneuropean').')',
-            'WINDOWS-1251' => 'Windows-1251 ('.rcube_label('cyrillic').')',
-            'WINDOWS-1252' => 'Windows-1252 ('.rcube_label('westerneuropean').')',
-            'WINDOWS-1253' => 'Windows-1253 ('.rcube_label('greek').')',
-            'WINDOWS-1254' => 'Windows-1254 ('.rcube_label('turkish').')',
-            'WINDOWS-1255' => 'Windows-1255 ('.rcube_label('hebrew').')',
-            'WINDOWS-1256' => 'Windows-1256 ('.rcube_label('arabic').')',
-            'WINDOWS-1257' => 'Windows-1257 ('.rcube_label('baltic').')',
-            'WINDOWS-1258' => 'Windows-1258 ('.rcube_label('vietnamese').')',
-            'ISO-2022-JP'  => 'ISO-2022-JP ('.rcube_label('japanese').')',
-            'ISO-2022-KR'  => 'ISO-2022-KR ('.rcube_label('korean').')',
-            'ISO-2022-CN'  => 'ISO-2022-CN ('.rcube_label('chinese').')',
-            'EUC-JP'       => 'EUC-JP ('.rcube_label('japanese').')',
-            'EUC-KR'       => 'EUC-KR ('.rcube_label('korean').')',
-            'EUC-CN'       => 'EUC-CN ('.rcube_label('chinese').')',
-            'BIG5'         => 'BIG5 ('.rcube_label('chinese').')',
-            'GB2312'       => 'GB2312 ('.rcube_label('chinese').')',
+            'UTF-8'        => 'UTF-8 ('.crystal_label('unicode').')',
+            'US-ASCII'     => 'ASCII ('.crystal_label('english').')',
+            'ISO-8859-1'   => 'ISO-8859-1 ('.crystal_label('westerneuropean').')',
+            'ISO-8859-2'   => 'ISO-8895-2 ('.crystal_label('easterneuropean').')',
+            'ISO-8859-4'   => 'ISO-8895-4 ('.crystal_label('baltic').')',
+            'ISO-8859-5'   => 'ISO-8859-5 ('.crystal_label('cyrillic').')',
+            'ISO-8859-6'   => 'ISO-8859-6 ('.crystal_label('arabic').')',
+            'ISO-8859-7'   => 'ISO-8859-7 ('.crystal_label('greek').')',
+            'ISO-8859-8'   => 'ISO-8859-8 ('.crystal_label('hebrew').')',
+            'ISO-8859-9'   => 'ISO-8859-9 ('.crystal_label('turkish').')',
+            'ISO-8859-10'   => 'ISO-8859-10 ('.crystal_label('nordic').')',
+            'ISO-8859-11'   => 'ISO-8859-11 ('.crystal_label('thai').')',
+            'ISO-8859-13'   => 'ISO-8859-13 ('.crystal_label('baltic').')',
+            'ISO-8859-14'   => 'ISO-8859-14 ('.crystal_label('celtic').')',
+            'ISO-8859-15'   => 'ISO-8859-15 ('.crystal_label('westerneuropean').')',
+            'ISO-8859-16'   => 'ISO-8859-16 ('.crystal_label('southeasterneuropean').')',
+            'WINDOWS-1250' => 'Windows-1250 ('.crystal_label('easterneuropean').')',
+            'WINDOWS-1251' => 'Windows-1251 ('.crystal_label('cyrillic').')',
+            'WINDOWS-1252' => 'Windows-1252 ('.crystal_label('westerneuropean').')',
+            'WINDOWS-1253' => 'Windows-1253 ('.crystal_label('greek').')',
+            'WINDOWS-1254' => 'Windows-1254 ('.crystal_label('turkish').')',
+            'WINDOWS-1255' => 'Windows-1255 ('.crystal_label('hebrew').')',
+            'WINDOWS-1256' => 'Windows-1256 ('.crystal_label('arabic').')',
+            'WINDOWS-1257' => 'Windows-1257 ('.crystal_label('baltic').')',
+            'WINDOWS-1258' => 'Windows-1258 ('.crystal_label('vietnamese').')',
+            'ISO-2022-JP'  => 'ISO-2022-JP ('.crystal_label('japanese').')',
+            'ISO-2022-KR'  => 'ISO-2022-KR ('.crystal_label('korean').')',
+            'ISO-2022-CN'  => 'ISO-2022-CN ('.crystal_label('chinese').')',
+            'EUC-JP'       => 'EUC-JP ('.crystal_label('japanese').')',
+            'EUC-KR'       => 'EUC-KR ('.crystal_label('korean').')',
+            'EUC-CN'       => 'EUC-CN ('.crystal_label('chinese').')',
+            'BIG5'         => 'BIG5 ('.crystal_label('chinese').')',
+            'GB2312'       => 'GB2312 ('.crystal_label('chinese').')',
         );
 
         if (!empty($_POST['_charset']))
@@ -1230,6 +1230,6 @@ class rcube_template extends rcube_html_page
         return $select->show($set);
     }
 
-}  // end class rcube_template
+}  // end class crystal_template
 
 

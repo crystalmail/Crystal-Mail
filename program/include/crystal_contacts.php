@@ -2,7 +2,7 @@
 
 /*
  +-----------------------------------------------------------------------+
- | program/include/rcube_contacts.php                                    |
+ | program/include/crystal_contacts.php                                    |
  |                                                                       |
  | This file is part of the RoundCube Webmail client                     |
  | Copyright (C) 2006-2010, RoundCube Dev. - Switzerland                 |
@@ -12,10 +12,10 @@
  |   Interface to the local address book database                        |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
- $Id: rcube_contacts.php 3545 2010-04-23 08:17:51Z alec $
+ $Id: crystal_contacts.php 3545 2010-04-23 08:17:51Z alec $
 
 */
 
@@ -25,7 +25,7 @@
  *
  * @package Addressbook
  */
-class rcube_contacts extends rcube_addressbook
+class crystal_contacts extends crystal_addressbook
 {
     private $db = null;
     private $db_name = '';
@@ -50,7 +50,7 @@ class rcube_contacts extends rcube_addressbook
     /**
      * Object constructor
      *
-     * @param object  Instance of the rcube_db class
+     * @param object  Instance of the crystal_db class
      * @param integer User-ID
      */
     function __construct($dbconn, $user)
@@ -154,7 +154,7 @@ class rcube_contacts extends rcube_addressbook
     {
         if ($nocount || $this->list_page <= 1) {
             // create dummy result, we don't need a count now
-            $this->result = new rcube_result_set();
+            $this->result = new crystal_result_set();
         } else {
             // count all records
             $this->result = $this->count();
@@ -262,7 +262,7 @@ class rcube_contacts extends rcube_addressbook
       $contacts[] = format_email_recipient($sql_arr['email'], $sql_arr['name']);
 
       if ($sql_arr['vcard']) {
-        $vcard = new rcube_vcard($sql_arr['vcard']);
+        $vcard = new crystal_vcard($sql_arr['vcard']);
 
         if ($vcard->email[1])
           $contacts[] = format_email_recipient($vcard->email[1], $sql_arr['name']);
@@ -291,13 +291,13 @@ class rcube_contacts extends rcube_addressbook
     /**
      * Count number of available contacts in database
      *
-     * @return rcube_result_set Result object
+     * @return crystal_result_set Result object
      */
     function count()
     {
         $count = isset($this->cache['count']) ? $this->cache['count'] : $this->_count();
     
-        return new rcube_result_set($count, ($this->list_page-1) * $this->page_size);
+        return new crystal_result_set($count, ($this->list_page-1) * $this->page_size);
     }
 
 
@@ -367,7 +367,7 @@ class rcube_contacts extends rcube_addressbook
 
         if ($sql_arr = $this->db->fetch_assoc()) {
             $sql_arr['ID'] = $sql_arr[$this->primary_key];
-            $this->result = new rcube_result_set(1);
+            $this->result = new crystal_result_set(1);
             $this->result->add($sql_arr);
         }
 
@@ -383,7 +383,7 @@ class rcube_contacts extends rcube_addressbook
      */
     function insert($save_data, $check=false)
     {
-        if (is_object($save_data) && is_a($save_data, rcube_result_set))
+        if (is_object($save_data) && is_a($save_data, crystal_result_set))
             return $this->insert_recset($save_data, $check);
 
         $insert_id = $existing = false;
