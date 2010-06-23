@@ -94,8 +94,8 @@ $rcmail_config['virtuser_query'] = '';
 $rcmail_config['enable_admin'] = false;
 
 // Admin Panel username and password
-$rcmail_config['admin_user'] = 'admin';
-$rcmail_config['admin_password'] = 'admin';
+$rcmail_config['admin_allowed'] = array('');
+
 
 // THIS OPTION WILL ALLOW THE INSTALLER TO RUN AND CAN EXPOSE SENSITIVE CONFIG DATA.
 // ONLY ENABLE IT IF YOU'RE REALLY SURE WHAT YOU'RE DOING!
