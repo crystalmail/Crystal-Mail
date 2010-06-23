@@ -41,6 +41,7 @@ define('RCMAIL_CHARSET', 'UTF-8');
 define('JS_OBJECT_NAME', 'rcmail');
 define('RCMAIL_START', microtime(true));
 
+if ($_GET['what_do_you_want'] == 'just_the_version_number_please') {} else {
 if (!defined('INSTALL_PATH')) {
   define('INSTALL_PATH', dirname($_SERVER['SCRIPT_FILENAME']).'/');
 }
@@ -127,3 +128,4 @@ require_once 'include/rcube_shared.inc';
 
 // set PEAR error handling (will also load the PEAR main class)
 PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'rcube_pear_error');
+}

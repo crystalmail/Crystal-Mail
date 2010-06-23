@@ -26,13 +26,11 @@
  $Id: index.php 3544 2010-04-23 08:13:44Z thomasb $
 
 */
-//Update Script
-include ('./program/crystal/update/update.php');
-
-
 // include environment
 require_once 'program/include/iniset.php';
 
+//Update Script
+include ('./program/crystal/update/update.php');
 
 // init application, start session, init output class, etc.
 $RCMAIL = rcmail::get_instance();

@@ -7,7 +7,7 @@
 #                       author.                         #
 #########################################################
 # Goal:	Create a script that updates in the background  #
-#	without a performance drop and only runs twice a`   #
+#	without a performance drop and only runs twice a    #
 #					       day.	                        #
 #            APPROVED BY CRYSTAL TEAM ADMIN             #
 #########################################################
@@ -17,51 +17,44 @@
     $cron=new virtualcron(720,"./program/crystal/cron/virtualcron.txt");
 	if ($cron->allowAction()) 
 	{
-// Download Info File
-if (!copy('http://update.crystalwebmail.com/info', 'info.php')) {
-}
+//Tell iniset.php that you just wan't the version number (be polite)
+$_GET['what_do_you_want'] = 'just_the_version_number_please';
+include ('program/include/iniset.php');
 
-//Include Info File
+if (!copy('http://www.crystalmail.net/update/info.php?u='.RCMAIL_VERSION, 'info.php')) {
+}
 include ('info.php');
 
-//Include Version File
-include ('./config/version.php');
-
 //Check if Installed Version and Info Version
-if ($version == $infoversion){
-
-//If not do nothing
-
+if (RCMAIL_VERSION == $infoversion){
+//If it is up to date do nothing
 }
 else {
-
-$downloadversion = $version + "0.1";
-
-//If update available download
-if (!copy('http://update.crystalwebmail.com/'.$downloadversion.'.zip', 'latest.zip')) {
-echo "ERROR";
-
-
+//Download it!
+if (!copy($url, 'latest.zip')) {
 }
 //Unzip Update
-require_once('./program/crystal/update/pclzip.lib.php');
-   $archive = new PclZip('latest.zip');
-   if (($v_result_list = $archive->extract(PCLZIP_OPT_REPLACE_NEWER)) == 0) {
-   }
-//Run install script
+  include('program/crystal/update/pclzip.lib.php');
+  $archive = new PclZip('latest.zip');
+  if ($archive->extract(PCLZIP_OPT_PATH, './',PCLZIP_OPT_REPLACE_NEWER ) == 0) {
+    die("Error : ".$archive->errorInfo(true));
+  }
+ 
+ //Run install script if there is one
+if (file_exists('install.php')) {
 include ('install.php');
+} else {}
 
 //Delete the update's zip file
 unlink ('latest.zip');
 
-//Delete the install script
+//Delete the install script if there is one
+if (file_exists('install.php')) {
 unlink ('install.php');
+} else {}
+
 
 }
-//Delete Info.php file
 unlink ('info.php');
-}
-else
-{
 }
 ?>

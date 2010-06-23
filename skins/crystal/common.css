@@ -150,6 +150,8 @@ img
   text-align: right;
   white-space: nowrap;
   z-index: 2;
+  font-size: 11px;
+  color: #666666;
 }
 
 #taskbar a
