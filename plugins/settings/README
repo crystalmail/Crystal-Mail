@@ -11,6 +11,6 @@ instructions:
    to   <install directory>\plugins\settings\config\config.inc.php
  
 3: add "settings" to your plugin array settings in your <install directory>\config\main.inc.php
-   $rcmail_config['plugins'] = array('settings')
+   $cmail_config['plugins'] = array('settings')
    
    If configured correctly, your Settings options should have a new menu item, Account Administration.

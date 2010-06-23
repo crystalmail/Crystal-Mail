@@ -29,9 +29,9 @@ $old_pages = ceil($old_count / $IMAP->page_size);
 
 // move messages
 if (!empty($_POST['_uid']) && !empty($_POST['_target_mbox'])) {
-    $uids = get_input_value('_uid', RCUBE_INPUT_POST);
-    $target = get_input_value('_target_mbox', RCUBE_INPUT_POST);
-    $mbox = get_input_value('_mbox', RCUBE_INPUT_POST);
+    $uids = get_input_value('_uid', crystal_INPUT_POST);
+    $target = get_input_value('_target_mbox', crystal_INPUT_POST);
+    $mbox = get_input_value('_mbox', crystal_INPUT_POST);
 
     $copied = $IMAP->copy_message($uids, $target, $mbox);
   
@@ -42,9 +42,9 @@ if (!empty($_POST['_uid']) && !empty($_POST['_target_mbox'])) {
         exit;
     }
 
-    rcmail_send_unread_count($target, true);
+    cmail_send_unread_count($target, true);
 
-    $OUTPUT->command('set_quota', rcmail_quota_content());
+    $OUTPUT->command('set_quota', cmail_quota_content());
 }
 // unknown action or missing query param
 else {

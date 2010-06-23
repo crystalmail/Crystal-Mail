@@ -1,4 +1,4 @@
-function rcube_webmail(){
+function crystal_webmail(){
 this.env=new Object();
 this.labels=new Object();
 this.buttons=new Object();
@@ -8,7 +8,7 @@ this.gui_containers=new Object();
 this.commands=new Object();
 this.command_handlers=new Object();
 this.onloads=new Array();
-this.ref="rcmail";
+this.ref="cmail";
 var _1=this;
 this.dblclick_time=500;
 this.message_time=3000;
@@ -84,11 +84,11 @@ for(var n in this.gui_containers){
 this.gui_containers[n]=$("#"+this.gui_containers[n]);
 }
 for(var n in this.gui_objects){
-this.gui_objects[n]=rcube_find_object(this.gui_objects[n]);
+this.gui_objects[n]=crystal_find_object(this.gui_objects[n]);
 }
 this.init_buttons();
-if(this.env.framed&&parent.rcmail&&parent.rcmail.set_busy){
-parent.rcmail.set_busy(false);
+if(this.env.framed&&parent.cmail&&parent.cmail.set_busy){
+parent.cmail.set_busy(false);
 }
 this.enable_command("logout","mail","addressbook","settings",true);
 if(this.env.permaurl){
@@ -97,7 +97,7 @@ this.enable_command("permaurl",true);
 switch(this.task){
 case "mail":
 if(this.gui_objects.messagelist){
-this.message_list=new rcube_list_widget(this.gui_objects.messagelist,{multiselect:true,draggable:true,keyboard:true,dblclick_time:this.dblclick_time});
+this.message_list=new crystal_list_widget(this.gui_objects.messagelist,{multiselect:true,draggable:true,keyboard:true,dblclick_time:this.dblclick_time});
 this.message_list.row_init=function(o){
 p.init_message_row(o);
 };
@@ -159,9 +159,9 @@ this.enable_command("load-images","always-load",true);
 if(this.env.trash_mailbox&&this.env.mailbox!=this.env.trash_mailbox){
 this.set_alttext("delete","movemessagetotrash");
 }
-if(this.env.action=="preview"&&this.env.framed&&parent.rcmail){
+if(this.env.action=="preview"&&this.env.framed&&parent.cmail){
 this.enable_command("compose","add-contact",false);
-parent.rcmail.show_contentframe(true);
+parent.cmail.show_contentframe(true);
 }
 if(this.env.action=="compose"){
 this.enable_command("add-attachment","send-attachment","remove-attachment","send",true);
@@ -208,7 +208,7 @@ this.http_post("mark",_29+"&_flag=mdnsent");
 break;
 case "addressbook":
 if(this.gui_objects.contactslist){
-this.contact_list=new rcube_list_widget(this.gui_objects.contactslist,{multiselect:true,draggable:true,keyboard:true});
+this.contact_list=new crystal_list_widget(this.gui_objects.contactslist,{multiselect:true,draggable:true,keyboard:true});
 this.contact_list.row_init=function(row){
 p.triggerEvent("insertrow",{cid:row.uid,row:row});
 };
@@ -275,7 +275,7 @@ this.enable_command("subscribe","unsubscribe","create-folder","rename-folder","d
 }
 }
 if(this.gui_objects.identitieslist){
-this.identity_list=new rcube_list_widget(this.gui_objects.identitieslist,{multiselect:false,draggable:false,keyboard:false});
+this.identity_list=new crystal_list_widget(this.gui_objects.identitieslist,{multiselect:false,draggable:false,keyboard:false});
 this.identity_list.addEventListener("select",function(o){
 p.identity_select(o);
 });
@@ -286,7 +286,7 @@ this.identity_list.highlight_row(this.env.iid);
 }
 }else{
 if(this.gui_objects.sectionslist){
-this.sections_list=new rcube_list_widget(this.gui_objects.sectionslist,{multiselect:false,draggable:false,keyboard:false});
+this.sections_list=new crystal_list_widget(this.gui_objects.sectionslist,{multiselect:false,draggable:false,keyboard:false});
 this.sections_list.addEventListener("select",function(o){
 p.section_select(o);
 });
@@ -303,7 +303,7 @@ break;
 case "login":
 var _34=$("#rcmloginuser");
 _34.bind("keyup",function(e){
-return rcmail.login_user_keyup(e);
+return cmail.login_user_keyup(e);
 });
 if(_34.val()==""){
 _34.focus();
@@ -425,8 +425,8 @@ if(this.busy){
 return false;
 }
 if(!this.commands[_45]){
-if(this.env.framed&&parent.rcmail&&parent.rcmail.command){
-parent.rcmail.command(_45,_46);
+if(this.env.framed&&parent.cmail&&parent.cmail.command){
+parent.cmail.command(_45,_46);
 }
 return false;
 }
@@ -598,7 +598,7 @@ alert(this.get_label("nonamewarning"));
 _50.focus();
 break;
 }else{
-if(_51.length&&!rcube_check_email(_51.val())){
+if(_51.length&&!crystal_check_email(_51.val())){
 alert(this.get_label("noemailwarning"));
 _51.focus();
 break;
@@ -687,7 +687,7 @@ if(this.env.uid&&_46.mimetype&&find_in_array(_46.mimetype,this.mimetypes)>=0){
 if(_46.mimetype=="text/html"){
 _53+="&_safe=1";
 }
-this.attachment_win=window.open(this.env.comm_path+"&_action=get&"+_53+"&_frame=1","rcubemailattachment");
+this.attachment_win=window.open(this.env.comm_path+"&_action=get&"+_53+"&_frame=1","crystalmailattachment");
 if(this.attachment_win){
 window.setTimeout(function(){
 _1.attachment_win.focus();
@@ -1015,12 +1015,12 @@ this.set_busy(false);
 this.display_message("Request timed out!","error");
 };
 this.reload=function(_68){
-if(this.env.framed&&parent.rcmail){
-parent.rcmail.reload(_68);
+if(this.env.framed&&parent.cmail){
+parent.cmail.reload(_68);
 }else{
 if(_68){
 window.setTimeout(function(){
-rcmail.reload();
+cmail.reload();
 },_68);
 }else{
 if(window.location){
@@ -1032,14 +1032,14 @@ location.href=this.env.comm_path;
 this.doc_mouse_up=function(e){
 var _6a,_6b,li;
 if(this.message_list){
-if(!rcube_mouse_is_over(e,this.message_list.list)){
+if(!crystal_mouse_is_over(e,this.message_list.list)){
 this.message_list.blur();
 }
 _6b=this.message_list;
 _6a=this.env.mailboxes;
 }else{
 if(this.contact_list){
-if(!rcube_mouse_is_over(e,this.contact_list.list)){
+if(!crystal_mouse_is_over(e,this.contact_list.list)){
 this.contact_list.blur();
 }
 _6b=this.contact_list;
@@ -1111,7 +1111,7 @@ var _77=bw.ie?-document.documentElement.scrollTop:this.initialBodyScrollTop;
 var _78=this.initialListScrollTop-this.gui_objects.folderlist.parentNode.scrollTop;
 var _79=-_78-_77;
 var li,div,pos,_7d;
-_7d=rcube_event.get_mouse_pos(e);
+_7d=crystal_event.get_mouse_pos(e);
 pos=this.env.folderlist_coords;
 _7d.y+=_79;
 if(_7d.x<pos.x1||_7d.x>=pos.x2||_7d.y<pos.y1||_7d.y>=pos.y2){
@@ -1133,8 +1133,8 @@ window.clearTimeout(this.folder_auto_timer);
 }
 this.folder_auto_expand=k;
 this.folder_auto_timer=window.setTimeout(function(){
-rcmail.command("collapse-folder",rcmail.folder_auto_expand);
-rcmail.drag_start(null);
+cmail.command("collapse-folder",cmail.folder_auto_expand);
+cmail.drag_start(null);
 },1000);
 }else{
 if(this.folder_auto_timer){
@@ -1191,7 +1191,7 @@ if(this.contact_list){
 this.contact_list.focus();
 }
 }
-return rcube_event.get_button(e)==2?true:rcube_event.cancel(e);
+return crystal_event.get_button(e)==2?true:crystal_event.cancel(e);
 };
 this.msglist_select=function(_84){
 if(this.preview_timer){
@@ -1740,11 +1740,11 @@ this.set_message(uid,"unread",false);
 }
 };
 this.login_user_keyup=function(e){
-var key=rcube_event.get_keycode(e);
+var key=crystal_event.get_keycode(e);
 var _e2=$("#rcmloginpwd");
 if(key==13&&_e2.length&&!_e2.val()){
 _e2.focus();
-return rcube_event.cancel(e);
+return crystal_event.cancel(e);
 }
 return true;
 };
@@ -1755,13 +1755,13 @@ var _e5=$("[name='_bcc']");
 var _e6=$("[name='_from']");
 var _e7=$("[name='_subject']");
 var _e8=$("[name='_message']");
-if(_e6.attr("type")=="text"&&!rcube_check_email(_e6.val(),true)){
+if(_e6.attr("type")=="text"&&!crystal_check_email(_e6.val(),true)){
 alert(this.get_label("nosenderwarning"));
 _e6.focus();
 return false;
 }
 var _e9=_e3.val()?_e3.val():(_e4.val()?_e4.val():_e5.val());
-if(!rcube_check_email(_e9.replace(/^\s+/,"").replace(/[\s,;]+$/,""),true)){
+if(!crystal_check_email(_e9.replace(/^\s+/,"").replace(/[\s,;]+$/,""),true)){
 alert(this.get_label("norecipientwarning"));
 _e3.focus();
 return false;
@@ -2005,12 +2005,12 @@ _110=d.childNodes[0].innerHTML;
 }
 catch(e){
 }
-if(!String(_110).match(/add2attachment/)&&(!bw.opera||(rcmail.env.uploadframe&&rcmail.env.uploadframe==e.data.ts))){
-rcmail.display_message(rcmail.get_label("fileuploaderror"),"error");
-rcmail.remove_from_attachment_list(e.data.ts);
+if(!String(_110).match(/add2attachment/)&&(!bw.opera||(cmail.env.uploadframe&&cmail.env.uploadframe==e.data.ts))){
+cmail.display_message(cmail.get_label("fileuploaderror"),"error");
+cmail.remove_from_attachment_list(e.data.ts);
 }
 if(bw.opera){
-rcmail.env.uploadframe=e.data.ts;
+cmail.env.uploadframe=e.data.ts;
 }
 });
 form.target=_10b;
@@ -2023,7 +2023,7 @@ if(this.env.loadingicon){
 _112="<img src=\""+this.env.loadingicon+"\" alt=\"\" />"+_112;
 }
 if(this.env.cancelicon){
-_112="<a title=\""+this.get_label("cancel")+"\" onclick=\"return rcmail.cancel_attachment_upload('"+ts+"', '"+_10b+"');\" href=\"#cancelupload\"><img src=\""+this.env.cancelicon+"\" alt=\"\" /></a>"+_112;
+_112="<a title=\""+this.get_label("cancel")+"\" onclick=\"return cmail.cancel_attachment_upload('"+ts+"', '"+_10b+"');\" href=\"#cancelupload\"><img src=\""+this.env.cancelicon+"\" alt=\"\" /></a>"+_112;
 }
 this.add2attachment_list(ts,{name:"",html:_112,complete:false});
 }
@@ -2124,8 +2124,8 @@ if(this.ksearch_timer){
 clearTimeout(this.ksearch_timer);
 }
 var _126;
-var key=rcube_event.get_keycode(e);
-var mod=rcube_event.get_modifier(e);
+var key=crystal_event.get_keycode(e);
+var mod=crystal_event.get_modifier(e);
 switch(key){
 case 38:
 case 40:
@@ -2140,7 +2140,7 @@ _126=this.ksearch_pane.__ul.firstChild;
 if(_126){
 this.ksearch_select(dir?_126.previousSibling:_126.nextSibling);
 }
-return rcube_event.cancel(e);
+return crystal_event.cancel(e);
 case 9:
 if(mod==SHIFT_KEY){
 break;
@@ -2151,7 +2151,7 @@ break;
 }
 this.insert_recipient(this.ksearch_selected);
 this.ksearch_hide();
-return rcube_event.cancel(e);
+return crystal_event.cancel(e);
 case 27:
 this.ksearch_hide();
 break;
@@ -2439,7 +2439,7 @@ this.enable_command("export",(this.contact_list.rowcount>0));
 };
 this.init_subscription_list=function(){
 var p=this;
-this.subscription_list=new rcube_list_widget(this.gui_objects.subscriptionlist,{multiselect:false,draggable:true,keyboard:false,toggleselect:true});
+this.subscription_list=new crystal_list_widget(this.gui_objects.subscriptionlist,{multiselect:false,draggable:true,keyboard:false,toggleselect:true});
 this.subscription_list.addEventListener("select",function(o){
 p.subscription_select(o);
 });
@@ -2607,7 +2607,7 @@ this.name_input.value=this.env.subscriptionrows[id][0].replace(reg,"");
 reg=new RegExp("["+RegExp.escape(this.env.delimiter)+"]?[^"+RegExp.escape(this.env.delimiter)+"]+$");
 this.name_input.__parent=this.env.subscriptionrows[id][0].replace(reg,"");
 this.name_input.onkeypress=function(e){
-rcmail.name_input_keypress(e);
+cmail.name_input_keypress(e);
 };
 row.cells[0].replaceChild(this.name_input,row.cells[0].firstChild);
 this.edit_folder=id;
@@ -2627,7 +2627,7 @@ $(cell).html(this.env.subscriptionrows[this.edit_folder][1]);
 this.edit_folder=null;
 };
 this.name_input_keypress=function(e){
-var key=rcube_event.get_keycode(e);
+var key=crystal_event.get_keycode(e);
 if(key==13){
 var _18e=this.name_input?this.name_input.value:null;
 if(this.edit_folder&&_18e){
@@ -2811,10 +2811,10 @@ elm._command=cmd;
 elm._id=prop.id;
 if(prop.sel){
 elm.onmousedown=function(e){
-return rcmail.button_sel(this._command,this._id);
+return cmail.button_sel(this._command,this._id);
 };
 elm.onmouseup=function(e){
-return rcmail.button_out(this._command,this._id);
+return cmail.button_out(this._command,this._id);
 };
 if(_1b7){
 new Image().src=prop.sel;
@@ -2822,10 +2822,10 @@ new Image().src=prop.sel;
 }
 if(prop.over){
 elm.onmouseover=function(e){
-return rcmail.button_over(this._command,this._id);
+return cmail.button_over(this._command,this._id);
 };
 elm.onmouseout=function(e){
-return rcmail.button_out(this._command,this._id);
+return cmail.button_out(this._command,this._id);
 };
 if(_1b7){
 new Image().src=prop.over;
@@ -2959,8 +2959,8 @@ if(!this.loaded){
 this.pending_message=new Array(msg,type);
 return true;
 }
-if(this.env.framed&&parent.rcmail){
-return parent.rcmail.display_message(msg,type,hold);
+if(this.env.framed&&parent.cmail){
+return parent.cmail.display_message(msg,type,hold);
 }
 if(!this.gui_objects.message){
 return false;
@@ -3019,7 +3019,7 @@ if((cell=_1e9.rows[0].cells[n+1])&&(col=="from"||col=="to")){
 if(cell.firstChild&&cell.firstChild.tagName.toLowerCase()=="a"){
 cell.firstChild.innerHTML=this.get_label(this.coltypes[n]);
 cell.firstChild.onclick=function(){
-return rcmail.command("sort",this.__col,this);
+return cmail.command("sort",this.__col,this);
 };
 cell.firstChild.__col=col;
 }else{
@@ -3196,8 +3196,8 @@ _20c.disabled=!_20b.checked;
 this.set_headers=function(_20d){
 if(this.gui_objects.all_headers_row&&this.gui_objects.all_headers_box&&_20d){
 $(this.gui_objects.all_headers_box).html(_20d).show();
-if(this.env.framed&&parent.rcmail){
-parent.rcmail.set_busy(false);
+if(this.env.framed&&parent.cmail){
+parent.cmail.set_busy(false);
 }else{
 this.set_busy(false);
 }
@@ -3210,7 +3210,7 @@ return;
 $(elem).removeClass("show-headers").addClass("hide-headers");
 $(this.gui_objects.all_headers_row).show();
 elem.onclick=function(){
-rcmail.hide_headers(elem);
+cmail.hide_headers(elem);
 };
 if(!this.gui_objects.all_headers_box.innerHTML){
 this.display_message(this.get_label("loading"),"loading",true);
@@ -3224,7 +3224,7 @@ return;
 $(elem).removeClass("hide-headers").addClass("show-headers");
 $(this.gui_objects.all_headers_row).hide();
 elem.onclick=function(){
-rcmail.load_headers(elem);
+cmail.load_headers(elem);
 };
 };
 this.percent_indicator=function(obj,data){
@@ -3478,7 +3478,7 @@ form.elements[n].disabled=lock;
 }
 };
 };
-rcube_webmail.prototype.addEventListener=rcube_event_engine.prototype.addEventListener;
-rcube_webmail.prototype.removeEventListener=rcube_event_engine.prototype.removeEventListener;
-rcube_webmail.prototype.triggerEvent=rcube_event_engine.prototype.triggerEvent;
+crystal_webmail.prototype.addEventListener=crystal_event_engine.prototype.addEventListener;
+crystal_webmail.prototype.removeEventListener=crystal_event_engine.prototype.removeEventListener;
+crystal_webmail.prototype.triggerEvent=crystal_event_engine.prototype.triggerEvent;
 

@@ -13,14 +13,14 @@
  *
  *  // The id of the address book to use to automatically set a new
  *  // user's full name in their new identity. (This should be an
- *  // string, which refers to the $rcmail_config['ldap_public'] array.)
- *  $rcmail_config['new_user_identity_addressbook'] = 'People';
+ *  // string, which refers to the $cmail_config['ldap_public'] array.)
+ *  $cmail_config['new_user_identity_addressbook'] = 'People';
  *  
  *  // When automatically setting a new users's full name in their
  *  // new identity, match the user's login name against this field.
- *  $rcmail_config['new_user_identity_match'] = 'uid';
+ *  $cmail_config['new_user_identity_match'] = 'uid';
  */
-class new_user_identity extends rcube_plugin
+class new_user_identity extends crystal_plugin
 {
     public $task = 'login';
 
@@ -31,10 +31,10 @@ class new_user_identity extends rcube_plugin
 
     function lookup_user_name($args)
     {
-        $rcmail = rcmail::get_instance();
-        if ($addressbook = $rcmail->config->get('new_user_identity_addressbook')) {
-            $match = $rcmail->config->get('new_user_identity_match');
-            $ldap = $rcmail->get_address_book($addressbook);
+        $cmail = cmail::get_instance();
+        if ($addressbook = $cmail->config->get('new_user_identity_addressbook')) {
+            $match = $cmail->config->get('new_user_identity_match');
+            $ldap = $cmail->get_address_book($addressbook);
             $ldap->prop['search_fields'] = array($match);
             $results = $ldap->search($match, $args['user'], TRUE);
             if (count($results->records) == 1) {

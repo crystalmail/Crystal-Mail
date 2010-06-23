@@ -7,9 +7,9 @@
  *
  * @version 1.0.1
  * @author Thomas Bruederli
- * @website http://roundcube.net
+ * @website http://crystalmail.net
  */
-class emoticons extends rcube_plugin
+class emoticons extends crystal_plugin
 {
   public $task = 'mail';
   private $map;

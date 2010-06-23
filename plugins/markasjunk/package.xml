@@ -4,13 +4,13 @@
     http://pear.php.net/dtd/package-2.0
     http://pear.php.net/dtd/package-2.0.xsd">
 	<name>markasjunk</name>
-	<channel>pear.roundcube.net</channel>
+	<channel>pear.crystalmail.net</channel>
 	<summary>Mark messages as Junk</summary>
 	<description>Adds a new button to the mailbox toolbar to mark the selected messages as Junk and move them to the configured Junk folder.</description>
 	<lead>
 		<name>Thomas Bruederli</name>
 		<user>thomasb</user>
-		<email>roundcube@gmail.com</email>
+		<email>crystalmail@gmail.com</email>
 		<active>yes</active>
 	</lead>
 	<date>2010-03-29</date>

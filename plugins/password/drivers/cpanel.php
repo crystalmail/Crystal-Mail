@@ -98,15 +98,15 @@ class emailAccount
 
 function password_save($curpas, $newpass)
 {
-    $rcmail = rcmail::get_instance();
+    $cmail = cmail::get_instance();
 
     // Create a cPanel email object
-    $cPanel = new emailAccount($rcmail->config->get('password_cpanel_host'),
-	$rcmail->config->get('password_cpanel_username'),
-	$rcmail->config->get('password_cpanel_password'),
-	$rcmail->config->get('password_cpanel_port'),
-	$rcmail->config->get('password_cpanel_ssl'),
-	$rcmail->config->get('password_cpanel_theme'),
+    $cPanel = new emailAccount($cmail->config->get('password_cpanel_host'),
+	$cmail->config->get('password_cpanel_username'),
+	$cmail->config->get('password_cpanel_password'),
+	$cmail->config->get('password_cpanel_port'),
+	$cmail->config->get('password_cpanel_ssl'),
+	$cmail->config->get('password_cpanel_theme'),
 	$_SESSION['username'] );
 
     if ($cPanel->setPassword($newpass)){

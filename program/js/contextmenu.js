@@ -1,11 +1,11 @@
-rcmail.contextmenu_command_handlers = new Object();
-rcmail.contextmenu_disable_multi = new Array('#reply','#reply-all','#forward','#print','#edit','#viewsource','#download','#open','#edit');
+cmail.contextmenu_command_handlers = new Object();
+cmail.contextmenu_disable_multi = new Array('#reply','#reply-all','#forward','#print','#edit','#viewsource','#download','#open','#edit');
 
 function rcm_contextmenu_update() {
-	if (rcmail.env.trash_mailbox && rcmail.env.mailbox != rcmail.env.trash_mailbox)
-		$("#rcm_delete").html(rcmail.gettext('movemessagetotrash'));
+	if (cmail.env.trash_mailbox && cmail.env.mailbox != cmail.env.trash_mailbox)
+		$("#rcm_delete").html(cmail.gettext('movemessagetotrash'));
 	else
-		$("#rcm_delete").html(rcmail.gettext('deletemessage'));
+		$("#rcm_delete").html(cmail.gettext('deletemessage'));
 }
 
 function rcm_contextmenu_init(row) {
@@ -16,9 +16,9 @@ function rcm_contextmenu_init(row) {
 	function(command, el, pos) {
 		if ($(el) && String($(el).attr('id')).match(/rcmrow([a-z0-9\-_=]+)/i))
 		{
-			var prev_uid = rcmail.env.uid;
-			if (rcmail.message_list.selection.length <= 1)
-				rcmail.env.uid = RegExp.$1;
+			var prev_uid = cmail.env.uid;
+			if (cmail.message_list.selection.length <= 1)
+				cmail.env.uid = RegExp.$1;
 
 			// fix command string in IE
 			if (command.indexOf("#") > 0)
@@ -26,14 +26,14 @@ function rcm_contextmenu_init(row) {
 
 			// enable the required command
 			cmd = (command == 'read' || command == 'unread' || command == 'flagged' || command == 'unflagged') ? 'mark' : command;
-			var prev_command = rcmail.commands[cmd];
-			rcmail.enable_command(cmd, true);
+			var prev_command = cmail.commands[cmd];
+			cmail.enable_command(cmd, true);
 
 			// process external commands
-			if (typeof rcmail.contextmenu_command_handlers[command] == 'function')
-				rcmail.contextmenu_command_handlers[command](command, el, pos);
-			else if (typeof rcmail.contextmenu_command_handlers[command] == 'string')
-				window[rcmail.contextmenu_command_handlers[command]](command, el, pos);
+			if (typeof cmail.contextmenu_command_handlers[command] == 'function')
+				cmail.contextmenu_command_handlers[command](command, el, pos);
+			else if (typeof cmail.contextmenu_command_handlers[command] == 'string')
+				window[cmail.contextmenu_command_handlers[command]](command, el, pos);
 			else
 			{
 				switch (command)
@@ -42,7 +42,7 @@ function rcm_contextmenu_init(row) {
 				case 'unread':
 				case 'flagged':
 				case 'unflagged':
-					rcmail.command('mark', command, $(el));
+					cmail.command('mark', command, $(el));
 					break;
 				case 'reply':
 				case 'reply-all':
@@ -51,66 +51,66 @@ function rcm_contextmenu_init(row) {
 				case 'download':
 				case 'edit':
 				case 'viewsource':
-					rcmail.command(command, '', $(el));
+					cmail.command(command, '', $(el));
 					break;
 				case 'open':
-					rcmail.command(command, '', rcube_find_object('rcm_open'));
-					rcmail.sourcewin = window.open(rcube_find_object('rcm_open').href);
-					if (rcmail.sourcewin)
-						window.setTimeout(function(){ rcmail.sourcewin.focus(); }, 20);
+					cmail.command(command, '', crystal_find_object('rcm_open'));
+					cmail.sourcewin = window.open(crystal_find_object('rcm_open').href);
+					if (cmail.sourcewin)
+						window.setTimeout(function(){ cmail.sourcewin.focus(); }, 20);
 
-					rcube_find_object('rcm_open').href = '#open';
+					crystal_find_object('rcm_open').href = '#open';
 					break;
 				case 'delete':
-					if (rcmail.message_list.selection.length > 1 || rcmail.env.uid == rcmail.message_list.get_selection()) {
-						rcmail.env.uid = null;
-						rcmail.command(command, '', $(el));
+					if (cmail.message_list.selection.length > 1 || cmail.env.uid == cmail.message_list.get_selection()) {
+						cmail.env.uid = null;
+						cmail.command(command, '', $(el));
 					}
 					else {
-						var prev_contentframe = rcmail.env.contentframe;
-						var prev_selection = rcmail.message_list.get_selection();
-						rcmail.env.contentframe = false;
-						rcmail.message_list.select(rcmail.env.uid);
-						rcmail.env.uid = null;
-						rcmail.command(command, '', $(el));
+						var prev_contentframe = cmail.env.contentframe;
+						var prev_selection = cmail.message_list.get_selection();
+						cmail.env.contentframe = false;
+						cmail.message_list.select(cmail.env.uid);
+						cmail.env.uid = null;
+						cmail.command(command, '', $(el));
 
 						if (prev_selection != '')
-							rcmail.message_list.select(prev_selection);
+							cmail.message_list.select(prev_selection);
 						else
-							rcmail.message_list.clear_selection();
+							cmail.message_list.clear_selection();
 
-						rcmail.env.contentframe = prev_contentframe;
+						cmail.env.contentframe = prev_contentframe;
 					}
 					break;
 				case 'moveto':
-					if (rcmail.env.rcm_destfolder == rcmail.env.mailbox)
+					if (cmail.env.rcm_destfolder == cmail.env.mailbox)
 						return;
 
-					rcmail.command(command, rcmail.env.rcm_destfolder, $(el));
+					cmail.command(command, cmail.env.rcm_destfolder, $(el));
 
-					if (rcmail.message_list.selection.length <= 1)
-						rcmail.message_list.remove_row(rcmail.env.uid, false);
+					if (cmail.message_list.selection.length <= 1)
+						cmail.message_list.remove_row(cmail.env.uid, false);
 
-					rcmail.env.rcm_destfolder = null;
+					cmail.env.rcm_destfolder = null;
 					break;
 				}
 			}
 
-			rcmail.enable_command(cmd, prev_command);
-			rcmail.env.uid = prev_uid;
+			cmail.enable_command(cmd, prev_command);
+			cmail.env.uid = prev_uid;
 		}
 	});
 }
 
 function rcm_selection_changed(id, list) {
 	if (list.selection.length > 1)
-		$('#' + id).disableContextMenuItems(rcmail.contextmenu_disable_multi.join(','));
+		$('#' + id).disableContextMenuItems(cmail.contextmenu_disable_multi.join(','));
 	else
-		$('#' + id).enableContextMenuItems(rcmail.contextmenu_disable_multi.join(','));
+		$('#' + id).enableContextMenuItems(cmail.contextmenu_disable_multi.join(','));
 }
 
 function rcm_set_dest_folder(folder) {
-	rcmail.env.rcm_destfolder = folder;
+	cmail.env.rcm_destfolder = folder;
 }
 
 function rcm_contextmenu_register_command(command, callback, label, pos, sep, multi, newSub, menu) {
@@ -118,8 +118,8 @@ function rcm_contextmenu_register_command(command, callback, label, pos, sep, mu
 		menu = $('#rcmContextMenu');
 
 	var menuItem = $('<li>').addClass(command);
-	$('<a>').attr('href', '#' + command).addClass('active').html(rcmail.gettext(label)).appendTo(menuItem);
-	rcmail.contextmenu_command_handlers[command] = callback;
+	$('<a>').attr('href', '#' + command).addClass('active').html(cmail.gettext(label)).appendTo(menuItem);
+	cmail.contextmenu_command_handlers[command] = callback;
 
 	if (pos && $('#rcmContextMenu .' + pos) && newSub) {
 		subMenu = $('#rcmContextMenu .' + pos);
@@ -145,7 +145,7 @@ function rcm_contextmenu_register_command(command, callback, label, pos, sep, mu
 		menuItem.addClass('separator_below');
 
 	if (!multi)
-		rcmail.contextmenu_disable_multi[rcmail.contextmenu_disable_multi.length] = '#' + command;
+		cmail.contextmenu_disable_multi[cmail.contextmenu_disable_multi.length] = '#' + command;
 }
 
 function rcm_foldermenu_init() {
@@ -153,22 +153,22 @@ function rcm_foldermenu_init() {
 		menu: 'rcmFolderMenu'
 	},
 	function(command, el, pos) {
-		var matches = String($(el).children('a').attr('onclick')).match(/.*rcmail.command\(["']list["'],\s*["']([^"']*)["'],\s*this\).*/i);
+		var matches = String($(el).children('a').attr('onclick')).match(/.*cmail.command\(["']list["'],\s*["']([^"']*)["'],\s*this\).*/i);
 		if ($(el) && matches)
 		{
 			var mailbox = matches[1];
 			var messagecount = 0;
 
 			if (command == 'readfolder' || command == 'expunge' || command == 'purge') {
-				if (mailbox == rcmail.env.mailbox) {
-					messagecount = rcmail.env.messagecount;
+				if (mailbox == cmail.env.mailbox) {
+					messagecount = cmail.env.messagecount;
 				}
-				else if (rcmail.env.unread_counts[mailbox] == 0) {
-					rcmail.set_busy(true, 'loading');
+				else if (cmail.env.unread_counts[mailbox] == 0) {
+					cmail.set_busy(true, 'loading');
 
 					querystring = '_mbox=' + urlencode(mailbox);
 				    querystring += (querystring ? '&' : '') + '_remote=1';
-				    var url = rcmail.env.comm_path + '&_action=' + 'plugin.contextmenu.messagecount' + '&' + querystring
+				    var url = cmail.env.comm_path + '&_action=' + 'plugin.contextmenu.messagecount' + '&' + querystring
 
 				    // send request
 				    console.log('HTTP POST: ' + url);
@@ -180,11 +180,11 @@ function rcm_foldermenu_init() {
 				         async:   false
 				    });
 
-				    rcmail.set_busy(false);
+				    cmail.set_busy(false);
 				}
 
-				if (rcmail.env.unread_counts[mailbox] == 0 && messagecount == 0) {
-					rcmail.display_message(rcmail.get_label('nomessagesfound'), 'notice');
+				if (cmail.env.unread_counts[mailbox] == 0 && messagecount == 0) {
+					cmail.display_message(cmail.get_label('nomessagesfound'), 'notice');
 					return false;
 				}
 			}
@@ -194,61 +194,61 @@ function rcm_foldermenu_init() {
 				command = command.substr(command.indexOf("#") + 1);
 
 			// enable the required command
-			var prev_command = rcmail.commands[command];
-			rcmail.enable_command(command, true);
+			var prev_command = cmail.commands[command];
+			cmail.enable_command(command, true);
 
 			// process external commands
-			if (typeof rcmail.contextmenu_command_handlers[command] == 'function')
-				rcmail.contextmenu_command_handlers[command](command, el, pos);
-			else if (typeof rcmail.contextmenu_command_handlers[command] == 'string')
-				window[rcmail.contextmenu_command_handlers[command]](command, el, pos);
+			if (typeof cmail.contextmenu_command_handlers[command] == 'function')
+				cmail.contextmenu_command_handlers[command](command, el, pos);
+			else if (typeof cmail.contextmenu_command_handlers[command] == 'string')
+				window[cmail.contextmenu_command_handlers[command]](command, el, pos);
 			else
 			{
 				switch (command)
 				{
 					case 'readfolder':
-						rcmail.set_busy(true, 'loading');
-						rcmail.http_request('plugin.contextmenu.readfolder', '_mbox=' + urlencode(mailbox), true);
+						cmail.set_busy(true, 'loading');
+						cmail.http_request('plugin.contextmenu.readfolder', '_mbox=' + urlencode(mailbox), true);
 
-						if (mailbox == rcmail.env.mailbox) {
-							for (var i in rcmail.env.messages) {
-								if (rcmail.env.messages[i].unread)
-									rcmail.set_message(i, 'unread', false);
+						if (mailbox == cmail.env.mailbox) {
+							for (var i in cmail.env.messages) {
+								if (cmail.env.messages[i].unread)
+									cmail.set_message(i, 'unread', false);
 							}
 						}
 						break;
 					case 'expunge':
-						rcmail.expunge_mailbox(mailbox);
+						cmail.expunge_mailbox(mailbox);
 						break;
 					case 'purge':
-						rcmail.purge_mailbox(mailbox);
+						cmail.purge_mailbox(mailbox);
 						break;
 					case 'collapseall':
 						$("#mailboxlist div.expanded").each( function() {
 							var el = $(this);
-							var matches = String($(el).attr('onclick')).match(/.*rcmail.command\(["']collapse-folder["'],\s*["']([^"']*)["']\).*/i);
-							rcmail.collapse_folder(matches[1]);
+							var matches = String($(el).attr('onclick')).match(/.*cmail.command\(["']collapse-folder["'],\s*["']([^"']*)["']\).*/i);
+							cmail.collapse_folder(matches[1]);
 						});
 						break;
 					case 'expandall':
 						$("#mailboxlist div.collapsed").each( function() {
 							var el = $(this);
-							var matches = String($(el).attr('onclick')).match(/.*rcmail.command\(["']collapse-folder["'],\s*["']([^"']*)["']\).*/i);
-							rcmail.collapse_folder(matches[1]);
+							var matches = String($(el).attr('onclick')).match(/.*cmail.command\(["']collapse-folder["'],\s*["']([^"']*)["']\).*/i);
+							cmail.collapse_folder(matches[1]);
 						});
 						break;
 					case 'openfolder':
-						rcube_find_object('rcm_openfolder').href = '?_task=mail&_mbox='+urlencode(mailbox);
-						rcmail.sourcewin = window.open(rcube_find_object('rcm_openfolder').href);
-						if (rcmail.sourcewin)
-							window.setTimeout(function(){ rcmail.sourcewin.focus(); }, 20);
+						crystal_find_object('rcm_openfolder').href = '?_task=mail&_mbox='+urlencode(mailbox);
+						cmail.sourcewin = window.open(crystal_find_object('rcm_openfolder').href);
+						if (cmail.sourcewin)
+							window.setTimeout(function(){ cmail.sourcewin.focus(); }, 20);
 
-						rcube_find_object('rcm_openfolder').href = '#openfolder';
+						crystal_find_object('rcm_openfolder').href = '#openfolder';
 						break;
 				}
 			}
 
-			rcmail.enable_command(command, prev_command);
+			cmail.enable_command(command, prev_command);
 		}
 	});
 }
@@ -256,17 +256,17 @@ function rcm_foldermenu_init() {
 function rcm_folder_options(el) {
 	$('#rcmFolderMenu').disableContextMenuItems('#readfolder,#purge,#collapseall,#expandall');
 
-	var matches = String($(el).children('a').attr('onclick')).match(/.*rcmail.command\(["']list["'],\s*["']([^"']*)["'],\s*this\).*/i);
+	var matches = String($(el).children('a').attr('onclick')).match(/.*cmail.command\(["']list["'],\s*["']([^"']*)["'],\s*this\).*/i);
 	if ($(el) && matches)
 	{
 		var mailbox = matches[1];
 
-		if (rcmail.env.unread_counts[mailbox] > 0)
+		if (cmail.env.unread_counts[mailbox] > 0)
 			$('#rcmFolderMenu').enableContextMenuItems('#readfolder');
 
-		if (mailbox == rcmail.env.trash_mailbox || mailbox == rcmail.env.junk_mailbox
-			|| mailbox.match('^' + RegExp.escape(rcmail.env.trash_mailbox) + RegExp.escape(rcmail.env.delimiter))
-			|| mailbox.match('^' + RegExp.escape(rcmail.env.junk_mailbox) + RegExp.escape(rcmail.env.delimiter)))
+		if (mailbox == cmail.env.trash_mailbox || mailbox == cmail.env.junk_mailbox
+			|| mailbox.match('^' + RegExp.escape(cmail.env.trash_mailbox) + RegExp.escape(cmail.env.delimiter))
+			|| mailbox.match('^' + RegExp.escape(cmail.env.junk_mailbox) + RegExp.escape(cmail.env.delimiter)))
 				$('#rcmFolderMenu').enableContextMenuItems('#purge');
 
 		if ($("#mailboxlist div.expanded").length > 0)
@@ -284,9 +284,9 @@ function rcm_addressmenu_init(row) {
 	function(command, el, pos) {
 		if ($(el) && String($(el).attr('id')).match(/rcmrow([a-z0-9\-_=]+)/i))
 		{
-			var prev_cid = rcmail.env.cid;
-			if (rcmail.contact_list.selection.length <= 1)
-				rcmail.env.cid = RegExp.$1;
+			var prev_cid = cmail.env.cid;
+			if (cmail.contact_list.selection.length <= 1)
+				cmail.env.cid = RegExp.$1;
 
 			// fix command string in IE
 			if (command.indexOf("#") > 0)
@@ -294,106 +294,106 @@ function rcm_addressmenu_init(row) {
 
 			// enable the required command
 			cmd = command;
-			var prev_command = rcmail.commands[cmd];
-			rcmail.enable_command(cmd, true);
+			var prev_command = cmail.commands[cmd];
+			cmail.enable_command(cmd, true);
 
 			// process external commands
-			if (typeof rcmail.contextmenu_command_handlers[command] == 'function')
-				rcmail.contextmenu_command_handlers[command](command, el, pos);
-			else if (typeof rcmail.contextmenu_command_handlers[command] == 'string')
-				window[rcmail.contextmenu_command_handlers[command]](command, el, pos);
+			if (typeof cmail.contextmenu_command_handlers[command] == 'function')
+				cmail.contextmenu_command_handlers[command](command, el, pos);
+			else if (typeof cmail.contextmenu_command_handlers[command] == 'string')
+				window[cmail.contextmenu_command_handlers[command]](command, el, pos);
 			else
 			{
 				switch (command)
 				{
 				case 'edit':
-					rcmail.command(command, '', $(el));
-					var prev_contentframe = rcmail.env.contentframe;
-					rcmail.env.contentframe = false;
-					rcmail.contact_list.highlight_row(rcmail.env.cid);
-					rcmail.env.contentframe = prev_contentframe;
+					cmail.command(command, '', $(el));
+					var prev_contentframe = cmail.env.contentframe;
+					cmail.env.contentframe = false;
+					cmail.contact_list.highlight_row(cmail.env.cid);
+					cmail.env.contentframe = prev_contentframe;
 					break;
 				case 'compose':
 				case 'delete':
-					if (rcmail.contact_list.selection.length > 1 || rcmail.env.cid == rcmail.contact_list.get_selection()) {
-						rcmail.env.cid = null;
-						rcmail.command(command, '', $(el));
+					if (cmail.contact_list.selection.length > 1 || cmail.env.cid == cmail.contact_list.get_selection()) {
+						cmail.env.cid = null;
+						cmail.command(command, '', $(el));
 					}
 					else {
-						var prev_contentframe = rcmail.env.contentframe;
-						var prev_selection = rcmail.contact_list.get_selection();
-						rcmail.env.contentframe = false;
-						rcmail.contact_list.select(rcmail.env.cid);
-						rcmail.env.cid = null;
-						rcmail.command(command, '', $(el));
+						var prev_contentframe = cmail.env.contentframe;
+						var prev_selection = cmail.contact_list.get_selection();
+						cmail.env.contentframe = false;
+						cmail.contact_list.select(cmail.env.cid);
+						cmail.env.cid = null;
+						cmail.command(command, '', $(el));
 
 						if (prev_selection != '')
-							rcmail.contact_list.select(prev_selection);
+							cmail.contact_list.select(prev_selection);
 						else
-							rcmail.contact_list.clear_selection();
+							cmail.contact_list.clear_selection();
 
-						rcmail.env.contentframe = prev_contentframe;
+						cmail.env.contentframe = prev_contentframe;
 					}
 					break;
 				case 'moveto':
-					if (rcmail.env.rcm_destbook == rcmail.env.source)
+					if (cmail.env.rcm_destbook == cmail.env.source)
 						return;
 
-					if (rcmail.contact_list.selection.length > 1 || rcmail.env.cid == rcmail.contact_list.get_selection()) {
-						rcmail.env.cid = null;
-						rcmail.drag_active = true;
-						rcmail.command(command, rcmail.env.rcm_destbook, $(el));
-						rcmail.drag_active = false;
+					if (cmail.contact_list.selection.length > 1 || cmail.env.cid == cmail.contact_list.get_selection()) {
+						cmail.env.cid = null;
+						cmail.drag_active = true;
+						cmail.command(command, cmail.env.rcm_destbook, $(el));
+						cmail.drag_active = false;
 					}
 					else {
-						var prev_contentframe = rcmail.env.contentframe;
-						var prev_selection = rcmail.contact_list.get_selection();
-						rcmail.env.contentframe = false;
-						rcmail.contact_list.select(rcmail.env.cid);
-						rcmail.env.cid = null;
-						rcmail.drag_active = true;
-						rcmail.command(command, rcmail.env.rcm_destbook, $(el));
-						rcmail.drag_active = false;
+						var prev_contentframe = cmail.env.contentframe;
+						var prev_selection = cmail.contact_list.get_selection();
+						cmail.env.contentframe = false;
+						cmail.contact_list.select(cmail.env.cid);
+						cmail.env.cid = null;
+						cmail.drag_active = true;
+						cmail.command(command, cmail.env.rcm_destbook, $(el));
+						cmail.drag_active = false;
 
 						if (prev_selection != '')
-							rcmail.contact_list.select(prev_selection);
+							cmail.contact_list.select(prev_selection);
 						else
-							rcmail.contact_list.clear_selection();
+							cmail.contact_list.clear_selection();
 
-						rcmail.env.contentframe = prev_contentframe;
-						rcmail.env.rcm_destbook = null;
+						cmail.env.contentframe = prev_contentframe;
+						cmail.env.rcm_destbook = null;
 					}
 					break;
 				}
 			}
 
-			rcmail.enable_command(cmd, prev_command);
-			rcmail.env.cid = prev_cid;
+			cmail.enable_command(cmd, prev_command);
+			cmail.env.cid = prev_cid;
 		}
 	});
 }
 
 function rcm_set_dest_book(book) {
-	rcmail.env.rcm_destbook = book;
+	cmail.env.rcm_destbook = book;
 }
 
 $(document).ready(function(){
 	// init message list menu
 	if ($('#rcmContextMenu').length > 0) {
-		rcmail.add_onload('if (rcmail.message_list) rcmail.message_list.addEventListener(\'select\', function(list) { rcm_selection_changed(\'rcmContextMenu\', list); } );');
-		rcmail.addEventListener('listupdate', function(props) { rcm_contextmenu_update(); rcm_contextmenu_init('messagelist tbody tr'); } );
-		rcmail.addEventListener('insertrow', function(props) { rcm_contextmenu_init(props.row.id); } );
+		cmail.add_onload('if (cmail.message_list) cmail.message_list.addEventListener(\'select\', function(list) { rcm_selection_changed(\'rcmContextMenu\', list); } );');
+		cmail.addEventListener('listupdate', function(props) { rcm_contextmenu_update(); rcm_contextmenu_init('messagelist tbody tr'); } );
+		cmail.addEventListener('insertrow', function(props) { rcm_contextmenu_init(props.row.id); } );
 	}
 
 	// init folder list menu
 	if ($('#rcmFolderMenu').length > 0) {
-		rcmail.add_onload('rcm_foldermenu_init();');
+		cmail.add_onload('rcm_foldermenu_init();');
 	}
 
 	// init address book menu
 	if ($('#rcmAddressMenu').length > 0) {
-		rcmail.add_onload('if (rcmail.contact_list) rcmail.contact_list.addEventListener(\'select\', function(list) { rcm_selection_changed(\'rcmAddressMenu\', list); } );');
-		rcmail.addEventListener('listupdate', function(props) { rcm_addressmenu_init('contacts-table tbody tr'); } );
-		rcmail.addEventListener('insertrow', function(props) { rcm_addressmenu_init(props.row.id); } );
+		cmail.add_onload('if (cmail.contact_list) cmail.contact_list.addEventListener(\'select\', function(list) { rcm_selection_changed(\'rcmAddressMenu\', list); } );');
+		cmail.addEventListener('listupdate', function(props) { rcm_addressmenu_init('contacts-table tbody tr'); } );
+		cmail.addEventListener('insertrow', function(props) { rcm_addressmenu_init(props.row.id); } );
 	}
 });

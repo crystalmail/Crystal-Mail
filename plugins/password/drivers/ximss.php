@@ -19,9 +19,9 @@
 function password_save($pass, $newpass)
 {
 
-  $rcmail = rcmail::get_instance();
+  $cmail = cmail::get_instance();
   
-  $sock = stream_socket_client("tcp://".$rcmail->config->get('password_ximss_host').":".$rcmail->config->get('password_ximss_port'), $errno, $errstr, 30) ;
+  $sock = stream_socket_client("tcp://".$cmail->config->get('password_ximss_host').":".$cmail->config->get('password_ximss_port'), $errno, $errstr, 30) ;
   if( $sock === FALSE )
   {
     return PASSWORD_CONNECT_ERROR;

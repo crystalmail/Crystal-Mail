@@ -22,7 +22,7 @@
 define('INSTALL_PATH', realpath(dirname(__FILE__).'/..') . '/');
 require INSTALL_PATH . 'program/include/iniset.php';
 
-$config = new rcube_config();
+$config = new crystal_config();
 
 // don't allow public access if not in devel_mode
 if (!$config->get('devel_mode') && $_SERVER['REMOTE_ADDR']) {

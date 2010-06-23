@@ -12,7 +12,7 @@
  |   Move the submitted messages to a specific mailbox or delete them    |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: move_del.inc 3419 2010-03-25 16:29:02Z alec $
@@ -28,10 +28,10 @@ $old_count = $IMAP->messagecount(NULL, $IMAP->threading ? 'THREADS' : 'ALL');
 $old_pages = ceil($old_count / $IMAP->page_size);
 
 // move messages
-if ($RCMAIL->action=='moveto' && !empty($_POST['_uid']) && !empty($_POST['_target_mbox'])) {
-    $count = sizeof(explode(',', ($uids = get_input_value('_uid', RCUBE_INPUT_POST))));
-    $target = get_input_value('_target_mbox', RCUBE_INPUT_POST);
-    $mbox = get_input_value('_mbox', RCUBE_INPUT_POST);
+if ($CMAIL->action=='moveto' && !empty($_POST['_uid']) && !empty($_POST['_target_mbox'])) {
+    $count = sizeof(explode(',', ($uids = get_input_value('_uid', crystal_INPUT_POST))));
+    $target = get_input_value('_target_mbox', crystal_INPUT_POST);
+    $mbox = get_input_value('_mbox', crystal_INPUT_POST);
 
     $moved = $IMAP->move_message($uids, $target, $mbox);
 
@@ -47,9 +47,9 @@ if ($RCMAIL->action=='moveto' && !empty($_POST['_uid']) && !empty($_POST['_targe
     $addrows = true;
 }
 // delete messages 
-else if ($RCMAIL->action=='delete' && !empty($_POST['_uid'])) {
-    $count = sizeof(explode(',', ($uids = get_input_value('_uid', RCUBE_INPUT_POST))));
-    $mbox = get_input_value('_mbox', RCUBE_INPUT_POST);
+else if ($CMAIL->action=='delete' && !empty($_POST['_uid'])) {
+    $count = sizeof(explode(',', ($uids = get_input_value('_uid', crystal_INPUT_POST))));
+    $mbox = get_input_value('_mbox', crystal_INPUT_POST);
 
     $del = $IMAP->delete_message($uids, $mbox);
   
@@ -70,13 +70,13 @@ else {
 }
 
 // refresh saved search set after moving some messages
-if (($search_request = get_input_value('_search', RCUBE_INPUT_GPC)) && $IMAP->search_set) {
+if (($search_request = get_input_value('_search', crystal_INPUT_GPC)) && $IMAP->search_set) {
     $_SESSION['search'][$search_request] = $IMAP->refresh_search();
 }
 
 if ($_POST['_from'] == 'show')
 {
-  if ($next = get_input_value('_next_uid', RCUBE_INPUT_GPC))
+  if ($next = get_input_value('_next_uid', crystal_INPUT_GPC))
     $OUTPUT->command('show_message', $next);
   else
     $OUTPUT->command('command', 'list');
@@ -110,15 +110,15 @@ else
     $_SESSION['unseen_count'][$mbox] = $unseen_count;
   }
 
-  if ($RCMAIL->action=='moveto' && $target) {
-    rcmail_send_unread_count($target, true);
+  if ($CMAIL->action=='moveto' && $target) {
+    cmail_send_unread_count($target, true);
   }
 
-  $OUTPUT->command('set_quota', rcmail_quota_content());
-  $OUTPUT->command('set_rowcount', rcmail_get_messagecount_text($msg_count));
+  $OUTPUT->command('set_quota', cmail_quota_content());
+  $OUTPUT->command('set_rowcount', cmail_get_messagecount_text($msg_count));
 
   if ($IMAP->threading)
-    $count = get_input_value('_count', RCUBE_INPUT_POST);
+    $count = get_input_value('_count', crystal_INPUT_POST);
 
   // add new rows from next page (if any)
   if ($addrows && $count && $uids != '*' && ($jump_back || $nextpage_count > 0)) {
@@ -128,7 +128,7 @@ else
     $a_headers = $IMAP->list_headers($mbox, NULL, $sort_col, $sort_order,
       $jump_back ? NULL : $count);
 
-    rcmail_js_message_list($a_headers, false, false);
+    cmail_js_message_list($a_headers, false, false);
   }
 }
 

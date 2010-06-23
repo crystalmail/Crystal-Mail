@@ -20,7 +20,7 @@
  | 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.             |
  |                                                                         |
  +-------------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                          |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                          |
  +-------------------------------------------------------------------------+
 
  $Id: index.php 2696 2009-07-02 06:38:26Z thomasb $

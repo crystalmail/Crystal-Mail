@@ -12,22 +12,22 @@
  |   Manage identities of a user account                                 |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: identities.inc 2006 2008-10-24 07:57:21Z alec $
 
 */
 
-define('IDENTITIES_LEVEL', intval($RCMAIL->config->get('identities_level', 0)));
+define('IDENTITIES_LEVEL', intval($CMAIL->config->get('identities_level', 0)));
 
-$OUTPUT->set_pagetitle(rcube_label('identities'));
+$OUTPUT->set_pagetitle(crystal_label('identities'));
 
 $OUTPUT->include_script('list.js');
 
 
-// similar function as /steps/addressbook/func.inc::rcmail_contact_frame()
-function rcmail_identity_frame($attrib)
+// similar function as /steps/addressbook/func.inc::cmail_contact_frame()
+function cmail_identity_frame($attrib)
   {
   global $OUTPUT;
 
@@ -41,7 +41,7 @@ function rcmail_identity_frame($attrib)
   return html::iframe($attrib);
   }
 
-$OUTPUT->add_handler('identityframe', 'rcmail_identity_frame');
+$OUTPUT->add_handler('identityframe', 'cmail_identity_frame');
 $OUTPUT->set_env('identities_level', IDENTITIES_LEVEL);
 
 $OUTPUT->send('identities');

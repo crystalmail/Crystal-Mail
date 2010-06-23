@@ -1,7 +1,7 @@
 // hide or display settings part
 
-if (window.rcmail && typeof settings_parts != 'undefined') {
-  rcmail.addEventListener('init', function(evt) {
+if (window.cmail && typeof settings_parts != 'undefined') {
+  cmail.addEventListener('init', function(evt) {
     try{
       document.getElementById("userprefscontainer").style.padding = "0px 0 15px 15px";
     }
@@ -56,7 +56,7 @@ if (window.rcmail && typeof settings_parts != 'undefined') {
 }
 
 function settings_hide_parts(){
-  if (window.rcmail && typeof settings_parts != 'undefined') {
+  if (window.cmail && typeof settings_parts != 'undefined') {
     for ( var i in settings_parts ){
       document.getElementById( settings_parts[i] ).style.display = "none";
     }  
@@ -65,7 +65,7 @@ function settings_hide_parts(){
 
 function settings_show_part(part){
   settings_hide_parts();
-  if (window.rcmail && typeof settings_parts != 'undefined') {
+  if (window.cmail && typeof settings_parts != 'undefined') {
     document.getElementById( part ).style.display = "block";
     document.getElementById( "rcmfd_settings_section" ).value = part;
     form.action = form.action + "?_part=" + part;

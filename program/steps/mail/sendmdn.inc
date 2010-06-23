@@ -12,7 +12,7 @@
  |   Send a message disposition notification for a specific mail         |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: sendmdn.inc 3223 2010-01-25 19:05:05Z alec $
@@ -24,7 +24,7 @@ if (!$OUTPUT->ajax_call)
   return;
 
 if (!empty($_POST['_uid'])) {
-  $sent = rcmail_send_mdn(get_input_value('_uid', RCUBE_INPUT_POST), $smtp_error);
+  $sent = cmail_send_mdn(get_input_value('_uid', crystal_INPUT_POST), $smtp_error);
 }
 
 // show either confirm or error message

@@ -12,7 +12,7 @@
  |   Display error message page                                          |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: error.inc 2547 2009-05-26 16:54:55Z alec $
@@ -86,7 +86,7 @@ else {
 
 
 // Ajax request
-if ($OUTPUT && ($OUTPUT instanceof rcube_json_output)) {
+if ($OUTPUT && ($OUTPUT instanceof crystal_json_output)) {
   header("HTTP/1.0 $ERROR_CODE $__error_title");
   die;
 }

@@ -7,7 +7,7 @@
  | Licensed under the GNU GPL                                            |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Authors: Thomas Bruederli <roundcube@gmail.com>                       |
+ | Authors: Thomas Bruederli <crystalmail@gmail.com>                       |
  |          Charles McNulty <charles@charlesmcnulty.com>                 |
  +-----------------------------------------------------------------------+
  | Requires: common.js                                                   |
@@ -21,7 +21,7 @@
  * RoundCube List Widget class
  * @contructor
  */
-function rcube_list_widget(list, p)
+function crystal_list_widget(list, p)
 {
   // static contants
   this.ENTER_KEY = 13;
@@ -60,7 +60,7 @@ function rcube_list_widget(list, p)
 };
 
 
-rcube_list_widget.prototype = {
+crystal_list_widget.prototype = {
 
 
 /**
@@ -88,8 +88,8 @@ init: function()
 
     // set body events
     if (this.keyboard) {
-      rcube_event.add_listener({event:bw.opera?'keypress':'keydown', object:this, method:'key_press'});
-      rcube_event.add_listener({event:'keydown', object:this, method:'key_down'});
+      crystal_event.add_listener({event:bw.opera?'keypress':'keydown', object:this, method:'key_press'});
+      crystal_event.add_listener({event:'keydown', object:this, method:'key_down'});
     }
   }
 },
@@ -186,7 +186,7 @@ focus: function(e)
   }
 
   if (e || (e = window.event))
-    rcube_event.cancel(e);
+    crystal_event.cancel(e);
 },
 
 
@@ -212,28 +212,28 @@ blur: function()
 drag_row: function(e, id)
 {
   // don't do anything (another action processed before)
-  var evtarget = rcube_event.get_target(e);
+  var evtarget = crystal_event.get_target(e);
   var tagname = evtarget.tagName.toLowerCase();
   if (this.dont_select || (evtarget && (tagname == 'input' || tagname == 'img')))
     return true;
 
   // accept right-clicks
-  if (rcube_event.get_button(e) == 2)
+  if (crystal_event.get_button(e) == 2)
     return true;
 
   this.in_selection_before = this.in_selection(id) ? id : false;
 
   // selects currently unselected row
   if (!this.in_selection_before) {
-    var mod_key = rcube_event.get_modifier(e);
+    var mod_key = crystal_event.get_modifier(e);
     this.select_row(id, mod_key, false);
   }
 
   if (this.draggable && this.selection.length) {
     this.drag_start = true;
-    this.drag_mouse_start = rcube_event.get_mouse_pos(e);
-    rcube_event.add_listener({event:'mousemove', object:this, method:'drag_mouse_move'});
-    rcube_event.add_listener({event:'mouseup', object:this, method:'drag_mouse_up'});
+    this.drag_mouse_start = crystal_event.get_mouse_pos(e);
+    crystal_event.add_listener({event:'mousemove', object:this, method:'drag_mouse_move'});
+    crystal_event.add_listener({event:'mouseup', object:this, method:'drag_mouse_up'});
 
     // enable dragging over iframes
     $('iframe').each(function() {
@@ -257,8 +257,8 @@ drag_row: function(e, id)
 click_row: function(e, id)
 {
   var now = new Date().getTime();
-  var mod_key = rcube_event.get_modifier(e);
-  var evtarget = rcube_event.get_target(e);
+  var mod_key = crystal_event.get_modifier(e);
+  var evtarget = crystal_event.get_target(e);
   var tagname = evtarget.tagName.toLowerCase();
 
   if ((evtarget && (tagname == 'input' || tagname == 'img')))
@@ -288,7 +288,7 @@ click_row: function(e, id)
   if (!this.drag_active) {
     // remove temp divs
     $('div.iframe-dragdrop-fix').each(function() { this.parentNode.removeChild(this); });
-    rcube_event.cancel(e);
+    crystal_event.cancel(e);
   }
 
   this.rows[id].clicked = now;
@@ -313,8 +313,8 @@ find_root: function(uid)
 expand_row: function(e, id)
 {
   var row = this.rows[id];
-  var evtarget = rcube_event.get_target(e);
-  var mod_key = rcube_event.get_modifier(e);
+  var evtarget = crystal_event.get_target(e);
+  var mod_key = crystal_event.get_modifier(e);
 
   // Don't select this message
   this.dont_select = true;
@@ -884,8 +884,8 @@ key_press: function(e)
   if (this.focused != true)
     return true;
 
-  var keyCode = rcube_event.get_keycode(e);
-  var mod_key = rcube_event.get_modifier(e);
+  var keyCode = crystal_event.get_keycode(e);
+  var mod_key = crystal_event.get_modifier(e);
 
   switch (keyCode) {
     case 40:
@@ -893,31 +893,31 @@ key_press: function(e)
     case 63233: // "down", in safari keypress
     case 63232: // "up", in safari keypress
       // Stop propagation so that the browser doesn't scroll
-      rcube_event.cancel(e);
+      crystal_event.cancel(e);
       return this.use_arrow_key(keyCode, mod_key);
     case 61:
     case 107: // Plus sign on a numeric keypad (fc11 + firefox 3.5.2)
     case 109:
     case 32:
       // Stop propagation
-      rcube_event.cancel(e);
+      crystal_event.cancel(e);
       var ret = this.use_plusminus_key(keyCode, mod_key);
       this.key_pressed = keyCode;
       this.triggerEvent('keypress');
       return ret;
     case 36: // Home
       this.select_first(mod_key);
-      return rcube_event.cancel(e);
+      return crystal_event.cancel(e);
     case 35: // End
       this.select_last(mod_key);
-      return rcube_event.cancel(e);
+      return crystal_event.cancel(e);
     default:
       this.shiftkey = e.shiftKey;
       this.key_pressed = keyCode;
       this.triggerEvent('keypress');
 
       if (this.key_pressed == this.BACKSPACE_KEY)
-        return rcube_event.cancel(e);
+        return crystal_event.cancel(e);
   }
 
   return true;
@@ -928,7 +928,7 @@ key_press: function(e)
  */
 key_down: function(e)
 {
-  switch (rcube_event.get_keycode(e)) {
+  switch (crystal_event.get_keycode(e)) {
     case 27:
       if (this.drag_active)
 	return this.drag_mouse_up(e);
@@ -941,8 +941,8 @@ key_down: function(e)
     case 107:
     case 109:
     case 32:
-      if (!rcube_event.get_modifier(e) && this.focused)
-        return rcube_event.cancel(e);
+      if (!crystal_event.get_modifier(e) && this.focused)
+        return crystal_event.cancel(e);
 
     default:
   }
@@ -1034,7 +1034,7 @@ drag_mouse_move: function(e)
 {
   if (this.drag_start) {
     // check mouse movement, of less than 3 pixels, don't start dragging
-    var m = rcube_event.get_mouse_pos(e);
+    var m = crystal_event.get_mouse_pos(e);
 
     if (!this.drag_mouse_start || (Math.abs(m.x - this.drag_mouse_start.x) < 3 && Math.abs(m.y - this.drag_mouse_start.y) < 3))
       return false;
@@ -1101,7 +1101,7 @@ drag_mouse_move: function(e)
   }
 
   if (this.drag_active && this.draglayer) {
-    var pos = rcube_event.get_mouse_pos(e);
+    var pos = crystal_event.get_mouse_pos(e);
     this.draglayer.css({ left:(pos.x+20)+'px', top:(pos.y-5 + (bw.ie ? document.documentElement.scrollTop : 0))+'px' });
     this.triggerEvent('dragmove', e?e:window.event);
   }
@@ -1130,15 +1130,15 @@ drag_mouse_up: function(e)
     this.focus();
   this.drag_active = false;
 
-  rcube_event.remove_listener({event:'mousemove', object:this, method:'drag_mouse_move'});
-  rcube_event.remove_listener({event:'mouseup', object:this, method:'drag_mouse_up'});
+  crystal_event.remove_listener({event:'mousemove', object:this, method:'drag_mouse_move'});
+  crystal_event.remove_listener({event:'mouseup', object:this, method:'drag_mouse_up'});
 
   // remove temp divs
   $('div.iframe-dragdrop-fix').each(function() { this.parentNode.removeChild(this); });
 
   this.triggerEvent('dragend');
 
-  return rcube_event.cancel(e);
+  return crystal_event.cancel(e);
 },
 
 
@@ -1157,6 +1157,6 @@ set_background_mode: function(flag)
 
 };
 
-rcube_list_widget.prototype.addEventListener = rcube_event_engine.prototype.addEventListener;
-rcube_list_widget.prototype.removeEventListener = rcube_event_engine.prototype.removeEventListener;
-rcube_list_widget.prototype.triggerEvent = rcube_event_engine.prototype.triggerEvent;
+crystal_list_widget.prototype.addEventListener = crystal_event_engine.prototype.addEventListener;
+crystal_list_widget.prototype.removeEventListener = crystal_event_engine.prototype.removeEventListener;
+crystal_list_widget.prototype.triggerEvent = crystal_event_engine.prototype.triggerEvent;

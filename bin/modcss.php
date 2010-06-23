@@ -12,7 +12,7 @@
  |   Modify CSS source from a URL                                        |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: modcss.php 2853 2009-08-12 10:44:46Z thomasb $
@@ -22,12 +22,12 @@
 define('INSTALL_PATH', realpath(dirname(__FILE__) . '/..') . '/');
 require INSTALL_PATH . 'program/include/iniset.php';
 
-$RCMAIL = rcmail::get_instance();
+$CMAIL = cmail::get_instance();
 
 $source = '';
 $error  = 'Requires a valid user session and source url';
 
-if (empty($RCMAIL->user->ID)) {
+if (empty($CMAIL->user->ID)) {
     header('HTTP/1.1 403 Forbidden');
     echo $error;
     exit;
@@ -97,7 +97,7 @@ fclose($fp);
 $mimetype = strtolower($headers['content-type']);
 if (!empty($source) && in_array($mimetype, array('text/css','text/plain'))) {
     header('Content-Type: text/css');
-    echo rcmail_mod_css_styles($source, preg_replace('/[^a-z0-9]/i', '', $_GET['c']));
+    echo cmail_mod_css_styles($source, preg_replace('/[^a-z0-9]/i', '', $_GET['c']));
     exit;
 }
 else

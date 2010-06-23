@@ -50,7 +50,7 @@ function GoogieSpell(img_dir, server_url) {
     this.lang_no_error_found = "No spelling errors found";
     this.lang_no_suggestions = "No suggestions";
     
-    this.show_spell_img = false; // roundcube mod.
+    this.show_spell_img = false; // crystalmail mod.
     this.decoration = true;
     this.use_close_btn = true;
     this.edit_layer_dbl_click = true;
@@ -960,15 +960,15 @@ this.createButton = function(name, css_class, c_fn) {
 
 this.removeIndicator = function(elm) {
     //$(this.indicator).remove();
-    // roundcube mod.
-    if (window.rcmail)
-	rcmail.set_busy(false);
+    // crystalmail mod.
+    if (window.cmail)
+	cmail.set_busy(false);
 }
 
 this.appendIndicator = function(elm) {
-    // modified by roundcube
-    if (window.rcmail)
-	rcmail.set_busy(true, 'checking');
+    // modified by crystalmail
+    if (window.cmail)
+	cmail.set_busy(true, 'checking');
 /*    
     this.indicator = document.createElement('img');
     $(this.indicator).attr('src', this.img_dir + 'indicator.gif')

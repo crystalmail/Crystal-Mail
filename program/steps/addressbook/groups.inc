@@ -12,7 +12,7 @@
  |   Create/delete/rename contact groups and assign/remove contacts      |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: groups.inc 3470 2010-04-06 06:40:45Z thomasb $
@@ -25,16 +25,16 @@ if ($CONTACTS->readonly || !$CONTACTS->groups) {
   $OUTPUT->send();
 }
 
-$source = get_input_value('_source', RCUBE_INPUT_GPC);
+$source = get_input_value('_source', crystal_INPUT_GPC);
 
-if ($RCMAIL->action == 'group-addmembers') {
-  if (($gid = get_input_value('_gid', RCUBE_INPUT_POST)) && ($ids = get_input_value('_cid', RCUBE_INPUT_POST))) {
-    $plugin = $RCMAIL->plugins->exec_hook('group_addmembers', array('group_id' => $gid, 'ids' => $ids, 'source' => $source));
+if ($CMAIL->action == 'group-addmembers') {
+  if (($gid = get_input_value('_gid', crystal_INPUT_POST)) && ($ids = get_input_value('_cid', crystal_INPUT_POST))) {
+    $plugin = $CMAIL->plugins->exec_hook('group_addmembers', array('group_id' => $gid, 'ids' => $ids, 'source' => $source));
     
     $CONTACTS->set_group($gid);
     $num2add = count(explode(',', $plugin['ids']));
     
-    if (!$plugin['abort'] && ($maxnum = $RCMAIL->config->get('max_group_members', 0)) && ($CONTACTS->count()->count + $num2add > $maxnum))
+    if (!$plugin['abort'] && ($maxnum = $CMAIL->config->get('max_group_members', 0)) && ($CONTACTS->count()->count + $num2add > $maxnum))
       $OUTPUT->show_message('maxgroupmembersreached', 'warning', array('max' => $maxnum));
     else if (!$plugin['abort'] && $CONTACTS->add_to_group($gid, $plugin['ids']))
       $OUTPUT->show_message('contactaddedtogroup');
@@ -43,9 +43,9 @@ if ($RCMAIL->action == 'group-addmembers') {
   }
 }
 
-else if ($RCMAIL->action == 'group-delmembers') {
-  if (($gid = get_input_value('_gid', RCUBE_INPUT_POST)) && ($ids = get_input_value('_cid', RCUBE_INPUT_POST))) {
-    $plugin = $RCMAIL->plugins->exec_hook('group_delmembers', array('group_id' => $gid, 'ids' => $ids, 'source' => $source));
+else if ($CMAIL->action == 'group-delmembers') {
+  if (($gid = get_input_value('_gid', crystal_INPUT_POST)) && ($ids = get_input_value('_cid', crystal_INPUT_POST))) {
+    $plugin = $CMAIL->plugins->exec_hook('group_delmembers', array('group_id' => $gid, 'ids' => $ids, 'source' => $source));
     
     if (!$plugin['abort'] && $CONTACTS->remove_from_group($gid, $plugin['ids']))
       $OUTPUT->show_message('contactremovedfromgroup');
@@ -54,9 +54,9 @@ else if ($RCMAIL->action == 'group-delmembers') {
   }
 }
 
-else if ($RCMAIL->action == 'group-create') {
-  if ($name = trim(get_input_value('_name', RCUBE_INPUT_POST))) {
-    $plugin = $RCMAIL->plugins->exec_hook('group_create', array('name' => $name, 'source' => $source));
+else if ($CMAIL->action == 'group-create') {
+  if ($name = trim(get_input_value('_name', crystal_INPUT_POST))) {
+    $plugin = $CMAIL->plugins->exec_hook('group_create', array('name' => $name, 'source' => $source));
     if (!$plugin['abort'])
       $created = $CONTACTS->create_group($plugin['name']);
   }
@@ -69,9 +69,9 @@ else if ($RCMAIL->action == 'group-create') {
   }
 }
 
-else if ($RCMAIL->action == 'group-rename') {
-  if (($gid = get_input_value('_gid', RCUBE_INPUT_POST)) && ($name = trim(get_input_value('_name', RCUBE_INPUT_POST)))) {
-    $plugin = $RCMAIL->plugins->exec_hook('group_rename', array('group_id' => $gid, 'name' => $name, 'source' => $source));
+else if ($CMAIL->action == 'group-rename') {
+  if (($gid = get_input_value('_gid', crystal_INPUT_POST)) && ($name = trim(get_input_value('_name', crystal_INPUT_POST)))) {
+    $plugin = $CMAIL->plugins->exec_hook('group_rename', array('group_id' => $gid, 'name' => $name, 'source' => $source));
     if (!$plugin['abort'])
       $newname = $CONTACTS->rename_group($gid, $plugin['name']);
   }
@@ -82,9 +82,9 @@ else if ($RCMAIL->action == 'group-rename') {
     $OUTPUT->show_message($plugin['message'] ? $plugin['message'] : 'errorsaving', 'error');
 }
 
-else if ($RCMAIL->action == 'group-delete') {
-  if ($gid = get_input_value('_gid', RCUBE_INPUT_POST)) {
-    $plugin = $RCMAIL->plugins->exec_hook('group_delete', array('group_id' => $gid, 'source' => $source));
+else if ($CMAIL->action == 'group-delete') {
+  if ($gid = get_input_value('_gid', crystal_INPUT_POST)) {
+    $plugin = $CMAIL->plugins->exec_hook('group_delete', array('group_id' => $gid, 'source' => $source));
     if (!$plugin['abort'])
       $deleted = $CONTACTS->delete_group($gid);
   }

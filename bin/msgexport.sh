@@ -144,7 +144,7 @@ else
 }
 
 // instantiate IMAP class
-$IMAP = new rcube_imap(null);
+$IMAP = new crystal_imap(null);
 
 // try to connect to IMAP server
 if ($IMAP->connect($host, $args['user'], $args['pass'], $imap_port, $imap_ssl))

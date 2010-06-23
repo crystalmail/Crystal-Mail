@@ -4,7 +4,7 @@
  * Sample plugin to try out some hooks.
  * This performs an automatic login if accessed from localhost
  */
-class autologon extends rcube_plugin
+class autologon extends crystal_plugin
 {
   public $task = 'login';
 
@@ -16,7 +16,7 @@ class autologon extends rcube_plugin
 
   function startup($args)
   {
-    $rcmail = rcmail::get_instance();
+    $cmail = cmail::get_instance();
 
     // change action to login
     if (empty($_SESSION['user_id']) && !empty($_GET['_autologin']) && $this->is_localhost())

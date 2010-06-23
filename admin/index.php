@@ -6,8 +6,8 @@ die();
 }
 include ('../config/main.inc.php');
 
-if (file_exists('../skins/'.$rcmail_config['skin'].'/admin/template.php')) {
-$template = '../skins/'.$rcmail_config['skin'].'/admin/template.php';
+if (file_exists('../skins/'.$cmail_config['skin'].'/admin/template.php')) {
+$template = '../skins/'.$cmail_config['skin'].'/admin/template.php';
 }
 else {
 $template = '../skins/default/admin/template.php';
@@ -30,7 +30,7 @@ echo '<u>'.$user.'</u>';
 function version() {
 $_GET['what_do_you_want'] = 'just_the_version_number_please';
 include ('../program/include/iniset.php');
-echo RCMAIL_VERSION;
+echo cmail_VERSION;
 
 }
 
@@ -56,7 +56,7 @@ include('../config/main.inc.php');
  foreach(glob('../plugins/*/admin_plugin.php') as $path) {
   
      include($path);
-    if (in_array($plugin_name, $rcmail_config['plugins']))
+    if (in_array($plugin_name, $cmail_config['plugins']))
     
 $content_path = str_replace("admin_plugin.php", "admin_plugin_content.php", $path);
      echo '<tr id="rcmrowmailbox"><td "class="section"><a href="javascript:ajaxpage(\''.$content_path.'\',\'prefs-box\');">'.$title.'</a></tr></td>';

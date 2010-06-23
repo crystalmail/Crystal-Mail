@@ -5,7 +5,7 @@
 $_GET['what_do_you_want'] = 'just_the_version_number_please';
 include ('../program/include/iniset.php');
 
-if (!copy('http://www.crystalmail.net/update/info.php?u='.RCMAIL_VERSION, 'info.php')) {
+if (!copy('http://www.crystalmail.net/update/info.php?u='.cmail_VERSION, 'info.php')) {
 }
 
 

@@ -4,7 +4,7 @@
  * 
  * This plugin which provides database backed storage for temporary
  * attachment file handling.  The primary advantage of this plugin
- * is its compatibility with round-robin dns multi-server roundcube
+ * is its compatibility with round-robin dns multi-server crystalmail
  * installations.
  *
  * This plugin relies on the core filesystem_attachments plugin
@@ -33,14 +33,14 @@ class database_attachments extends filesystem_attachments
     function upload($args)
     {
         $args['status'] = false;
-        $rcmail = rcmail::get_instance();
+        $cmail = cmail::get_instance();
         $key = $this->_key($args['path']);
         $data = base64_encode(file_get_contents($args['path']));
 
-        $status = $rcmail->db->query(
+        $status = $cmail->db->query(
             "INSERT INTO ".get_table_name('cache')."
              (created, user_id, cache_key, data)
-             VALUES (".$rcmail->db->now().", ?, ?, ?)",
+             VALUES (".$cmail->db->now().", ?, ?, ?)",
             $_SESSION['user_id'],
             $key,
             $data);
@@ -60,7 +60,7 @@ class database_attachments extends filesystem_attachments
     function save($args)
     {
         $args['status'] = false;
-        $rcmail = rcmail::get_instance();
+        $cmail = cmail::get_instance();
 
         $key = $this->_key($args['name']);
 
@@ -69,10 +69,10 @@ class database_attachments extends filesystem_attachments
 
         $data = base64_encode($args['data']);
 
-        $status = $rcmail->db->query(
+        $status = $cmail->db->query(
             "INSERT INTO ".get_table_name('cache')."
              (created, user_id, cache_key, data)
-             VALUES (".$rcmail->db->now().", ?, ?, ?)",
+             VALUES (".$cmail->db->now().", ?, ?, ?)",
             $_SESSION['user_id'],
             $key,
             $data);
@@ -92,8 +92,8 @@ class database_attachments extends filesystem_attachments
     function remove($args)
     {
         $args['status'] = false;
-        $rcmail = rcmail::get_instance();
-        $status = $rcmail->db->query(
+        $cmail = cmail::get_instance();
+        $status = $cmail->db->query(
             "DELETE FROM ".get_table_name('cache')."
              WHERE  user_id=?
              AND    cache_key=?",
@@ -123,9 +123,9 @@ class database_attachments extends filesystem_attachments
      */
     function get_attachment($args)
     {
-        $rcmail = rcmail::get_instance();
+        $cmail = cmail::get_instance();
         
-        $sql_result = $rcmail->db->query(
+        $sql_result = $cmail->db->query(
             "SELECT cache_id, data
              FROM ".get_table_name('cache')."
              WHERE  user_id=?
@@ -133,7 +133,7 @@ class database_attachments extends filesystem_attachments
             $_SESSION['user_id'],
             $args['id']);
 
-        if ($sql_arr = $rcmail->db->fetch_assoc($sql_result)) {
+        if ($sql_arr = $cmail->db->fetch_assoc($sql_result)) {
             $args['data'] = base64_decode($sql_arr['data']);
             $args['status'] = true;
         }
@@ -146,8 +146,8 @@ class database_attachments extends filesystem_attachments
      */
     function cleanup($args)
     {
-        $rcmail = rcmail::get_instance();
-        $rcmail->db->query(
+        $cmail = cmail::get_instance();
+        $cmail->db->query(
             "DELETE FROM ".get_table_name('cache')."
              WHERE  user_id=?
              AND cache_key like '{$this->cache_prefix}%'",

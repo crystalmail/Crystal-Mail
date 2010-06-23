@@ -11,7 +11,7 @@
  +-----------------------------------------------------------------------+
  | Nepali Translation by:                                                |
  | Prasanna Singh <prasanna@bhunet.com>, <prasanna@bhunet.com>           |
- | RoundCubeAuthor: Thomas Bruederli <roundcube@gmail.com>               |
+ | RoundCubeAuthor: Thomas Bruederli <crystalmail@gmail.com>               |
  +-----------------------------------------------------------------------+
 */
 

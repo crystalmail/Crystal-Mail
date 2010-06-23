@@ -15,7 +15,7 @@
  * $Id: managesieve.php 3460 2010-04-01 06:59:30Z alec $
  */
 
-class managesieve extends rcube_plugin
+class managesieve extends crystal_plugin
 {
   public $task = 'settings';
 
@@ -46,7 +46,7 @@ class managesieve extends rcube_plugin
   
   function managesieve_start()
   {
-    $this->rc = rcmail::get_instance();
+    $this->rc = cmail::get_instance();
     $this->load_config();
 
     // register UI objects
@@ -59,13 +59,13 @@ class managesieve extends rcube_plugin
     ));
 
     require_once($this->home . '/lib/Net/Sieve.php');
-    require_once($this->home . '/lib/rcube_sieve.php');
+    require_once($this->home . '/lib/crystal_sieve.php');
 
     $host = str_replace('%h', $_SESSION['imap_host'], $this->rc->config->get('managesieve_host', 'localhost'));
     $port = $this->rc->config->get('managesieve_port', 2000);
 
     // try to connect to managesieve server and to fetch the script
-    $this->sieve = new rcube_sieve($_SESSION['username'],
+    $this->sieve = new crystal_sieve($_SESSION['username'],
 	$this->rc->decrypt($_SESSION['password']), 
 	$host, $port,
 	$this->rc->config->get('managesieve_usetls', false),
@@ -80,7 +80,7 @@ class managesieve extends rcube_plugin
       $_SESSION['managesieve_active'] = $active;
       
       if (!empty($_GET['_set'])) {
-        $script_name = get_input_value('_set', RCUBE_INPUT_GET);
+        $script_name = get_input_value('_set', crystal_INPUT_GET);
       } else if (!empty($_SESSION['managesieve_current'])) {
         $script_name = $_SESSION['managesieve_current'];
       } else {
@@ -93,7 +93,7 @@ class managesieve extends rcube_plugin
         } else {
           // if script not exists build default script contents
           $script_file = $this->rc->config->get('managesieve_default');
-	  $script_name = 'roundcube';
+	  $script_name = 'crystalmail';
           if ($script_file && is_readable($script_file))
 	    $content = file_get_contents($script_file);
 
@@ -146,9 +146,9 @@ class managesieve extends rcube_plugin
     $error = $this->managesieve_start();
 
     // Handle user requests
-    if ($action = get_input_value('_act', RCUBE_INPUT_GPC))
+    if ($action = get_input_value('_act', crystal_INPUT_GPC))
     {
-      $fid = (int) get_input_value('_fid', RCUBE_INPUT_GET);
+      $fid = (int) get_input_value('_fid', crystal_INPUT_GET);
 
       if ($action=='up' && !$error)
       {
@@ -198,7 +198,7 @@ class managesieve extends rcube_plugin
       }
       else if ($action=='setact' && !$error)
       {
-        $script_name = get_input_value('_set', RCUBE_INPUT_GPC);
+        $script_name = get_input_value('_set', crystal_INPUT_GPC);
 	$result = $this->sieve->activate($script_name);
 	
 	if ($result === true) {
@@ -213,7 +213,7 @@ class managesieve extends rcube_plugin
       }
       else if ($action=='setdel' && !$error)
       {
-        $script_name = get_input_value('_set', RCUBE_INPUT_GPC);
+        $script_name = get_input_value('_set', crystal_INPUT_GPC);
 	$result = $this->sieve->remove($script_name);
 	
 	if ($result === true) {
@@ -226,13 +226,13 @@ class managesieve extends rcube_plugin
       }
       else if ($action=='setget')
       {
-        $script_name = get_input_value('_set', RCUBE_INPUT_GPC);
+        $script_name = get_input_value('_set', crystal_INPUT_GPC);
 	$script = $this->sieve->get_script($script_name);
 
         if (PEAR::isError($script))
           exit;
 
-        $browser = new rcube_browser;
+        $browser = new crystal_browser;
         
         // send download headers
         header("Content-Type: application/octet-stream");
@@ -253,7 +253,7 @@ class managesieve extends rcube_plugin
       }
       elseif ($action=='ruleadd')
       {
-        $rid = get_input_value('_rid', RCUBE_INPUT_GPC);
+        $rid = get_input_value('_rid', crystal_INPUT_GPC);
         $id = $this->genid();
         $content = $this->rule_div($fid, $id, false);
 
@@ -261,7 +261,7 @@ class managesieve extends rcube_plugin
       }
       elseif ($action=='actionadd')
       {
-        $aid = get_input_value('_aid', RCUBE_INPUT_GPC);
+        $aid = get_input_value('_aid', crystal_INPUT_GPC);
         $id = $this->genid();
         $content = $this->action_div($fid, $id, false);
     
@@ -282,9 +282,9 @@ class managesieve extends rcube_plugin
     // filters set add action
     if (!empty($_POST['_newset']))
     {
-      $name = get_input_value('_name', RCUBE_INPUT_POST);
-      $copy = get_input_value('_copy', RCUBE_INPUT_POST);
-      $from = get_input_value('_from', RCUBE_INPUT_POST);
+      $name = get_input_value('_name', crystal_INPUT_POST);
+      $copy = get_input_value('_copy', crystal_INPUT_POST);
+      $from = get_input_value('_from', crystal_INPUT_POST);
 
       if (!$name)
 	$error = 'managesieve.emptyname';
@@ -306,7 +306,7 @@ class managesieve extends rcube_plugin
           $err = $_FILES['_file']['error'];
           $error = true;
           if ($err == UPLOAD_ERR_INI_SIZE || $err == UPLOAD_ERR_FORM_SIZE) {
-            $msg = rcube_label(array('name' => 'filesizeerror', 'vars' => array('size' =>
+            $msg = crystal_label(array('name' => 'filesizeerror', 'vars' => array('size' =>
                 show_bytes(parse_bytes(ini_get('upload_max_filesize'))))));
           }
           else {
@@ -330,9 +330,9 @@ class managesieve extends rcube_plugin
     // filter add/edit action
     else if (isset($_POST['_name']))
     {
-      $name = trim(get_input_value('_name', RCUBE_INPUT_POST, true));
-      $fid = trim(get_input_value('_fid', RCUBE_INPUT_POST));
-      $join = trim(get_input_value('_join', RCUBE_INPUT_POST));
+      $name = trim(get_input_value('_name', crystal_INPUT_POST, true));
+      $fid = trim(get_input_value('_fid', crystal_INPUT_POST));
+      $join = trim(get_input_value('_join', crystal_INPUT_POST));
   
       // and arrays
       $headers = $_POST['_header'];
@@ -540,7 +540,7 @@ class managesieve extends rcube_plugin
 	{
 	  $this->rc->output->show_message('managesieve.filtersaved', 'confirmation');
 	  $this->rc->output->add_script(
-            sprintf("rcmail.managesieve_updatelist('%s', '%s', %d, %d);",
+            sprintf("cmail.managesieve_updatelist('%s', '%s', %d, %d);",
 	      isset($new) ? 'add' : 'update', Q($this->form['name']), $fid, $this->form['disabled']),
               'foot');
 	}
@@ -589,7 +589,7 @@ class managesieve extends rcube_plugin
       );
 
     // create XHTML table
-    $out = rcube_table_output($attrib, $result, $a_show_cols, 'id');
+    $out = crystal_table_output($attrib, $result, $a_show_cols, 'id');
 
     // set client env
     $this->rc->output->add_gui_object('filterslist', $attrib['id']);
@@ -611,7 +611,7 @@ class managesieve extends rcube_plugin
     $list = $this->sieve->get_scripts();
     $active = $this->sieve->get_active();
   
-    $select = new html_select(array('name' => '_set', 'id' => $attrib['id'], 'onchange' => 'rcmail.managesieve_set()'));
+    $select = new html_select(array('name' => '_set', 'id' => $attrib['id'], 'onchange' => 'cmail.managesieve_set()'));
 
     if ($list) {
       asort($list, SORT_LOCALE_STRING);
@@ -659,9 +659,9 @@ class managesieve extends rcube_plugin
 
     $out .= $hiddenfields->show();
 
-    $name = get_input_value('_name', RCUBE_INPUT_POST);
-    $copy = get_input_value('_copy', RCUBE_INPUT_POST);
-    $selected = get_input_value('_from', RCUBE_INPUT_POST);
+    $name = get_input_value('_name', crystal_INPUT_POST);
+    $copy = get_input_value('_copy', crystal_INPUT_POST);
+    $selected = get_input_value('_from', crystal_INPUT_POST);
 
     $table = new html_table(array('cols' => 2));
 
@@ -719,7 +719,7 @@ class managesieve extends rcube_plugin
     if (!$attrib['id'])
       $attrib['id'] = 'rcmfilterform';
 
-    $fid = get_input_value('_fid', RCUBE_INPUT_GPC);
+    $fid = get_input_value('_fid', crystal_INPUT_GPC);
     $scr = isset($this->form) ? $this->form : $this->script[$fid];
 
     $hiddenfields = new html_hiddenfield(array('name' => '_task', 'value' => $this->rc->task));
@@ -914,9 +914,9 @@ class managesieve extends rcube_plugin
     // add/del buttons
     $out .= '<td class="rowbuttons">';
     $out .= '<input type="button" id="ruleadd' . $id .'" value="'. Q($this->gettext('add')). '" 
-	onclick="rcmail.managesieve_ruleadd(' . $id .')" class="button" /> ';
+	onclick="cmail.managesieve_ruleadd(' . $id .')" class="button" /> ';
     $out .= '<input type="button" id="ruledel' . $id .'" value="'. Q($this->gettext('del')). '"
-	onclick="rcmail.managesieve_ruledel(' . $id .')" class="button' . ($rows_num<2 ? ' disabled' : '') .'"'
+	onclick="cmail.managesieve_ruledel(' . $id .')" class="button' . ($rows_num<2 ? ' disabled' : '') .'"'
 	. ($rows_num<2 ? ' disabled="disabled"' : '') .' />';
     $out .= '</td></tr></table>';
 
@@ -1001,7 +1001,7 @@ class managesieve extends rcube_plugin
     foreach ($a_folders as $folder)
     {
       $utf7folder = $this->rc->imap->mod_mailbox($folder);
-      $names = explode($delimiter, rcube_charset_convert($folder, 'UTF7-IMAP'));
+      $names = explode($delimiter, crystal_charset_convert($folder, 'UTF7-IMAP'));
       $name = $names[sizeof($names)-1];
     
       if ($replace_delimiter = $this->rc->config->get('managesieve_replace_delimiter'))
@@ -1010,7 +1010,7 @@ class managesieve extends rcube_plugin
       // convert to Sieve implementation encoding
       $utf7folder = $this->mbox_encode($utf7folder, $mbox_encoding);
     
-      if ($folder_class = rcmail_folder_classname($name))
+      if ($folder_class = cmail_folder_classname($name))
         $foldername = $this->gettext($folder_class);
       else
         $foldername = $name;
@@ -1027,9 +1027,9 @@ class managesieve extends rcube_plugin
     // add/del buttons
     $out .= '<td class="rowbuttons">';
     $out .= '<input type="button" id="actionadd' . $id .'" value="'. Q($this->gettext('add')). '" 
-	onclick="rcmail.managesieve_actionadd(' . $id .')" class="button" /> ';
+	onclick="cmail.managesieve_actionadd(' . $id .')" class="button" /> ';
     $out .= '<input type="button" id="actiondel' . $id .'" value="'. Q($this->gettext('del')). '"
-        onclick="rcmail.managesieve_actiondel(' . $id .')" class="button' . ($rows_num<2 ? ' disabled' : '') .'"'
+        onclick="cmail.managesieve_actiondel(' . $id .')" class="button' . ($rows_num<2 ? ' disabled' : '') .'"'
 	. ($rows_num<2 ? ' disabled="disabled"' : '') .' />';
     $out .= '</td>';
   
@@ -1042,7 +1042,7 @@ class managesieve extends rcube_plugin
 
   private function genid()
   {
-    $result = intval(rcube_timer());
+    $result = intval(crystal_timer());
     return $result;
   }
 
@@ -1109,7 +1109,7 @@ class managesieve extends rcube_plugin
  
   private function mbox_encode($text, $encoding)
   {
-    return rcube_charset_convert($text, 'UTF7-IMAP', $encoding);
+    return crystal_charset_convert($text, 'UTF7-IMAP', $encoding);
   }
 }
 

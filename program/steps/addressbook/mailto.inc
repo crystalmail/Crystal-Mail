@@ -12,14 +12,14 @@
  |   Compose a recipient list with all selected contacts                 |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: copy.inc 471 2007-02-09 21:25:50Z thomasb $
 
 */
 
-$cid = get_input_value('_cid', RCUBE_INPUT_GET);
+$cid = get_input_value('_cid', crystal_INPUT_GET);
 $recipients = null;
 $mailto = array();
 

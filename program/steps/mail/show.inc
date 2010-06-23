@@ -12,30 +12,30 @@
  |   Display a mail message similar as a usual mail application does     |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: show.inc 3479 2010-04-09 15:12:40Z thomasb $
 
 */
 
-$PRINT_MODE = $RCMAIL->action=='print' ? TRUE : FALSE;
+$PRINT_MODE = $CMAIL->action=='print' ? TRUE : FALSE;
 
 // similar code as in program/steps/mail/get.inc
 if ($_GET['_uid']) {
-  $MESSAGE = new rcube_message(get_input_value('_uid', RCUBE_INPUT_GET));
+  $MESSAGE = new crystal_message(get_input_value('_uid', crystal_INPUT_GET));
 
   // if message not found (wrong UID)...
   if (empty($MESSAGE->headers)) {
     $OUTPUT->show_message('messageopenerror', 'error');
     // ... display error or preview page
-    if ($RCMAIL->action=='preview' && $OUTPUT->template_exists('messageerror'))
+    if ($CMAIL->action=='preview' && $OUTPUT->template_exists('messageerror'))
       $OUTPUT->send('messageerror');
-    else if ($RCMAIL->action=='preview' && $OUTPUT->template_exists('messagepreview'))
+    else if ($CMAIL->action=='preview' && $OUTPUT->template_exists('messagepreview'))
       $OUTPUT->send('messagepreview');
     // ... go back to the list
     else {
-      rcmail_overwrite_action('');
+      cmail_overwrite_action('');
       return;
     }
   }
@@ -45,7 +45,7 @@ if ($_GET['_uid']) {
   $mbox_name = $IMAP->get_mailbox_name();
   
   // show images?
-  rcmail_check_safe($MESSAGE);
+  cmail_check_safe($MESSAGE);
 
   // set message charset as default
   if (!empty($MESSAGE->headers->charset))
@@ -58,7 +58,7 @@ if ($_GET['_uid']) {
   // set environement
   $OUTPUT->set_env('safemode', $MESSAGE->is_safe);
   $OUTPUT->set_env('sender', $MESSAGE->sender['string']);
-  $OUTPUT->set_env('permaurl', rcmail_url('show', array('_uid' => $MESSAGE->uid, '_mbox' => $mbox_name)));
+  $OUTPUT->set_env('permaurl', cmail_url('show', array('_uid' => $MESSAGE->uid, '_mbox' => $mbox_name)));
   $OUTPUT->set_env('mailbox', $mbox_name);
 
   if ($CONFIG['trash_mbox'])
@@ -84,7 +84,7 @@ if ($_GET['_uid']) {
   {
     if (intval($CONFIG['mdn_requests']) === 1)
     {
-      if (rcmail_send_mdn($MESSAGE->uid, $smtp_error))
+      if (cmail_send_mdn($MESSAGE->uid, $smtp_error))
         $OUTPUT->show_message('receiptsent', 'confirmation');
       else if ($smtp_error)
         $OUTPUT->show_message($smtp_error['label'], 'error', $smtp_error['vars']);
@@ -99,7 +99,7 @@ if ($_GET['_uid']) {
   }
 
   // get previous, first, next and last message UID
-  if ($RCMAIL->action != 'preview' && $RCMAIL->action != 'print')
+  if ($CMAIL->action != 'preview' && $CMAIL->action != 'print')
     {
     $next = $prev = $first = $last = -1;
 
@@ -140,14 +140,14 @@ if ($_GET['_uid']) {
       $OUTPUT->set_env('last_uid', $last);
     }
 
-  if (!$MESSAGE->headers->seen && ($RCMAIL->action == 'show' || ($RCMAIL->action == 'preview' && intval($CONFIG['preview_pane_mark_read']) == 0)))
-    $RCMAIL->plugins->exec_hook('message_read', array('uid' => $MESSAGE->uid,
+  if (!$MESSAGE->headers->seen && ($CMAIL->action == 'show' || ($CMAIL->action == 'preview' && intval($CONFIG['preview_pane_mark_read']) == 0)))
+    $CMAIL->plugins->exec_hook('message_read', array('uid' => $MESSAGE->uid,
       'mailbox' => $mbox_name, 'message' => $MESSAGE));
 }
 
 
 
-function rcmail_message_attachments($attrib)
+function cmail_message_attachments($attrib)
 {
   global $PRINT_MODE, $MESSAGE;
   
@@ -190,43 +190,43 @@ function rcmail_message_attachments($attrib)
 
 
 
-function rcmail_remote_objects_msg($attrib)
+function cmail_remote_objects_msg($attrib)
 {
-  global $MESSAGE, $RCMAIL;
+  global $MESSAGE, $CMAIL;
   
   if (!$attrib['id'])
     $attrib['id'] = 'rcmremoteobjmsg';
   
-  $msg = Q(rcube_label('blockedimages')) . '&nbsp;';
-  $msg .= html::a(array('href' => "#loadimages", 'onclick' => JS_OBJECT_NAME.".command('load-images')"), Q(rcube_label('showimages')));
+  $msg = Q(crystal_label('blockedimages')) . '&nbsp;';
+  $msg .= html::a(array('href' => "#loadimages", 'onclick' => JS_OBJECT_NAME.".command('load-images')"), Q(crystal_label('showimages')));
   
   // add link to save sender in addressbook and reload message
-  if ($MESSAGE->sender['mailto'] && $RCMAIL->config->get('show_images') == 1) {
+  if ($MESSAGE->sender['mailto'] && $CMAIL->config->get('show_images') == 1) {
     $msg .= ' ' . html::a(array('href' => "#alwaysload", 'onclick' => JS_OBJECT_NAME.".command('always-load')", 'style' => "white-space:nowrap"),
-      Q(rcube_label(array('name' => 'alwaysshow', 'vars' => array('sender' => $MESSAGE->sender['mailto'])))));
+      Q(crystal_label(array('name' => 'alwaysshow', 'vars' => array('sender' => $MESSAGE->sender['mailto'])))));
   }
   
-  $RCMAIL->output->add_gui_object('remoteobjectsmsg', $attrib['id']);
+  $CMAIL->output->add_gui_object('remoteobjectsmsg', $attrib['id']);
   return html::div($attrib, $msg);
 }
 
 
 $OUTPUT->add_handlers(array(
-  'messageattachments' => 'rcmail_message_attachments',
-  'mailboxname' => 'rcmail_mailbox_name_display',
-  'blockedobjects' => 'rcmail_remote_objects_msg'));
+  'messageattachments' => 'cmail_message_attachments',
+  'mailboxname' => 'cmail_mailbox_name_display',
+  'blockedobjects' => 'cmail_remote_objects_msg'));
 
 
-if ($RCMAIL->action=='print' && $OUTPUT->template_exists('printmessage'))
+if ($CMAIL->action=='print' && $OUTPUT->template_exists('printmessage'))
   $OUTPUT->send('printmessage', false);
-else if ($RCMAIL->action=='preview' && $OUTPUT->template_exists('messagepreview'))
+else if ($CMAIL->action=='preview' && $OUTPUT->template_exists('messagepreview'))
   $OUTPUT->send('messagepreview', false);
 else
   $OUTPUT->send('message', false);
 
 
 // mark message as read
-if ($MESSAGE && $MESSAGE->headers && !$MESSAGE->headers->seen && ($RCMAIL->action == 'show' || ($RCMAIL->action == 'preview' && intval($CONFIG['preview_pane_mark_read']) == 0)))
+if ($MESSAGE && $MESSAGE->headers && !$MESSAGE->headers->seen && ($CMAIL->action == 'show' || ($CMAIL->action == 'preview' && intval($CONFIG['preview_pane_mark_read']) == 0)))
   $IMAP->set_flag($MESSAGE->uid, 'SEEN');
 
 exit;

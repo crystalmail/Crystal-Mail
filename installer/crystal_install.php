@@ -90,14 +90,14 @@ class crystal_install
    */
   function _load_config($suffix)
   {
-    @include RCMAIL_CONFIG_DIR . '/main.inc' . $suffix;
-    if (is_array($rcmail_config)) {
-      $this->config += $rcmail_config;
+    @include cmail_CONFIG_DIR . '/main.inc' . $suffix;
+    if (is_array($cmail_config)) {
+      $this->config += $cmail_config;
     }
       
-    @include RCMAIL_CONFIG_DIR . '/db.inc'. $suffix;
-    if (is_array($rcmail_config)) {
-      $this->config += $rcmail_config;
+    @include cmail_CONFIG_DIR . '/db.inc'. $suffix;
+    if (is_array($cmail_config)) {
+      $this->config += $cmail_config;
     }
   }
   
@@ -129,7 +129,7 @@ class crystal_install
    */
   function create_config($which, $force = false)
   {
-    $out = @file_get_contents(RCMAIL_CONFIG_DIR . "/{$which}.inc.php.dist");
+    $out = @file_get_contents(cmail_CONFIG_DIR . "/{$which}.inc.php.dist");
     
     if (!$out)
       return '[Warning: could not read the config template file]';
@@ -198,7 +198,7 @@ class crystal_install
 
       // replace the matching line in config file
       $out = preg_replace(
-        '/(\$rcmail_config\[\''.preg_quote($prop).'\'\])\s+=\s+(.+);/Uie',
+        '/(\$cmail_config\[\''.preg_quote($prop).'\'\])\s+=\s+(.+);/Uie',
         "'\\1 = ' . crystal_install::_dump_var(\$value) . ';'",
         $out);
     }

@@ -199,7 +199,6 @@
   left: 20px;
   right: 20px;
   border: 1px solid #999999;
-  background-color: #F2F2F2;
   padding-bottom: 4ex;
   overflow: auto;
 }
@@ -290,7 +289,6 @@
 body.iframe,
 #contact-frame
 {
-  background-color: #F2F2F2;
 }
 
 #contact-frame

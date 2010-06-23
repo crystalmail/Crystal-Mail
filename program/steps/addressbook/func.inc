@@ -12,7 +12,7 @@
  |   Provide addressbook functionality and GUI objects                   |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: func.inc 3425 2010-03-26 16:38:20Z thomasb $
@@ -20,17 +20,17 @@
 */
 
 // add list of address sources to client env
-$js_list = $RCMAIL->get_address_sources();
+$js_list = $CMAIL->get_address_sources();
 
 // select source
-$source = get_input_value('_source', RCUBE_INPUT_GPC);
+$source = get_input_value('_source', crystal_INPUT_GPC);
 
 // if source is not set use first directory
 if (empty($source))
   $source = $js_list[key($js_list)]['id'];
 
 // instantiate a contacts object according to the given source
-$CONTACTS = $RCMAIL->get_address_book($source);
+$CONTACTS = $CMAIL->get_address_book($source);
 
 $CONTACTS->set_pagesize($CONFIG['pagesize']);
 
@@ -41,7 +41,7 @@ else
   $CONTACTS->set_page(isset($_SESSION['page']) ?$_SESSION['page'] : 1);
   
 if (!empty($_REQUEST['_gid']))
-  $CONTACTS->set_group(get_input_value('_gid', RCUBE_INPUT_GPC));
+  $CONTACTS->set_group(get_input_value('_gid', crystal_INPUT_GPC));
 
 // set message set for search result
 if (!empty($_REQUEST['_search']) && isset($_SESSION['search'][$_REQUEST['_search']]))
@@ -53,26 +53,26 @@ $OUTPUT->set_env('readonly', $CONTACTS->readonly, false);
 $OUTPUT->set_env('address_sources', $js_list);
 
 
-function rcmail_directory_list($attrib)
+function cmail_directory_list($attrib)
 {
-  global $RCMAIL, $OUTPUT;
+  global $CMAIL, $OUTPUT;
   
   if (!$attrib['id'])
     $attrib['id'] = 'rcmdirectorylist';
 
   $out = '';
   $local_id = '0';
-  $current = get_input_value('_source', RCUBE_INPUT_GPC);
+  $current = get_input_value('_source', crystal_INPUT_GPC);
   $line_templ = html::tag('li', array('id' => 'rcmli%s', 'class' => 'addressbook %s'),
     html::a(array('href' => '%s', 'onclick' => "return ".JS_OBJECT_NAME.".command('list','%s',this)"), '%s'));
 
-  if (!$current && strtolower($RCMAIL->config->get('address_book_type', 'sql')) != 'ldap') {
+  if (!$current && strtolower($CMAIL->config->get('address_book_type', 'sql')) != 'ldap') {
     $current = '0';
   }
   else if (!$current) {
     // DB address book not used, see if a source is set, if not use the
     // first LDAP directory.
-    $current = key((array)$RCMAIL->config->get('ldap_public', array()));
+    $current = key((array)$CMAIL->config->get('ldap_public', array()));
   }
 
   foreach ((array)$OUTPUT->env['address_sources'] as $j => $source) {
@@ -80,10 +80,10 @@ function rcmail_directory_list($attrib)
     $js_id = JQ($id);
     $dom_id = preg_replace('/[^a-z0-9\-_]/i', '', $id);
     $out .= sprintf($line_templ, $dom_id, ($current == strval($id) ? 'selected' : ''),
-      Q(rcmail_url(null, array('_source' => $id))), $js_id, (!empty($source['name']) ? Q($source['name']) : Q($id)));
+      Q(cmail_url(null, array('_source' => $id))), $js_id, (!empty($source['name']) ? Q($source['name']) : Q($id)));
   }
   
-  $out .= rcmail_contact_groups(array('items' => true));
+  $out .= cmail_contact_groups(array('items' => true));
 
   $OUTPUT->add_gui_object('folderlist', $attrib['id']);
   
@@ -91,7 +91,7 @@ function rcmail_directory_list($attrib)
 }
 
 
-function rcmail_contact_groups($attrib)
+function cmail_contact_groups($attrib)
 {
   global $CONTACTS, $OUTPUT;
   
@@ -116,7 +116,7 @@ function rcmail_contact_groups($attrib)
 
 
 // return the message list as HTML table
-function rcmail_contacts_list($attrib)
+function cmail_contacts_list($attrib)
   {
   global $CONFIG, $CONTACTS, $OUTPUT;
   
@@ -137,7 +137,7 @@ function rcmail_contacts_list($attrib)
   $_SESSION['address_columns'] = $a_show_cols;
 
   // create XHTML table
-  $out = rcube_table_output($attrib, $result->records, $a_show_cols, $CONTACTS->primary_key);
+  $out = crystal_table_output($attrib, $result->records, $a_show_cols, $CONTACTS->primary_key);
   
   // set client env
   $OUTPUT->add_gui_object('contactslist', $attrib['id']);
@@ -152,7 +152,7 @@ function rcmail_contacts_list($attrib)
   }
 
 
-function rcmail_js_contacts_list($result, $prefix='')
+function cmail_js_contacts_list($result, $prefix='')
   {
   global $CONFIG, $OUTPUT;
 
@@ -178,8 +178,8 @@ function rcmail_js_contacts_list($result, $prefix='')
   }
 
 
-// similar function as /steps/settings/identities.inc::rcmail_identity_frame()
-function rcmail_contact_frame($attrib)
+// similar function as /steps/settings/identities.inc::cmail_identity_frame()
+function cmail_contact_frame($attrib)
   {
   global $OUTPUT;
 
@@ -195,7 +195,7 @@ function rcmail_contact_frame($attrib)
   }
 
 
-function rcmail_rowcount_display($attrib)
+function cmail_rowcount_display($attrib)
   {
   global $OUTPUT;
   
@@ -204,12 +204,12 @@ function rcmail_rowcount_display($attrib)
 
   $OUTPUT->add_gui_object('countdisplay', $attrib['id']);
 
-  return html::span($attrib, rcmail_get_rowcount_text());
+  return html::span($attrib, cmail_get_rowcount_text());
   }
 
 
 
-function rcmail_get_rowcount_text()
+function cmail_get_rowcount_text()
   {
   global $CONTACTS;
   
@@ -219,9 +219,9 @@ function rcmail_get_rowcount_text()
     $result = $CONTACTS->count();
   
   if ($result->count == 0)
-    $out = rcube_label('nocontactsfound');
+    $out = crystal_label('nocontactsfound');
   else
-    $out = rcube_label(array(
+    $out = crystal_label(array(
       'name' => 'contactsfromto',
       'vars' => array(
         'from'  => $result->first + 1,
@@ -232,27 +232,27 @@ function rcmail_get_rowcount_text()
   return $out;
   }
 
-function rcmail_contact_tabs($attrib)
+function cmail_contact_tabs($attrib)
   {
-  global $RCMAIL, $OUTPUT, $CONTACTS;
+  global $CMAIL, $OUTPUT, $CONTACTS;
   $out = "";
 
   $button = $OUTPUT->button(array("command" => "abooknav", "prop" => "basic", "type" => "link", "label" => "basicinfo", "title" => "basicinfo"));
   $out = html::span(array("id" => "addresstabbasic", "class" => "tablink"), $button);
 
-  $tabs = rcmail_contact_fields();
+  $tabs = cmail_contact_fields();
 
-  if (sizeof($tabs['home']) > 0 && $RCMAIL->action != 'blank') {
+  if (sizeof($tabs['home']) > 0 && $CMAIL->action != 'blank') {
     $button = $OUTPUT->button(array("command" => "abooknav", "prop" => "home", "type" => "link", "label" => "homecontact", "title" => "homecontact"));
     $out .= html::span(array("id" => "addresstabhome", "class" => "tablink"), $button);
   }
 
-  if (sizeof($tabs['business']) > 0 && $RCMAIL->action != 'blank') {
+  if (sizeof($tabs['business']) > 0 && $CMAIL->action != 'blank') {
     $button = $OUTPUT->button(array("command" => "abooknav", "prop" => "business", "type" => "link", "label" => "businesscontact", "title" => "businesscontact"));
     $out .= html::span(array("id" => "addresstabbusiness", "class" => "tablink"), $button);
   }
 
-  if (sizeof($tabs['other']) > 0 && $RCMAIL->action != 'blank') {
+  if (sizeof($tabs['other']) > 0 && $CMAIL->action != 'blank') {
     $button = $OUTPUT->button(array("command" => "abooknav", "prop" => "other", "type" => "link", "label" => "otherinfo", "title" => "otherinfo"));
     $out .= html::span(array("id" => "addresstabother", "class" => "tablink"), $button);
   }
@@ -260,7 +260,7 @@ function rcmail_contact_tabs($attrib)
   return $out;
   }
 
-function rcmail_contact_fields()
+function cmail_contact_fields()
   {
   global $CONTACTS;
 
@@ -278,16 +278,16 @@ function rcmail_contact_fields()
   return $tabs;
   }
 
-$OUTPUT->set_pagetitle(rcube_label('addressbook'));
+$OUTPUT->set_pagetitle(crystal_label('addressbook'));
   
 // register UI objects
 $OUTPUT->add_handlers(array(
-  'directorylist' => 'rcmail_directory_list',
-//  'groupslist' => 'rcmail_contact_groups',
-  'addresslist' => 'rcmail_contacts_list',
-  'addressframe' => 'rcmail_contact_frame',
-  'recordscountdisplay' => 'rcmail_rowcount_display',
-  'contacttabsbar' => 'rcmail_contact_tabs',
+  'directorylist' => 'cmail_directory_list',
+//  'groupslist' => 'cmail_contact_groups',
+  'addresslist' => 'cmail_contacts_list',
+  'addressframe' => 'cmail_contact_frame',
+  'recordscountdisplay' => 'cmail_rowcount_display',
+  'contacttabsbar' => 'cmail_contact_tabs',
   'searchform' => array($OUTPUT, 'search_form')
 ));
 

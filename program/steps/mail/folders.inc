@@ -12,7 +12,7 @@
  |   Implement folder operations line EXPUNGE and Clear                  |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: folders.inc 3266 2010-02-12 11:41:17Z alec $
@@ -25,16 +25,16 @@ if (!$OUTPUT->ajax_call)
 $mbox_name = $IMAP->get_mailbox_name();
 
 // send EXPUNGE command
-if ($RCMAIL->action=='expunge' && ($mbox = get_input_value('_mbox', RCUBE_INPUT_POST)))
+if ($CMAIL->action=='expunge' && ($mbox = get_input_value('_mbox', crystal_INPUT_POST)))
 {
   $success = $IMAP->expunge($mbox);
 
   // reload message list if current mailbox  
   if ($success && !empty($_REQUEST['_reload']))
   {
-    $OUTPUT->command('set_quota', rcmail_quota_content());
+    $OUTPUT->command('set_quota', cmail_quota_content());
     $OUTPUT->command('message_list.clear');
-    $RCMAIL->action = 'list';
+    $CMAIL->action = 'list';
     return;
   }
   else
@@ -42,7 +42,7 @@ if ($RCMAIL->action=='expunge' && ($mbox = get_input_value('_mbox', RCUBE_INPUT_
 }
 
 // clear mailbox
-else if ($RCMAIL->action=='purge' && ($mbox = get_input_value('_mbox', RCUBE_INPUT_POST)))
+else if ($CMAIL->action=='purge' && ($mbox = get_input_value('_mbox', crystal_INPUT_POST)))
 {
   $delimiter = $IMAP->get_hierarchy_delimiter();
   $trash_regexp = '/^' . preg_quote($CONFIG['trash_mbox'] . $delimiter, '/') . '/';
@@ -59,9 +59,9 @@ else if ($RCMAIL->action=='purge' && ($mbox = get_input_value('_mbox', RCUBE_INP
       $OUTPUT->set_env('messagecount', 0);
       $OUTPUT->set_env('pagecount', 0);
       $OUTPUT->command('message_list.clear');
-      $OUTPUT->command('set_rowcount', rcmail_get_messagecount_text());
+      $OUTPUT->command('set_rowcount', cmail_get_messagecount_text());
       $OUTPUT->command('set_unread_count', $mbox_name, 0);
-      $OUTPUT->command('set_quota', rcmail_quota_content());
+      $OUTPUT->command('set_quota', cmail_quota_content());
       $_SESSION['unseen_count'][$mbox_name] = 0;
     }
     else

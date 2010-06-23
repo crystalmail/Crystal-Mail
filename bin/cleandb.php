@@ -13,7 +13,7 @@
  |   Finally remove all db records marked as deleted some time ago       |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: cleandb.php 3538 2010-04-23 07:24:05Z alec $
@@ -34,8 +34,8 @@ $primary_keys = array(
 );
 
 // connect to DB
-$RCMAIL = rcmail::get_instance();
-$db = $RCMAIL->get_dbh();
+$CMAIL = cmail::get_instance();
+$db = $CMAIL->get_dbh();
 
 if (!$db->is_connected() || $db->is_error)
     die("No DB connection");

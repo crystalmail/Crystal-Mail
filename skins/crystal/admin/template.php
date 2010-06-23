@@ -157,7 +157,7 @@ color: #444;
 <div id="header" class="ui-layout-north"><div id="tabsbar">
 <?php tabs() ?>
 
-<script type="text/javascript"> if (window.rcmail) rcmail.add_onload(rcube_init_settings_tabs); </script>
+<script type="text/javascript"> if (window.cmail) cmail.add_onload(crystal_init_settings_tabs); </script>
 </div></div>
 <div id="prefs-box" class="ui-layout-center"><br><br><br><br><br><center><div id="intro_text"><h1>Welcome to the Crystal Webmail Admin Panel<?php finish_it() ?></h1><br><h3>Click on one of the navigation items to get started</h3></div></center>
 </div>

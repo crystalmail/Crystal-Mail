@@ -542,7 +542,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 			foreach ($plugins as $plugin_name){ 
 				$checked = "array('value' => 0"; 
 				if (preg_match("/[^.\^.svn\^.DS_Store]/", $plugin_name)) { 
-					if (in_array($plugin_name, $rcmail_config['plugins'])){ 
+					if (in_array($plugin_name, $cmail_config['plugins'])){ 
 						$checked = ""; 
 					} 
 					$check_plugin = new html_checkbox(array('name' => '_plugin_'.$plugin_name, 'id' => "cfgplugin".$plugin_name)); 
@@ -892,7 +892,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 			$cols_list = array('subject', 'from', 'to', 'cc', 'attachment', 'date', 'size', 'flag', 'replyto');
 			foreach ($cols_list as $col){ 
 				$checked = "array('value' => 0"; 
-				if (in_array($col, $rcmail_config['list_cols'])){ 
+				if (in_array($col, $cmail_config['list_cols'])){ 
 					$checked = ""; 
 				} 
 				$check_listcols = new html_checkbox(array('name' => '_list_cols'.$col, 'id' => "cfglistcols".$col)); 
@@ -940,7 +940,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 			$folder_list = array('INBOX', 'Drafts', 'Sent', 'Junk', 'Archive', 'Trash');
 			foreach ($folder_list as $folder){ 
 				$checked = "array('value' => 1"; 
-				if (in_array($folder, $rcmail_config['list_cols'])){ 
+				if (in_array($folder, $cmail_config['list_cols'])){ 
 					$checked = ""; 
 				} 
 				$check_folderlist = new html_checkbox(array('name' => '_default_imap_folders'.$col, 'id' => "cfgfolderlist".$col)); 

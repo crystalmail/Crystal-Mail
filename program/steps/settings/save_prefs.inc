@@ -12,14 +12,14 @@
  |   Save user preferences to DB and to the current session              |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: save_prefs.inc 3479 2010-04-09 15:12:40Z thomasb $
 
 */
 
-$CURR_SECTION = get_input_value('_section', RCUBE_INPUT_POST);
+$CURR_SECTION = get_input_value('_section', crystal_INPUT_POST);
 
 $a_user_prefs = array();
 
@@ -28,12 +28,12 @@ switch ($CURR_SECTION)
 {
   case 'general':
     $a_user_prefs = array(
-      'language'     => isset($_POST['_language']) ? get_input_value('_language', RCUBE_INPUT_POST) : $CONFIG['language'],
-      'timezone'     => isset($_POST['_timezone']) ? (is_numeric($_POST['_timezone']) ? floatval($_POST['_timezone']) : get_input_value('_timezone', RCUBE_INPUT_POST)) : $CONFIG['timezone'],
+      'language'     => isset($_POST['_language']) ? get_input_value('_language', crystal_INPUT_POST) : $CONFIG['language'],
+      'timezone'     => isset($_POST['_timezone']) ? (is_numeric($_POST['_timezone']) ? floatval($_POST['_timezone']) : get_input_value('_timezone', crystal_INPUT_POST)) : $CONFIG['timezone'],
       'dst_active'   => isset($_POST['_dst_active']) ? TRUE : FALSE,
       'pagesize'     => is_numeric($_POST['_pagesize']) ? max(2, intval($_POST['_pagesize'])) : $CONFIG['pagesize'],
       'prettydate'   => isset($_POST['_pretty_date']) ? TRUE : FALSE,
-      'skin' 	     => isset($_POST['_skin']) ? get_input_value('_skin', RCUBE_INPUT_POST) : $CONFIG['skin'],
+      'skin' 	     => isset($_POST['_skin']) ? get_input_value('_skin', crystal_INPUT_POST) : $CONFIG['skin'],
     );
 
   break;
@@ -55,7 +55,7 @@ switch ($CURR_SECTION)
       'inline_images'   => isset($_POST['_inline_images']) ? TRUE : FALSE,
       'show_images'     => isset($_POST['_show_images']) ? intval($_POST['_show_images']) : 0,
       'display_next'    => isset($_POST['_display_next']) ? TRUE : FALSE,
-      'default_charset' => get_input_value('_default_charset', RCUBE_INPUT_POST),
+      'default_charset' => get_input_value('_default_charset', crystal_INPUT_POST),
     );
 
 
@@ -86,16 +86,16 @@ switch ($CURR_SECTION)
   break;
   case 'folders':
     $a_user_prefs = array(
-      'drafts_mbox' => get_input_value('_drafts_mbox', RCUBE_INPUT_POST),
-      'sent_mbox'   => get_input_value('_sent_mbox', RCUBE_INPUT_POST),
-      'junk_mbox'   => get_input_value('_junk_mbox', RCUBE_INPUT_POST),
-      'trash_mbox'  => get_input_value('_trash_mbox', RCUBE_INPUT_POST),
+      'drafts_mbox' => get_input_value('_drafts_mbox', crystal_INPUT_POST),
+      'sent_mbox'   => get_input_value('_sent_mbox', crystal_INPUT_POST),
+      'junk_mbox'   => get_input_value('_junk_mbox', crystal_INPUT_POST),
+      'trash_mbox'  => get_input_value('_trash_mbox', crystal_INPUT_POST),
     );
 
   break;
 }
 
-$data = rcmail::get_instance()->plugins->exec_hook('save_preferences',
+$data = cmail::get_instance()->plugins->exec_hook('save_preferences',
   array('prefs' => $a_user_prefs, 'section' => $CURR_SECTION));
 
 $a_user_prefs = $data['prefs'];
@@ -112,7 +112,7 @@ switch ($CURR_SECTION)
 
     // switch UI language
     if (isset($_POST['_language']) && $a_user_prefs['language'] != $_SESSION['language']) {
-      $RCMAIL->load_language($a_user_prefs['language']);
+      $CMAIL->load_language($a_user_prefs['language']);
       $OUTPUT->command('reload', 500);
     }
 
@@ -158,6 +158,6 @@ if ($USER->save_prefs($a_user_prefs))
   $OUTPUT->show_message('successfullysaved', 'confirmation');
 
 // display the form again
-rcmail_overwrite_action('edit-prefs');
+cmail_overwrite_action('edit-prefs');
 
 ?>

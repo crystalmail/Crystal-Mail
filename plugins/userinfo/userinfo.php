@@ -4,7 +4,7 @@
  * Sample plugin that adds a new tab to the settings section
  * to display some information about the current user
  */
-class userinfo extends rcube_plugin
+class userinfo extends crystal_plugin
 {
   public $task = 'settings';
 
@@ -18,13 +18,13 @@ class userinfo extends rcube_plugin
   function infostep()
   {
     $this->register_handler('plugin.body', array($this, 'infohtml'));
-    rcmail::get_instance()->output->send('plugin');
+    cmail::get_instance()->output->send('plugin');
   }
   
   function infohtml()
   {
-    $rcmail = rcmail::get_instance();
-    $user = $rcmail->user;
+    $cmail = cmail::get_instance();
+    $user = $cmail->user;
     
     $table = new html_table(array('cols' => 2, 'cellpadding' => 3));
 

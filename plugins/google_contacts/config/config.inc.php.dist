@@ -1,12 +1,12 @@
 <?php
 
 /* Default addressbook source */
-$rcmail_config['default_addressbook'] = '0';
+$cmail_config['default_addressbook'] = '0';
 
 /* database table name */
-$rcmail_config['db_table_google_contacts'] = 'google_contacts';
+$cmail_config['db_table_google_contacts'] = 'google_contacts';
 
 /* max results */
-$rcmail_config['google_contacts_max_results'] = 250;
+$cmail_config['google_contacts_max_results'] = 250;
 
 ?>

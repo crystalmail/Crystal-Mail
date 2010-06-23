@@ -13,7 +13,7 @@
  |   and send it using the PEAR::Net_SMTP class or with PHP mail()       |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: sendmail.inc 3468 2010-04-02 13:53:39Z alec $
@@ -57,18 +57,18 @@ if (!$savedraft) {
 /****** message sending functions ********/
 
 // encrypt parts of the header
-function rcmail_encrypt_header($what)
+function cmail_encrypt_header($what)
 {
-  global $CONFIG, $RCMAIL;
+  global $CONFIG, $CMAIL;
   if (!$CONFIG['http_received_header_encrypt'])
   {
     return $what;
   }
-  return $RCMAIL->encrypt($what);
+  return $CMAIL->encrypt($what);
 }
 
 // get identity record
-function rcmail_get_identity($id)
+function cmail_get_identity($id)
   {
   global $USER, $OUTPUT;
   
@@ -83,7 +83,7 @@ function rcmail_get_identity($id)
     else
       $name = $sql_arr['name'];
 
-    $out['string'] = rcube_charset_convert($name, RCMAIL_CHARSET, $OUTPUT->get_charset());
+    $out['string'] = crystal_charset_convert($name, cmail_CHARSET, $OUTPUT->get_charset());
     if ($sql_arr['email'])
       $out['string'] .= ' <' . $sql_arr['email'] . '>';
 
@@ -106,7 +106,7 @@ function rcmail_get_identity($id)
  * Content-Transfer-Encoding: base64
  * Content-ID: <smiley-cool.gif>
  */
-function rcmail_attach_emoticons(&$mime_message)
+function cmail_attach_emoticons(&$mime_message)
 {
   global $CONFIG;
 
@@ -150,7 +150,7 @@ function rcmail_attach_emoticons(&$mime_message)
 }
 
 // parse email address input (and count addresses)
-function rcmail_email_input_format($mailto, $count=false)
+function cmail_email_input_format($mailto, $count=false)
 {
   global $EMAIL_FORMAT_ERROR, $RECIPIENT_COUNT;
 
@@ -161,7 +161,7 @@ function rcmail_email_input_format($mailto, $count=false)
   $mailto = trim(preg_replace($regexp, $replace, $mailto));
 
   $result = array();
-  $items = rcube_explode_quoted_string(',', $mailto);
+  $items = crystal_explode_quoted_string(',', $mailto);
 
   foreach($items as $item) {
     $item = trim($item);
@@ -207,9 +207,9 @@ function rcmail_email_input_format($mailto, $count=false)
 /****** compose message ********/
 
 if (strlen($_POST['_draft_saveid']) > 3)
-  $olddraftmessageid = get_input_value('_draft_saveid', RCUBE_INPUT_POST);
+  $olddraftmessageid = get_input_value('_draft_saveid', crystal_INPUT_POST);
 
-$message_id = sprintf('<%s@%s>', md5(uniqid('rcmail'.mt_rand(),true)), $RCMAIL->config->mail_domain($_SESSION['imap_host']));
+$message_id = sprintf('<%s@%s>', md5(uniqid('cmail'.mt_rand(),true)), $CMAIL->config->mail_domain($_SESSION['imap_host']));
 
 // set default charset
 $input_charset = $OUTPUT->get_charset();
@@ -218,9 +218,9 @@ $message_charset = isset($_POST['_charset']) ? $_POST['_charset'] : $input_chars
 $EMAIL_FORMAT_ERROR = NULL;
 $RECIPIENT_COUNT = 0;
 
-$mailto = rcmail_email_input_format(get_input_value('_to', RCUBE_INPUT_POST, TRUE, $message_charset), true);
-$mailcc = rcmail_email_input_format(get_input_value('_cc', RCUBE_INPUT_POST, TRUE, $message_charset), true);
-$mailbcc = rcmail_email_input_format(get_input_value('_bcc', RCUBE_INPUT_POST, TRUE, $message_charset), true);
+$mailto = cmail_email_input_format(get_input_value('_to', crystal_INPUT_POST, TRUE, $message_charset), true);
+$mailcc = cmail_email_input_format(get_input_value('_cc', crystal_INPUT_POST, TRUE, $message_charset), true);
+$mailbcc = cmail_email_input_format(get_input_value('_bcc', crystal_INPUT_POST, TRUE, $message_charset), true);
 
 if ($EMAIL_FORMAT_ERROR) {
   $OUTPUT->show_message('emailformaterror', 'error', array('email' => $EMAIL_FORMAT_ERROR)); 
@@ -235,10 +235,10 @@ else if (empty($mailto))
   $mailto = 'undisclosed-recipients:;';
 
 // get sender name and address
-$from = get_input_value('_from', RCUBE_INPUT_POST, true, $message_charset);
-$identity_arr = rcmail_get_identity($from);
+$from = get_input_value('_from', crystal_INPUT_POST, true, $message_charset);
+$identity_arr = cmail_get_identity($from);
 
-if (!$identity_arr && ($from = rcmail_email_input_format($from))) {
+if (!$identity_arr && ($from = cmail_email_input_format($from))) {
   if (preg_match('/(\S+@\S+)/', $from, $m))
     $identity_arr['mailto'] = $m[1];
 } else
@@ -253,16 +253,16 @@ $headers = array();
 // if configured, the Received headers goes to top, for good measure
 if ($CONFIG['http_received_header'])
 {
-  $nldlm = $RCMAIL->config->header_delimiter() . "\t";
+  $nldlm = $CMAIL->config->header_delimiter() . "\t";
   // FROM/VIA
   $http_header = 'from ';
   if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
     $host = $_SERVER['HTTP_X_FORWARDED_FOR'];
     $hostname = gethostbyaddr($host);
     if ($CONFIG['http_received_header_encrypt']) {
-      $http_header .= rcmail_encrypt_header($hostname);
+      $http_header .= cmail_encrypt_header($hostname);
       if ($host != $hostname)
-        $http_header .= ' ('. rcmail_encrypt_header($host) . ')';
+        $http_header .= ' ('. cmail_encrypt_header($host) . ')';
     } else {
       $http_header .= (($host != $hostname) ? $hostname : '[' . $host . ']');
       if ($host != $hostname)
@@ -273,9 +273,9 @@ if ($CONFIG['http_received_header'])
   $host = $_SERVER['REMOTE_ADDR'];
   $hostname = gethostbyaddr($host);
   if ($CONFIG['http_received_header_encrypt']) {
-    $http_header .= rcmail_encrypt_header($hostname);
+    $http_header .= cmail_encrypt_header($hostname);
     if ($host != $hostname)
-      $http_header .= ' ('. rcmail_encrypt_header($host) . ')';
+      $http_header .= ' ('. cmail_encrypt_header($host) . ')';
   } else {
     $http_header .= (($host != $hostname) ? $hostname : '[' . $host . ']');
     if ($host != $hostname)
@@ -292,7 +292,7 @@ if ($CONFIG['http_received_header'])
 }
 
 $headers['Date'] = date('r');
-$headers['From'] = rcube_charset_convert($identity_arr['string'], RCMAIL_CHARSET, $message_charset);
+$headers['From'] = crystal_charset_convert($identity_arr['string'], cmail_CHARSET, $message_charset);
 $headers['To'] = $mailto;
 
 // additional recipients
@@ -307,7 +307,7 @@ if (!empty($identity_arr['bcc'])) {
   $RECIPIENT_COUNT ++;
 }
 
-if (($max_recipients = (int) $RCMAIL->config->get('max_recipients')) > 0) {
+if (($max_recipients = (int) $CMAIL->config->get('max_recipients')) > 0) {
   if ($RECIPIENT_COUNT > $max_recipients) {
     $OUTPUT->show_message('toomanyrecipients', 'error', array('max' => $max_recipients));
     $OUTPUT->send('iframe');
@@ -315,13 +315,13 @@ if (($max_recipients = (int) $RCMAIL->config->get('max_recipients')) > 0) {
 }
 
 // add subject
-$headers['Subject'] = trim(get_input_value('_subject', RCUBE_INPUT_POST, TRUE, $message_charset));
+$headers['Subject'] = trim(get_input_value('_subject', crystal_INPUT_POST, TRUE, $message_charset));
 
 if (!empty($identity_arr['organization']))
   $headers['Organization'] = $identity_arr['organization'];
 
 if (!empty($_POST['_replyto']))
-  $headers['Reply-To'] = rcmail_email_input_format(get_input_value('_replyto', RCUBE_INPUT_POST, TRUE, $message_charset));
+  $headers['Reply-To'] = cmail_email_input_format(get_input_value('_replyto', crystal_INPUT_POST, TRUE, $message_charset));
 else if (!empty($identity_arr['reply-to']))
   $headers['Reply-To'] = $identity_arr['reply-to'];
 
@@ -356,13 +356,13 @@ $headers['Message-ID'] = $message_id;
 $headers['X-Sender'] = $from;
 
 if (is_array($headers['X-Draft-Info']))
-  $headers['X-Draft-Info'] = rcmail_draftinfo_encode($headers['X-Draft-Info'] + array('folder' => $_SESSION['compose']['mailbox']));
+  $headers['X-Draft-Info'] = cmail_draftinfo_encode($headers['X-Draft-Info'] + array('folder' => $_SESSION['compose']['mailbox']));
 
 if (!empty($CONFIG['useragent']))
   $headers['User-Agent'] = $CONFIG['useragent'];
 
 // exec hook for header checking and manipulation
-$data = $RCMAIL->plugins->exec_hook('outgoing_message_headers', array('headers' => $headers));
+$data = $CMAIL->plugins->exec_hook('outgoing_message_headers', array('headers' => $headers));
 
 // sending aborted by plugin
 if ($data['abort'] && !$savedraft) {
@@ -373,10 +373,10 @@ else
   $headers = $data['headers'];
 
 
-$isHtml = (bool) get_input_value('_is_html', RCUBE_INPUT_POST);
+$isHtml = (bool) get_input_value('_is_html', crystal_INPUT_POST);
 
 // fetch message body
-$message_body = get_input_value('_message', RCUBE_INPUT_POST, TRUE, $message_charset);
+$message_body = get_input_value('_message', crystal_INPUT_POST, TRUE, $message_charset);
 
 if (!$savedraft) {
   if ($isHtml) {
@@ -391,18 +391,18 @@ if (!$savedraft) {
   // generic footer for all messages
   if (!empty($CONFIG['generic_message_footer'])) {
     $footer = file_get_contents(realpath($CONFIG['generic_message_footer']));
-    $footer = rcube_charset_convert($footer, RCMAIL_CHARSET, $message_charset);
+    $footer = crystal_charset_convert($footer, cmail_CHARSET, $message_charset);
   }
 }
 
 // set line length for body wrapping
-$LINE_LENGTH = $RCMAIL->config->get('line_length', 75);
+$LINE_LENGTH = $CMAIL->config->get('line_length', 75);
 
 // Since we can handle big messages with disk usage, we need more time to work
 @set_time_limit(0);
 
 // create PEAR::Mail_mime instance
-$MAIL_MIME = new Mail_mime($RCMAIL->config->header_delimiter());
+$MAIL_MIME = new Mail_mime($CMAIL->config->header_delimiter());
 
 // Check if we have enough memory to handle the message in it
 // It's faster than using files, so we'll do this if we only can
@@ -423,7 +423,7 @@ if (is_array($_SESSION['compose']['attachments']) && $CONFIG['smtp_server']
 // the HTML part and the plain-text part
 
 if ($isHtml) {
-  $plugin = $RCMAIL->plugins->exec_hook('outgoing_message_body', array('body' => $message_body, 'type' => 'html', 'message' => $MAIL_MIME));
+  $plugin = $CMAIL->plugins->exec_hook('outgoing_message_body', array('body' => $message_body, 'type' => 'html', 'message' => $MAIL_MIME));
   $MAIL_MIME->setHTMLBody($plugin['body'] . ($footer ? "\r\n<pre>".$footer.'</pre>' : ''));
 
   // add a plain text version of the e-mail as an alternative part.
@@ -434,11 +434,11 @@ if ($isHtml) {
     // empty message body breaks attachment handling in drafts 
     $plainTextPart = "\r\n"; 
   }
-  $plugin = $RCMAIL->plugins->exec_hook('outgoing_message_body', array('body' => $plainTextPart, 'type' => 'alternative', 'message' => $MAIL_MIME));
+  $plugin = $CMAIL->plugins->exec_hook('outgoing_message_body', array('body' => $plainTextPart, 'type' => 'alternative', 'message' => $MAIL_MIME));
   $MAIL_MIME->setTXTBody($plugin['body']);
 
   // look for "emoticon" images from TinyMCE and copy into message as attachments
-  $message_body = rcmail_attach_emoticons($MAIL_MIME);
+  $message_body = cmail_attach_emoticons($MAIL_MIME);
 }
 else
   {
@@ -450,7 +450,7 @@ else
     // empty message body breaks attachment handling in drafts 
     $message_body = "\r\n"; 
   }
-  $plugin = $RCMAIL->plugins->exec_hook('outgoing_message_body', array('body' => $message_body, 'type' => 'plain', 'message' => $MAIL_MIME));
+  $plugin = $CMAIL->plugins->exec_hook('outgoing_message_body', array('body' => $message_body, 'type' => 'plain', 'message' => $MAIL_MIME));
   $MAIL_MIME->setTXTBody($plugin['body'], false, true);
 }
 
@@ -459,7 +459,7 @@ if (is_array($_SESSION['compose']['attachments']))
 {
   foreach ($_SESSION['compose']['attachments'] as $id => $attachment) {
     // This hook retrieves the attachment contents from the file storage backend
-    $attachment = $RCMAIL->plugins->exec_hook('get_attachment', $attachment);
+    $attachment = $CMAIL->plugins->exec_hook('get_attachment', $attachment);
 
     $dispurl = '/\ssrc\s*=\s*[\'"]*\S+display-attachment\S+file=rcmfile' . preg_quote($attachment['id']) . '[\s\'"]\s*/';
     $message_body = $MAIL_MIME->getHTMLBody();
@@ -495,7 +495,7 @@ if (is_array($_SESSION['compose']['attachments']))
 
 // choose transfer encoding for plain/text body
 if (preg_match('/[^\x00-\x7F]/', $MAIL_MIME->getTXTBody()))
-  $transfer_encoding = $RCMAIL->config->get('force_7bit') ? 'quoted-printable' : '8bit';
+  $transfer_encoding = $CMAIL->config->get('force_7bit') ? 'quoted-printable' : '8bit';
 else
   $transfer_encoding = '7bit';
 
@@ -512,8 +512,8 @@ if (function_exists('mb_encode_mimeheader'))
 {
   mb_internal_encoding($message_charset);
   $headers['Subject'] = mb_encode_mimeheader($headers['Subject'],
-    $message_charset, 'Q', $RCMAIL->config->header_delimiter(), 8);
-  mb_internal_encoding(RCMAIL_CHARSET);
+    $message_charset, 'Q', $CMAIL->config->header_delimiter(), 8);
+  mb_internal_encoding(cmail_CHARSET);
 }
 
 // pass headers to message object
@@ -528,7 +528,7 @@ if (!$savedraft)
     $OUTPUT->send('iframe'); 
   }
 
-  $sent = rcmail_deliver_message($MAIL_MIME, $from, $mailto, $smtp_error, $mailbody_file);
+  $sent = cmail_deliver_message($MAIL_MIME, $from, $mailto, $smtp_error, $mailbody_file);
 
   // return to compose page if sending failed
   if (!$sent)
@@ -547,7 +547,7 @@ if (!$savedraft)
 
   // save message sent time
   if (!empty($CONFIG['sendmail_delay']))
-    $RCMAIL->user->save_prefs(array('last_message_time' => time()));
+    $CMAIL->user->save_prefs(array('last_message_time' => time()));
   
   // set replied/forwarded flag
   if ($_SESSION['compose']['reply_uid'])
@@ -562,7 +562,7 @@ if (!$savedraft)
 if ($savedraft)
   $store_target = $CONFIG['drafts_mbox'];
 else	
-  $store_target = isset($_POST['_store_target']) ? get_input_value('_store_target', RCUBE_INPUT_POST) : $CONFIG['sent_mbox'];
+  $store_target = isset($_POST['_store_target']) ? get_input_value('_store_target', crystal_INPUT_POST) : $CONFIG['sent_mbox'];
 
 if ($store_target)
   {
@@ -589,7 +589,7 @@ if ($store_target)
       if ($mailbody_file)
         $msg = $mailbody_file;
       else {
-        $temp_dir = $RCMAIL->config->get('temp_dir');
+        $temp_dir = $CMAIL->config->get('temp_dir');
         $mailbody_file = tempnam($temp_dir, 'rcmMsg');
         if (!PEAR::isError($msg = $MAIL_MIME->saveMessageBody($mailbody_file)))
           $msg = $mailbody_file;
@@ -669,12 +669,12 @@ if ($savedraft)
   }
 else
   {
-  rcmail_compose_cleanup();
+  cmail_compose_cleanup();
 
   if ($store_folder && !$saved)
-    $OUTPUT->command('sent_successfully', 'error', rcube_label('errorsavingsent'));
+    $OUTPUT->command('sent_successfully', 'error', crystal_label('errorsavingsent'));
   else
-    $OUTPUT->command('sent_successfully', 'confirmation', rcube_label('messagesent'));
+    $OUTPUT->command('sent_successfully', 'confirmation', crystal_label('messagesent'));
   $OUTPUT->send('iframe');
   }
 

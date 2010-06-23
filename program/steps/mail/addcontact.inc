@@ -12,7 +12,7 @@
  |   Add the submitted contact to the users address book                 |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: addcontact.inc 2758 2009-07-16 15:01:05Z thomasb $
@@ -24,11 +24,11 @@ if (!$OUTPUT->ajax_call)
   return;
 
 $done = false;
-$CONTACTS = $RCMAIL->get_address_book(null, true);
+$CONTACTS = $CMAIL->get_address_book(null, true);
 
 if (!empty($_POST['_address']) && is_object($CONTACTS))
 {
-  $contact_arr = $IMAP->decode_address_list(get_input_value('_address', RCUBE_INPUT_POST, true), 1, false);
+  $contact_arr = $IMAP->decode_address_list(get_input_value('_address', crystal_INPUT_POST, true), 1, false);
   
   if (!empty($contact_arr[1]['mailto']))
   {
@@ -47,7 +47,7 @@ if (!empty($_POST['_address']) && is_object($CONTACTS))
       $OUTPUT->show_message('contactexists', 'warning');
     else
     {
-      $plugin = $RCMAIL->plugins->exec_hook('create_contact', array('record' => $contact, 'source' => null));
+      $plugin = $CMAIL->plugins->exec_hook('create_contact', array('record' => $contact, 'source' => null));
       $contact = $plugin['record'];
 
       if (!$plugin['abort'] && ($done = $CONTACTS->insert($contact)))

@@ -12,7 +12,7 @@
  |   Show contact details                                                |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: show.inc 2237 2009-01-17 01:55:39Z till $
@@ -21,11 +21,11 @@
 
 
 // read contact record
-if (($cid = get_input_value('_cid', RCUBE_INPUT_GPC)) && ($record = $CONTACTS->get_record($cid, true))) {
+if (($cid = get_input_value('_cid', crystal_INPUT_GPC)) && ($record = $CONTACTS->get_record($cid, true))) {
   $OUTPUT->set_env('cid', $record['ID']);
 }
 
-function rcmail_contact_details($attrib)
+function cmail_contact_details($attrib)
 {
   global $CONTACTS, $OUTPUT;
   $microformats = array('name' => 'fn', 'email' => 'email');
@@ -35,18 +35,18 @@ function rcmail_contact_details($attrib)
     $OUTPUT->show_message('contactnotfound');
     return false;
   }
-  $vcard = new rcube_vcard($record['vcard']);
+  $vcard = new crystal_vcard($record['vcard']);
   
   // a specific part is requested
   if ($attrib['part']) {
     return Q($record[$attrib['part']]);
   }
 
-  $curtab = get_input_value('_tab', RCUBE_INPUT_GPC);
+  $curtab = get_input_value('_tab', crystal_INPUT_GPC);
   $curtab = (empty($curtab)) ? 'basic' : $curtab;
   $OUTPUT->set_env('contacttab', $curtab);
 
-  $panes = rcmail_contact_fields();
+  $panes = cmail_contact_fields();
   foreach ($panes as $pane => $a_show_cols) {
     $table = new html_table(array('cols' => 2));
 
@@ -67,7 +67,7 @@ function disp_contact_table(&$table, $record, $col, $microformats, $vcard) {
       $value = html::a(array(
       'href' => 'mailto:' . $data,
       'onclick' => sprintf("return %s.command('compose','%s',this)", JS_OBJECT_NAME, JQ($data)),
-        'title' => rcube_label('composeto'),
+        'title' => crystal_label('composeto'),
         'class' => $microformats[$col],
     ), Q($data));
   }
@@ -76,7 +76,7 @@ function disp_contact_table(&$table, $record, $col, $microformats, $vcard) {
       $value = html::a(array(
       'href' => 'mailto:' . $data,
       'onclick' => sprintf("return %s.command('compose','%s',this)", JS_OBJECT_NAME, JQ($data)),
-        'title' => rcube_label('composeto'),
+        'title' => crystal_label('composeto'),
         'class' => $microformats[$col],
     ), Q($data));
   }
@@ -87,7 +87,7 @@ function disp_contact_table(&$table, $record, $col, $microformats, $vcard) {
   }
   else if ($col == 'birthday') {
 	$data = ($record[$col]) ? $record[$col] : $vcard->$col;
-    $value = format_date(strtotime($data), rcmail::get_instance()->config->get('date_only', 'd F Y'));
+    $value = format_date(strtotime($data), cmail::get_instance()->config->get('date_only', 'd F Y'));
   }
   else if ($col == 'notes') {
 	$data = ($record[$col]) ? $record[$col] : $vcard->$col;
@@ -100,14 +100,14 @@ function disp_contact_table(&$table, $record, $col, $microformats, $vcard) {
     $value = html::span($microformats[$col], Q($vcard->$col));
   }
   
-  $table->add(array('class' => 'title', 'style' => 'width: 150px; vertical-align: top;'), Q(rcube_label($col)));
+  $table->add(array('class' => 'title', 'style' => 'width: 150px; vertical-align: top;'), Q(crystal_label($col)));
   $table->add(null, $value);
 }
 
 
 //$OUTPUT->framed = $_framed;
-$OUTPUT->add_handler('contactdetails', 'rcmail_contact_details');
-if ($RCMAIL->action == 'blank')
+$OUTPUT->add_handler('contactdetails', 'cmail_contact_details');
+if ($CMAIL->action == 'blank')
   $OUTPUT->send('blankcontact');
 else
 $OUTPUT->send('showcontact');

@@ -12,11 +12,11 @@
 
 function password_save($curpass, $passwd)
 {
-    $rcmail = rcmail::get_instance();
+    $cmail = cmail::get_instance();
 //    include('Net/Socket.php');
     $poppassd = new Net_Socket();
 
-    if (PEAR::isError($poppassd->connect($rcmail->config->get('password_pop_host'), $rcmail->config->get('password_pop_port'), null))) {
+    if (PEAR::isError($poppassd->connect($cmail->config->get('password_pop_host'), $cmail->config->get('password_pop_port'), null))) {
         return PASSWORD_CONNECT_ERROR;
     }
     else {

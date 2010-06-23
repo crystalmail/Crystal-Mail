@@ -6,18 +6,18 @@
  *
  * @version 1.3 - 03.02.2010
  * @author valsily0 / Roland 'rosali' Liebl
- * @website http://myroundcube.googlecode.com
+ * @website http://mycrystalmail.googlecode.com
  * @licence GNU GPL
  *
  **/
  
 /**
  *
- * Usage: http://mail4us.net/myroundcube/
+ * Usage: http://mail4us.net/mycrystalmail/
  *
  **/
 
-class remember_me extends rcube_plugin {
+class remember_me extends crystal_plugin {
   
   function init() {
 
@@ -73,10 +73,10 @@ class remember_me extends rcube_plugin {
         $args['pass']= $pass;
         $args['host']= $host;
         #Update cookie time
-        rcmail::setcookie ('rememberme_user',$this->encode($user),time()+60*60*24*365);
-        rcmail::setcookie ('rememberme_pass',$this->encode($pass),time()+60*60*24*365);
-        rcmail::setcookie ('rememberme_host',$this->encode($host),time()+60*60*24*365);
-        rcmail::setcookie ('rememberme_checked',1,time()+60*60*24*365);
+        cmail::setcookie ('rememberme_user',$this->encode($user),time()+60*60*24*365);
+        cmail::setcookie ('rememberme_pass',$this->encode($pass),time()+60*60*24*365);
+        cmail::setcookie ('rememberme_host',$this->encode($host),time()+60*60*24*365);
+        cmail::setcookie ('rememberme_checked',1,time()+60*60*24*365);
       }
     } 
     return $args;
@@ -84,44 +84,44 @@ class remember_me extends rcube_plugin {
 
   function login_after($args) {
     if (($_POST['_rememberme'] == 1) && !empty($_POST['_user']) &&  !empty($_POST['_pass'])) {
-       rcmail::setcookie ('rememberme_user',$this->encode(trim($_POST['_user'])),time()+60*60*24*365);
-       rcmail::setcookie ('rememberme_pass',$this->encode(trim($_POST['_pass'])),time()+60*60*24*365);
+       cmail::setcookie ('rememberme_user',$this->encode(trim($_POST['_user'])),time()+60*60*24*365);
+       cmail::setcookie ('rememberme_pass',$this->encode(trim($_POST['_pass'])),time()+60*60*24*365);
        if(!empty($_POST['_host']))
          $host = trim($_POST['_host']);
        else
          $host = $_SESSION['imap_host'];
-       rcmail::setcookie ('rememberme_host',$this->encode($host),time()+60*60*24*365);
-       rcmail::setcookie ('rememberme_checked',1,time()+60*60*24*365);
+       cmail::setcookie ('rememberme_host',$this->encode($host),time()+60*60*24*365);
+       cmail::setcookie ('rememberme_checked',1,time()+60*60*24*365);
     }
     return $args;
   }
 
   function login_failed($args) {
-    rcmail::setcookie ('rememberme_user','',time()-3600);
-    rcmail::setcookie ('rememberme_pass','',time()-3600);
-    rcmail::setcookie ('rememberme_host','',time()-3600);
+    cmail::setcookie ('rememberme_user','',time()-3600);
+    cmail::setcookie ('rememberme_pass','',time()-3600);
+    cmail::setcookie ('rememberme_host','',time()-3600);
     return $args;
   }
   
   function logout($args) {
     $this->add_texts('localization/');
-    $rcmail = rcmail::get_instance();
-    if($rcmail->task == "logout" && isset($_COOKIE['rememberme_user']) && isset($_COOKIE['rememberme_pass'])){
+    $cmail = cmail::get_instance();
+    if($cmail->task == "logout" && isset($_COOKIE['rememberme_user']) && isset($_COOKIE['rememberme_pass'])){
       if(!isset($_POST['_remember_me'])){
         if(!isset($_GET['_remember_me'])){
-          $rcmail->output->send("remember_me.remember_me");
+          $cmail->output->send("remember_me.remember_me");
         }
         else{
-          $rcmail->output->show_message("remember_me.close");
-          $rcmail->output->send("remember_me.redirect");
+          $cmail->output->show_message("remember_me.close");
+          $cmail->output->send("remember_me.redirect");
           exit;
         }
       }
       else{
-        rcmail::setcookie ('rememberme_user','',time()-3600);
-        rcmail::setcookie ('rememberme_pass','',time()-3600);
-        rcmail::setcookie ('rememberme_host','',time()-3600);
-        rcmail::setcookie ('rememberme_checked','',time()-3600);
+        cmail::setcookie ('rememberme_user','',time()-3600);
+        cmail::setcookie ('rememberme_pass','',time()-3600);
+        cmail::setcookie ('rememberme_host','',time()-3600);
+        cmail::setcookie ('rememberme_checked','',time()-3600);
         unset($_COOKIE['rememberme_checked']);
         header('Location: ./?_task=logout');
         exit;
@@ -132,8 +132,8 @@ class remember_me extends rcube_plugin {
 
   private function encode ($a) {
     if($a != ""){
-      $rcmail = rcmail::get_instance();
-      return $rcmail->encrypt($a);
+      $cmail = cmail::get_instance();
+      return $cmail->encrypt($a);
     }
     else
       return "";
@@ -142,8 +142,8 @@ class remember_me extends rcube_plugin {
   
   private function decode ($a) {
     if($a != ""){
-      $rcmail = rcmail::get_instance();
-      return $rcmail->decrypt($a);
+      $cmail = cmail::get_instance();
+      return $cmail->decrypt($a);
     }
     else
       return "";

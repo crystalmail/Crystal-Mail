@@ -17,7 +17,7 @@ function password_save($currpass, $newpass)
     $cmd = sprintf('echo \'%1$s:%2$s\' | %3$s; echo $?',
                 addcslashes($_SESSION['username'], "'"),
                 addcslashes($newpass, "'"),
-                rcmail::get_instance()->config->get('password_chpasswd_cmd'));
+                cmail::get_instance()->config->get('password_chpasswd_cmd'));
 
     if (exec($cmd) == 0) {
         return PASSWORD_SUCCESS;

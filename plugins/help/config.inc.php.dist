@@ -1,8 +1,8 @@
 <?php
 
 // Help content iframe source
-// $rcmail_config['help_source'] = 'http://trac.roundcube.net/wiki';
-$rcmail_config['help_source'] = '';
+// $cmail_config['help_source'] = 'http://trac.crystalmail.net/wiki';
+$cmail_config['help_source'] = '';
 
 ?>
   

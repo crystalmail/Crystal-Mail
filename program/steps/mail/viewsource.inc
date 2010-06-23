@@ -12,7 +12,7 @@
  |   Display a mail message similar as a usual mail application does     |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: viewsource.inc 3367 2010-03-17 12:24:09Z thomasb $
@@ -22,15 +22,15 @@
 ob_end_clean();
 
 // similar code as in program/steps/mail/get.inc
-if ($uid = get_input_value('_uid', RCUBE_INPUT_GET))
+if ($uid = get_input_value('_uid', crystal_INPUT_GET))
 {
   $headers = $IMAP->get_headers($uid);
   $charset = $headers->charset ? $headers->charset : $CONFIG['default_charset'];
   header("Content-Type: text/plain; charset={$charset}");
 
   if (!empty($_GET['_save'])) {
-    $filename = ($headers->subject ? $IMAP->decode_header($headers->subject) : 'roundcube') . '.eml';
-    $browser = new rcube_browser;
+    $filename = ($headers->subject ? $IMAP->decode_header($headers->subject) : 'crystalmail') . '.eml';
+    $browser = new crystal_browser;
     
     if ($browser->ie && $browser->ver < 7)
       $filename = rawurlencode(abbreviate_string($filename, 55));

@@ -10,19 +10,19 @@
  * and optional identity data columns in specified order:
  *    name, organization, reply-to, bcc, signature, html_signature
  *
- * $rcmail_config['virtuser_query'] = '';
+ * $cmail_config['virtuser_query'] = '';
  *
  * @version 1.0
  * @author Aleksander Machniak
  */
-class virtuser_query extends rcube_plugin
+class virtuser_query extends crystal_plugin
 {
     private $query;
     private $app;
 
     function init()
     {
-	$this->app = rcmail::get_instance();
+	$this->app = cmail::get_instance();
 	$this->query = $this->app->config->get('virtuser_query');
 
 	if ($this->query) {
@@ -36,7 +36,7 @@ class virtuser_query extends rcube_plugin
      */
     function user2email($p)
     {
-	$dbh = $rcmail->get_dbh();
+	$dbh = $cmail->get_dbh();
 
 	$sql_result = $dbh->query(preg_replace('/%u/', $dbh->escapeSimple($p['user']), $this->query));
 

@@ -12,23 +12,23 @@
 
 function password_save($curpass, $passwd)
 {
-    $rcmail = rcmail::get_instance();
+    $cmail = cmail::get_instance();
 
-    if (!($sql = $rcmail->config->get('password_query')))
+    if (!($sql = $cmail->config->get('password_query')))
         $sql = 'SELECT update_passwd(%c, %u)';
 
-    if ($dsn = $rcmail->config->get('password_db_dsn')) {
+    if ($dsn = $cmail->config->get('password_db_dsn')) {
 	// #1486067: enable new_link option
 	if (is_array($dsn) && empty($dsn['new_link']))
 	    $dsn['new_link'] = true;
 	else if (!is_array($dsn) && !preg_match('/\?new_link=true/', $dsn))
 	  $dsn .= '?new_link=true';
 
-        $db = new rcube_mdb2($dsn, '', FALSE);
-        $db->set_debug((bool)$rcmail->config->get('sql_debug'));
+        $db = new crystal_mdb2($dsn, '', FALSE);
+        $db->set_debug((bool)$cmail->config->get('sql_debug'));
         $db->db_connect('w');
     } else {
-        $db = $rcmail->get_dbh();
+        $db = $cmail->get_dbh();
     }
 
     if ($err = $db->is_error())
@@ -52,9 +52,9 @@ function password_save($curpass, $passwd)
 
     // dovecotpw
     if (strpos($sql, '%D') !== FALSE) {
-        if (!($dovecotpw = $rcmail->config->get('password_dovecotpw')))
+        if (!($dovecotpw = $cmail->config->get('password_dovecotpw')))
             $dovecotpw = 'dovecotpw';
-        if (!($method = $rcmail->config->get('password_dovecotpw_method')))
+        if (!($method = $cmail->config->get('password_dovecotpw_method')))
             $method = 'CRAM-MD5';
         $tmpfile = tempnam('/tmp', 'rouncdube-');
         $pipe = popen("'$dovecotpw' -s '$method' > '$tmpfile'", "w");
@@ -70,7 +70,7 @@ function password_save($curpass, $passwd)
             if (!preg_match('/^\{' . $method . '\}/', $newpass)) {
                 return PASSWORD_CRYPT_ERROR;
             }
-            if (!$rcmail->config->get('password_dovecotpw_with_method'))
+            if (!$cmail->config->get('password_dovecotpw_with_method'))
                 $newpass = trim(str_replace('{' . $method . '}', '', $newpass));
             unlink($tmpfile);
         }
@@ -90,13 +90,13 @@ function password_save($curpass, $passwd)
 	    return PASSWORD_ERROR;			    
 	}
 
-	if (!($hash_algo = strtolower($rcmail->config->get('password_hash_algorithm'))))
+	if (!($hash_algo = strtolower($cmail->config->get('password_hash_algorithm'))))
             $hash_algo = 'sha1';
         
 	$hash_passwd = hash($hash_algo, $passwd);
         $hash_curpass = hash($hash_algo, $curpass);
         
-	if ($rcmail->config->get('password_hash_base64')) {
+	if ($cmail->config->get('password_hash_base64')) {
             $hash_passwd = base64_encode(pack('H*', $hash_passwd));
             $hash_curpass = base64_encode(pack('H*', $hash_curpass));
         }

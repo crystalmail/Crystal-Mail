@@ -48,15 +48,15 @@ var idx = -1;
 $(document).ready(function() {
   
   // start loading
-  rcmail.set_busy(true,'loading');
+  cmail.set_busy(true,'loading');
 
-  rcmail.addEventListener('plugin.reloadCalendar', reloadCalendar);       
+  cmail.addEventListener('plugin.reloadCalendar', reloadCalendar);       
   // get settings
-  rcmail.addEventListener('plugin.getSettings', setSettings);
-  rcmail.http_post('plugin.getSettings', '');
+  cmail.addEventListener('plugin.getSettings', setSettings);
+  cmail.http_post('plugin.getSettings', '');
   
   function setSettings(response) {
-  rcmail.set_busy(false,'loading');
+  cmail.set_busy(false,'loading');
   $('#calendar').fullCalendar({
     header: {
       left: '',
@@ -78,28 +78,28 @@ $(document).ready(function() {
     timeFormat: response.settings['time_format'],
     axisFormat : response.settings['time_format'],
     defaultView: queryString('_view'),
-    allDayText: rcmail.gettext('all-day', 'calendar'),
+    allDayText: cmail.gettext('all-day', 'calendar'),
 
     loading : function(isLoading) {
       if(isLoading) {
-        rcmail.set_busy(true,'loading');
-        rcmail.enable_command('plugin.calendar_do_print', false);
-        rcmail.enable_command('plugin.calendar_toggle_view', false);
+        cmail.set_busy(true,'loading');
+        cmail.enable_command('plugin.calendar_do_print', false);
+        cmail.enable_command('plugin.calendar_toggle_view', false);
       } else {
-        rcmail.set_busy(false,'loading');
+        cmail.set_busy(false,'loading');
         var mydate = queryString('_date');
         $('#calendar').fullCalendar( 'gotoDate', $.fullCalendar.parseDate(mydate));
         if(myevents.length > 0){
           var agendatable = "<table>\n";
           agendatable = agendatable + "<tr><thead><th colspan='8'>" + $('#calendar').fullCalendar('getView').title + "</th></tr>\n";
           agendatable = agendatable + "<tr>\n";
-          agendatable = agendatable + "<th>" + rcmail.gettext('day','calendar') + "</th>\n";
-          agendatable = agendatable + "<th>" + rcmail.gettext('start','calendar') + "</th>\n";
-          agendatable = agendatable + "<th>" + rcmail.gettext('end','calendar') + "</th>\n";
-          agendatable = agendatable + "<th>" + rcmail.gettext('location','calendar') + "</th>\n";
-          agendatable = agendatable + "<th>" + rcmail.gettext('category','calendar') + "</th>\n";
-          agendatable = agendatable + "<th>" + rcmail.gettext('summary','calendar') + "</th>\n";
-          agendatable = agendatable + "<th width='90%'>" + rcmail.gettext('description','calendar') + "</th>\n";
+          agendatable = agendatable + "<th>" + cmail.gettext('day','calendar') + "</th>\n";
+          agendatable = agendatable + "<th>" + cmail.gettext('start','calendar') + "</th>\n";
+          agendatable = agendatable + "<th>" + cmail.gettext('end','calendar') + "</th>\n";
+          agendatable = agendatable + "<th>" + cmail.gettext('location','calendar') + "</th>\n";
+          agendatable = agendatable + "<th>" + cmail.gettext('category','calendar') + "</th>\n";
+          agendatable = agendatable + "<th>" + cmail.gettext('summary','calendar') + "</th>\n";
+          agendatable = agendatable + "<th width='90%'>" + cmail.gettext('description','calendar') + "</th>\n";
           agendatable = agendatable + "</tr></thead><tbody>\n";
 
           myevents.sort();
@@ -117,8 +117,8 @@ $(document).ready(function() {
       }
     },
     eventRender: function(event, element, view) {
-      rcmail.enable_command('plugin.calendar_do_print', true);
-      rcmail.enable_command('plugin.calendar_toggle_view', true);
+      cmail.enable_command('plugin.calendar_do_print', true);
+      cmail.enable_command('plugin.calendar_toggle_view', true);
       var agendalist = "<tr>\n";
       var t_start = $('#calendar').fullCalendar('getView').visStart.getTime();
       var t_end   = $('#calendar').fullCalendar('getView').visEnd.getTime();
@@ -158,7 +158,7 @@ $(document).ready(function() {
           end = $.fullCalendar.formatDate( new Date(end), "HH:mm" );
         }
         agendalist = agendalist + "<td rowspan='2'>" + event.location + "&nbsp;</td>\n";
-        agendalist = agendalist + "<td rowspan='2'>" + rcmail.gettext(event.className,'calendar') + "&nbsp;</td>\n";
+        agendalist = agendalist + "<td rowspan='2'>" + cmail.gettext(event.className,'calendar') + "&nbsp;</td>\n";
         agendalist = agendalist + "<td rowspan='2'>" + event.title + "&nbsp;</td>\n";
         agendalist = agendalist + "<td rowspan='2' style='WORD-BREAK:BREAK-ALL;'>" + event.description + "&nbsp;</td>\n";
         agendalist = agendalist + "</tr>\n";
@@ -167,7 +167,7 @@ $(document).ready(function() {
           if(event.end)
             agendalist = agendalist + "<td colspan='2' align='center'>&nbsp;" +  $.fullCalendar.formatDate( event.end, "dd MMM yyyy" ) + "&nbsp;</td>\n";
           else
-            agendalist = agendalist + "<td colspan='2' align='center'>&nbsp;" +  rcmail.gettext('all-day','calendar') + "&nbsp;</td>\n";
+            agendalist = agendalist + "<td colspan='2' align='center'>&nbsp;" +  cmail.gettext('all-day','calendar') + "&nbsp;</td>\n";
         }
         else{
           agendalist = agendalist + "<td>&nbsp;" + start + "&nbsp;</td>\n";
@@ -194,7 +194,7 @@ $(document).ready(function() {
     $('#toolbar').show();
     return true; 
   }
-  rcmail.register_command('plugin.calendar_do_print', printEvents);
+  cmail.register_command('plugin.calendar_do_print', printEvents);
 
   // toggle view between agenda and list view
   var curview = 'calendar';
@@ -209,7 +209,7 @@ $(document).ready(function() {
       curview = 'agendalist';
     }
   }
-  rcmail.register_command('plugin.calendar_toggle_view', toggleView);
+  cmail.register_command('plugin.calendar_toggle_view', toggleView);
 });
 
   

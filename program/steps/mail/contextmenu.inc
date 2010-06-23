@@ -7,15 +7,15 @@
  *
  * @version 1.2
  * @author Philip Weir
- * @url http://roundcube.net/plugins/contextmenu
+ * @url http://crystalmail.net/plugins/contextmenu
  */
 
 	function init()
 	{
-		$rcmail = rcmail::get_instance();
-		if ($rcmail->task == 'mail' && ($rcmail->action == '' || $rcmail->action == 'show') && !empty($rcmail->user->ID))
+		$cmail = cmail::get_instance();
+		if ($cmail->task == 'mail' && ($cmail->action == '' || $cmail->action == 'show') && !empty($cmail->user->ID))
 			$this->add_hook('render_mailboxlist', array($this, 'show_mailbox_menu'));
-		elseif ($rcmail->task == 'addressbook' && $rcmail->action == '' && !empty($rcmail->user->ID))
+		elseif ($cmail->task == 'addressbook' && $cmail->action == '' && !empty($cmail->user->ID))
 			$this->add_hook('address_sources', array($this, 'show_addressbook_menu'));
 
 		$this->register_action('plugin.contextmenu.messagecount', array($this, 'messagecount'));
@@ -23,14 +23,14 @@
 	}
 
 	public function messagecount() {
-		$mbox = get_input_value('_mbox', RCUBE_INPUT_GET);
-		$this->api->output->set_env('messagecount', rcmail::get_instance()->imap->messagecount($mbox));
+		$mbox = get_input_value('_mbox', crystal_INPUT_GET);
+		$this->api->output->set_env('messagecount', cmail::get_instance()->imap->messagecount($mbox));
 		$this->api->output->send();
 	}
 
 	public function readfolder() {
-		$imap = rcmail::get_instance()->imap;
-		$mbox = get_input_value('_mbox', RCUBE_INPUT_GET);
+		$imap = cmail::get_instance()->imap;
+		$mbox = get_input_value('_mbox', crystal_INPUT_GET);
 
 		$uids = iil_C_Search($imap->conn, $imap->mod_mailbox($mbox), 'ALL UNSEEN');
 
@@ -42,15 +42,15 @@
 			$uids[$key] = iil_C_ID2UID($imap->conn, $imap->mod_mailbox($mbox), $val);
 
 		$imap->set_flag($uids, 'SEEN', $mbox);
-		rcmail_send_unread_count($mbox, true);
+		cmail_send_unread_count($mbox, true);
 		$this->api->output->send();
 	}
 
 	public function show_mailbox_menu($args)
 	{
-		$rcmail = rcmail::get_instance();
+		$cmail = cmail::get_instance();
 		$this->add_texts('localization/');
-		$rcmail->output->add_label('nomessagesfound');
+		$cmail->output->add_label('nomessagesfound');
 		$this->include_script('jquery.contextMenu.js');
 		$this->include_script('jquery.mousewheel.js');
 		$this->include_stylesheet($this->local_skin_path() . '/contextmenu.css');
@@ -58,7 +58,7 @@
 		$out = '';
 
 		// message list menu
-		if ($rcmail->action == '') {
+		if ($cmail->action == '') {
 			$li = '';
 
 			$li .= html::tag('li', array('class' => 'conmentitle'), Q($this->gettext('markmessages')));
@@ -70,8 +70,8 @@
 			$li .= html::tag('li', array('class' => 'replyall'), html::a(array('href' => "#reply-all", 'class' => 'active'), Q($this->gettext('replytoallmessage'))));
 			$li .= html::tag('li', array('class' => 'forward'), html::a(array('href' => "#forward", 'class' => 'active'), Q($this->gettext('forwardmessage'))));
 
-			$rcmail = rcmail::get_instance();
-			if ($rcmail->config->get('trash_mbox') && $_SESSION['mbox'] != $rcmail->config->get('trash_mbox'))
+			$cmail = cmail::get_instance();
+			if ($cmail->config->get('trash_mbox') && $_SESSION['mbox'] != $cmail->config->get('trash_mbox'))
 				$li .= html::tag('li', array('class' => 'delete separator_below'), html::a(array('href' => "#delete", 'id' => 'rcm_delete', 'class' => 'active'), Q($this->gettext('movemessagetotrash'))));
 			else
 				$li .= html::tag('li', array('class' => 'delete separator_below'), html::a(array('href' => "#delete", 'id' => 'rcm_delete', 'class' => 'active'), Q($this->gettext('deletemessage'))));
@@ -106,13 +106,13 @@
 
 		$this->api->output->add_footer(html::div(null , $out));
 
-		if ($rcmail->action == 'show')
-			$this->api->output->set_env('delimiter', $rcmail->imap->get_hierarchy_delimiter());
+		if ($cmail->action == 'show')
+			$this->api->output->set_env('delimiter', $cmail->imap->get_hierarchy_delimiter());
 	}
 
 	public function show_addressbook_menu($args)
 	{
-		$rcmail = rcmail::get_instance();
+		$cmail = cmail::get_instance();
 		$this->add_texts('localization/');
 		$this->include_script('jquery.contextMenu.js');
 		$this->include_stylesheet($this->local_skin_path() . '/contextmenu.css');
@@ -135,9 +135,9 @@
 		$this->api->output->add_footer(html::div(null , $out));
 	}
 
-	// based on rcmail_render_folder_tree_html()
+	// based on cmail_render_folder_tree_html()
 	private function _gen_folder_list($arrFolders, $command, $nestLevel = 0) {
-		$rcmail = rcmail::get_instance();
+		$cmail = cmail::get_instance();
 
 		$maxlength = 35;
 		$realnames = false;
@@ -147,8 +147,8 @@
 		foreach ($arrFolders as $key => $folder) {
 			$title = null;
 
-			if (($folder_class = rcmail_folder_classname($folder['id'])) && !$realnames) {
-				$foldername = rcube_label($folder_class);
+			if (($folder_class = cmail_folder_classname($folder['id'])) && !$realnames) {
+				$foldername = crystal_label($folder_class);
 			}
 			else {
 				$foldername = $folder['name'];
@@ -169,13 +169,13 @@
 			$classes = array();
 
 			// set special class for Sent, Drafts, Trash and Junk
-			if ($folder['id'] == $rcmail->config->get('sent_mbox'))
+			if ($folder['id'] == $cmail->config->get('sent_mbox'))
 				$classes[] = 'sent';
-			else if ($folder['id'] == $rcmail->config->get('drafts_mbox'))
+			else if ($folder['id'] == $cmail->config->get('drafts_mbox'))
 				$classes[] = 'drafts';
-			else if ($folder['id'] == $rcmail->config->get('trash_mbox'))
+			else if ($folder['id'] == $cmail->config->get('trash_mbox'))
 				$classes[] = 'trash';
-			else if ($folder['id'] == $rcmail->config->get('junk_mbox'))
+			else if ($folder['id'] == $cmail->config->get('junk_mbox'))
 				$classes[] = 'junk';
 			else if ($folder['id'] == 'INBOX')
 				$classes[] = 'inbox';
@@ -206,9 +206,9 @@
 		return $out;
 	}
 
-	// based on rcmail_directory_list()
+	// based on cmail_directory_list()
 	private function _gen_addressbooks_list($arrBooks, $command) {
-		$rcmail = rcmail::get_instance();
+		$cmail = cmail::get_instance();
 
 		$maxlength = 35;
 		$out = '';

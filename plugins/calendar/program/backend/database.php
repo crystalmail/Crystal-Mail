@@ -15,19 +15,19 @@ require_once('backend.php');
 
 final class Database extends Backend 
 {
-  private $rcmail;
+  private $cmail;
   
-  public function __construct($rcmail) {
-    $this->rcmail = $rcmail;
+  public function __construct($cmail) {
+    $this->cmail = $cmail;
   }
   
   public function newEvent($start, $summary, $description, $location, $categories, $allDay) {
-    if (!empty($this->rcmail->user->ID)) {
-      $query = $this->rcmail->db->query(
+    if (!empty($this->cmail->user->ID)) {
+      $query = $this->cmail->db->query(
         "INSERT INTO events
          (user_id, start, end, summary, description, location, categories, all_day)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-        $this->rcmail->user->ID,
+        $this->cmail->user->ID,
         $start,
         $start,
         $summary,
@@ -36,13 +36,13 @@ final class Database extends Backend
         $categories,    
         $allDay
       );
-      $this->rcmail->db->insert_id('events');
+      $this->cmail->db->insert_id('events');
     }
   }
 
   public function editEvent($id, $summary, $description, $location, $categories) {
-    if (!empty($this->rcmail->user->ID)) {
-      $query = $this->rcmail->db->query(
+    if (!empty($this->cmail->user->ID)) {
+      $query = $this->cmail->db->query(
         "UPDATE events 
          SET summary=?, description=?, location=?, categories=?
          WHERE event_id=?
@@ -52,14 +52,14 @@ final class Database extends Backend
         $location,
         $categories,
         $id,
-        $this->rcmail->user->ID
+        $this->cmail->user->ID
       );
     }
   }
 
   public function moveEvent($id, $start, $end, $allDay) {
-    if (!empty($this->rcmail->user->ID)) {
-      $query = $this->rcmail->db->query(
+    if (!empty($this->cmail->user->ID)) {
+      $query = $this->cmail->db->query(
         "UPDATE events 
          SET start=?, end=?, all_day=?
          WHERE event_id=?
@@ -68,14 +68,14 @@ final class Database extends Backend
         $end,
         $allDay,
         $id,
-        $this->rcmail->user->ID
+        $this->cmail->user->ID
       );
     }
   }
   
   public function resizeEvent($id, $start, $end) {
-    if (!empty($this->rcmail->user->ID)) {
-      $query = $this->rcmail->db->query(
+    if (!empty($this->cmail->user->ID)) {
+      $query = $this->cmail->db->query(
         "UPDATE events 
          SET start=?, end=?
          WHERE event_id=?
@@ -83,34 +83,34 @@ final class Database extends Backend
         $start,
         $end,
         $id,
-        $this->rcmail->user->ID
+        $this->cmail->user->ID
       );
     }
   }
 
   public function removeEvent($id) {
-    if (!empty($this->rcmail->user->ID)) {
-      $query = $this->rcmail->db->query(
+    if (!empty($this->cmail->user->ID)) {
+      $query = $this->cmail->db->query(
         "DELETE FROM events
          WHERE event_id=?
          AND user_id=?",
          $id,
-         $this->rcmail->user->ID
+         $this->cmail->user->ID
       );
     }
   }
   
   public function getEvents($start, $end) {
-    if (!empty($this->rcmail->user->ID)) {
+    if (!empty($this->cmail->user->ID)) {
 
-      $result = $this->rcmail->db->query(
+      $result = $this->cmail->db->query(
         "SELECT * FROM events 
          WHERE user_id=?",
-         $this->rcmail->user->ID
+         $this->cmail->user->ID
        );
 
       $events = array(); 
-      while ($result && ($event = $this->rcmail->db->fetch_assoc($result))) {
+      while ($result && ($event = $this->cmail->db->fetch_assoc($result))) {
         $events[]=array( 
           'event_id'    => (int) $event['event_id'], 
           'start'       => (string) $this->fromGMT($event['start']), 
@@ -128,11 +128,11 @@ final class Database extends Backend
   }
   
   private function fromGMT($datetime) {
-    if ($this->rcmail->config->get('timezone') === "auto") {
+    if ($this->cmail->config->get('timezone') === "auto") {
       $tz = isset($_SESSION['timezone']) ? $_SESSION['timezone'] : date('Z')/3600;
     } else {
-      $tz = $this->rcmail->config->get('timezone');
-      if($this->rcmail->config->get('dst_active')) {
+      $tz = $this->cmail->config->get('timezone');
+      if($this->cmail->config->get('dst_active')) {
         $tz++;
       }
     }

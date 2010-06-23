@@ -4,7 +4,7 @@
  * Sample plugin to add a new address book
  * with just a static list of contacts
  */
-class example_addressbook extends rcube_plugin
+class example_addressbook extends crystal_plugin
 {
   private $abook_id = 'static';
   
@@ -15,7 +15,7 @@ class example_addressbook extends rcube_plugin
     
     // use this address book for autocompletion queries
     // (maybe this should be configurable by the user?)
-    $config = rcmail::get_instance()->config;
+    $config = cmail::get_instance()->config;
     $sources = $config->get('autocomplete_addressbooks', array('sql'));
     if (!in_array($this->abook_id, $sources)) {
       $sources[] = $this->abook_id;

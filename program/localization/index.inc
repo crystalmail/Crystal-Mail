@@ -13,7 +13,7 @@
  |   for keeping track of available languages                            |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: index.inc 3522 2010-04-21 14:47:34Z thomasb $
@@ -24,7 +24,7 @@
 // country codes according to ISO 3166-1 (Alpha-2)
 // original names from http://www.mediaglyphs.org/mg/p/langnames.html
 
-$rcube_languages = array(
+$crystal_languages = array(
   'sq_AL' => 'Albanian (Shqip)',
   'ar_SA' => 'Arabic (العربية)',
   'hy_AM' => 'Armenian (Հայերեն)',
@@ -95,7 +95,7 @@ $rcube_languages = array(
   'cy_GB' => 'Welsh (Cymraeg)',
 );
 
-$rcube_language_aliases = array(
+$crystal_language_aliases = array(
   'am' => 'hy_AM',
   'ar' => 'ar_SA',
   'az' => 'az_AZ',

@@ -15,19 +15,19 @@ require_once('caldav-client.php');
 
 final class CalDAV extends Backend 
 {
-  private $rcmail = null;
+  private $cmail = null;
   private $cal = null;
   private $calendar = null;
   
   /**
-   * @param object rcmail   The RoundCube instance.
+   * @param object cmail   The RoundCube instance.
    * @param string server   The CalDAV server.
    * @param string user     The user name.
    * @param string pass     The user's password.
    * @param string calendar The user calendar.
    */
-  public function __construct($rcmail, $server, $user, $pass, $calendar) {
-    $this->rcmail = $rcmail;
+  public function __construct($cmail, $server, $user, $pass, $calendar) {
+    $this->cmail = $cmail;
     $this->calendar = '/' . $calendar;
 
     $this->cal = new CalDAVClient($server. "/" . $user, $user, $pass, $calendar /* is ignored currently */);
@@ -55,7 +55,7 @@ final class CalDAV extends Backend
   }
   
   public function getEvents($start, $end) {
-    if (!empty($this->rcmail->user->ID)) {
+    if (!empty($this->cmail->user->ID)) {
       // Fetch events.
       $result = $this->cal->GetEvents($this->GMT_to_iCalendar($start), $this->GMT_to_iCalendar($end), $this->calendar);
 

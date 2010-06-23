@@ -6,20 +6,20 @@
  *
  * @version 1.2 - 08.12.2009
  * @author valsily0 / Roland 'rosali' Liebl
- * @website http://myroundcube.googlecode.com
+ * @website http://mycrystalmail.googlecode.com
  * @licence GNU GPL
  *
  **/
  
 /** USAGE
  *
- * #1- Register plugin ("./config/main.inc.php ::: $rcmail_config['plugins']").
+ * #1- Register plugin ("./config/main.inc.php ::: $cmail_config['plugins']").
  * #2- Make sure this plugin is registered before "captcha" plugin
  *
  **/
 
 
-class remember_me extends rcube_plugin {
+class remember_me extends crystal_plugin {
   
   function init() {
 
@@ -114,15 +114,15 @@ class remember_me extends rcube_plugin {
   
   function logout($args) {
     $this->add_texts('localization/');
-    $rcmail = rcmail::get_instance();
-    if($rcmail->task == "logout" && isset($_COOKIE['rememberme_user']) && isset($_COOKIE['rememberme_pass'])){
+    $cmail = cmail::get_instance();
+    if($cmail->task == "logout" && isset($_COOKIE['rememberme_user']) && isset($_COOKIE['rememberme_pass'])){
       if(!isset($_POST['_remember_me'])){
         if(!isset($_GET['_remember_me'])){
-          $rcmail->output->send("remember_me.remember_me");
+          $cmail->output->send("remember_me.remember_me");
         }
         else{
-          $rcmail->output->show_message("remember_me.close");
-          $rcmail->output->send("remember_me.redirect");
+          $cmail->output->show_message("remember_me.close");
+          $cmail->output->send("remember_me.redirect");
           exit;
         }
       }
@@ -141,8 +141,8 @@ class remember_me extends rcube_plugin {
 
   private function encode ($a) {
     if($a != ""){
-      $rcmail = rcmail::get_instance();
-      return $rcmail->encrypt($a);
+      $cmail = cmail::get_instance();
+      return $cmail->encrypt($a);
     }
     else
       return "";
@@ -151,8 +151,8 @@ class remember_me extends rcube_plugin {
   
   private function decode ($a) {
     if($a != ""){
-      $rcmail = rcmail::get_instance();
-      return $rcmail->decrypt($a);
+      $cmail = cmail::get_instance();
+      return $cmail->decrypt($a);
     }
     else
       return "";

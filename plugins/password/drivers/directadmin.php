@@ -13,14 +13,14 @@
 
 function password_save($curpass, $passwd){
 
-    $rcmail = rcmail::get_instance();
+    $cmail = cmail::get_instance();
     $Socket = new HTTPSocket;
 
     $da_user    = $_SESSION['username'];
     $da_curpass = $curpass;
     $da_newpass = $passwd;
-    $da_host    = $rcmail->config->get('password_directadmin_host');
-    $da_port    = $rcmail->config->get('password_directadmin_port');
+    $da_host    = $cmail->config->get('password_directadmin_host');
+    $da_port    = $cmail->config->get('password_directadmin_port');
 
     $Socket->connect($da_host,$da_port); 
     $Socket->set_method('POST');

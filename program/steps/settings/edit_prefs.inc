@@ -12,7 +12,7 @@
  |   Provide functionality for user's settings & preferences             |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: func.inc 2822 2009-07-31 09:07:54Z alec $
@@ -20,18 +20,18 @@
 */
 
 if (!$OUTPUT->ajax_call)
-  $OUTPUT->set_pagetitle(rcube_label('preferences'));
+  $OUTPUT->set_pagetitle(crystal_label('preferences'));
 
 
-$CURR_SECTION = get_input_value('_section', RCUBE_INPUT_GPC);
-list($SECTIONS,) = rcmail_user_prefs($CURR_SECTION);
+$CURR_SECTION = get_input_value('_section', crystal_INPUT_GPC);
+list($SECTIONS,) = cmail_user_prefs($CURR_SECTION);
 
-function rcmail_user_prefs_form($attrib)
+function cmail_user_prefs_form($attrib)
 {
-  global $RCMAIL, $CURR_SECTION, $SECTIONS;
+  global $CMAIL, $CURR_SECTION, $SECTIONS;
 
   // add some labels to client
-  $RCMAIL->output->add_label('nopagesizewarning');
+  $CMAIL->output->add_label('nopagesizewarning');
 
   unset($attrib['form']);
   
@@ -59,7 +59,7 @@ function rcmail_user_prefs_form($attrib)
   return $out . $form_end;
 }
 
-function rcmail_prefs_section_name()
+function cmail_prefs_section_name()
 {
   global $SECTIONS, $CURR_SECTION;
   
@@ -69,8 +69,8 @@ function rcmail_prefs_section_name()
 
 // register UI objects
 $OUTPUT->add_handlers(array(
-  'userprefs' => 'rcmail_user_prefs_form',
-  'sectionname' => 'rcmail_prefs_section_name',
+  'userprefs' => 'cmail_user_prefs_form',
+  'sectionname' => 'cmail_prefs_section_name',
 ));
 
 $OUTPUT->send('settingsedit');

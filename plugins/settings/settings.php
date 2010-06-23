@@ -6,19 +6,19 @@
  *
  * @version 1.4 [2009-11-06]
  * @author Roland Liebl
- * @website http://myroundcube.googlecode.com
+ * @website http://mycrystalmail.googlecode.com
  * @licence GNU GPL
  */
 
 /**
  *
- * Usage: http://mail4us.net/myroundcube
+ * Usage: http://mail4us.net/mycrystalmail
  *
  * Make sure that this plugin is loaded  a f t e r  check_identities plugin
  *
  **/
  
-class settings extends rcube_plugin
+class settings extends crystal_plugin
 {
   public $task = 'settings';
 
@@ -27,15 +27,15 @@ class settings extends rcube_plugin
     $this->task = 'settings';
     $this->_load_config('settings');
 
-    $rcmail = rcmail::get_instance();
+    $cmail = cmail::get_instance();
    
     $this->register_handler('plugin.account_sections', array($this, 'account_sections'));
     $this->register_action('plugin.account', array($this, 'account'));
     $this->add_hook('list_prefs_sections', array($this, 'account_link'));
     $this->add_hook('user_preferences', array($this, 'prefs_table'));
     
-    $skin  = $rcmail->config->get('skin');
-    $_skin = get_input_value('_skin', RCUBE_INPUT_POST);
+    $skin  = $cmail->config->get('skin');
+    $_skin = get_input_value('_skin', crystal_INPUT_POST);
 
     if($_skin != "")
       $skin = $_skin;
@@ -48,14 +48,14 @@ class settings extends rcube_plugin
         $skin = "default";
     }
    
-    $nav_hooks = (array)$rcmail->config->get('settingsnav');
+    $nav_hooks = (array)$cmail->config->get('settingsnav');
     $nav = array();
     foreach($nav_hooks as $key => $val)
       $nav['settingsnav'][] = $val;
 
-    $rcmail->config->merge($nav);
+    $cmail->config->merge($nav);
     $this->include_stylesheet('skins/' . $skin . '/settings.css');
-    $browser = new rcube_browser();
+    $browser = new crystal_browser();
     if($browser->ie){
       if($browser->ver < 8)
         $this->include_stylesheet('skins/' . $skin . '/iehacks.css');
@@ -65,27 +65,27 @@ class settings extends rcube_plugin
 
     $this->add_hook('template_object_userprefs', array($this, 'userprefs'));
     $this->add_texts('localization/'); 
-    $rcmail->output->add_label('settings.account');
+    $cmail->output->add_label('settings.account');
 
   }
 
   function _load_config($plugin)
   {
-    $rcmail = rcmail::get_instance();
+    $cmail = cmail::get_instance();
     $config = "plugins/" . $plugin . "/config/config.inc.php";
     if(file_exists($config))
       include $config;
     else if(file_exists($config . ".dist"))
       include $config . ".dist";
-    if(is_array($rcmail_config)){
-      $rcmail->config->merge($rcmail_config);
+    if(is_array($cmail_config)){
+      $cmail->config->merge($cmail_config);
     }
   }  
 
   function account()
   {
-    $rcmail = rcmail::get_instance();
-    $rcmail->output->send("settings.account");
+    $cmail = cmail::get_instance();
+    $cmail->output->send("settings.account");
     exit;
   }
    
@@ -102,12 +102,12 @@ class settings extends rcube_plugin
   function account_sections()
   {
   
-    $rcmail = rcmail::get_instance();
+    $cmail = cmail::get_instance();
     //display a message if required by url
     if(isset($_GET['_msg'])){
-      $rcmail->output->command('display_message', urldecode($_GET['_msg']), $_GET['_type']);
+      $cmail->output->command('display_message', urldecode($_GET['_msg']), $_GET['_type']);
     }
-    $parts = (array)$rcmail->config->get('settingsnav');
+    $parts = (array)$cmail->config->get('settingsnav');
     $pluginsdir = "plugins";
     $out = "<div id=\"userprefs-accountblocks\">\n";
     $ii = 0;
@@ -167,13 +167,13 @@ class settings extends rcube_plugin
 
   function userprefs($p)
   {
-    $rcmail = rcmail::get_instance();
-    $user = $rcmail->user->data['username'];
+    $cmail = cmail::get_instance();
+    $user = $cmail->user->data['username'];
 
     (array)$temparr = explode("<fieldset>",$p['content']);
     for($i=1;$i<count($temparr);$i++){
-      $langs = $rcmail->list_languages();
-      $limit_langs = array_flip((array)$rcmail->config->get('limit_languages'));      
+      $langs = $cmail->list_languages();
+      $limit_langs = array_flip((array)$cmail->config->get('limit_languages'));      
       if(count($limit_langs) > 0){
         foreach($langs as $key => $val){
           if(!isset($limit_langs[$key])){
@@ -181,22 +181,22 @@ class settings extends rcube_plugin
           }
         }     
       }
-      $skins = rcmail_get_skins(); 
-      $selected_skin = strtolower($rcmail->config->get('skin'));  
-      $limit_skins = array_flip((array)$rcmail->config->get('limit_skins'));
+      $skins = cmail_get_skins(); 
+      $selected_skin = strtolower($cmail->config->get('skin'));  
+      $limit_skins = array_flip((array)$cmail->config->get('limit_skins'));
       if(count($limit_skins) > 0){
         foreach($skins as $key => $val){
           if(!isset($limit_skins[$val])){
             $temparr[$i] = str_replace("<option value=\"$val\">$val</option>\n","",$temparr[$i]);
           }
           else{
-            $temparr[$i] = str_replace("<option value=\"$val\">$val</option>\n","<option value=\"$val\">" . rcube_label($val,'settings') . "</option>\n",$temparr[$i]);            
+            $temparr[$i] = str_replace("<option value=\"$val\">$val</option>\n","<option value=\"$val\">" . crystal_label($val,'settings') . "</option>\n",$temparr[$i]);            
           }
           if(strtolower($val) == $selected_skin)
             $selected = "selected=\"selected\"";
           else
             $selected = "";
-          $temparr[$i] = str_replace("<option value=\"$val\" selected=\"selected\">$val</option>\n","<option value=\"$val\" $selected>" . rcube_label($val,'settings') . "</option>\n",$temparr[$i]);
+          $temparr[$i] = str_replace("<option value=\"$val\" selected=\"selected\">$val</option>\n","<option value=\"$val\" $selected>" . crystal_label($val,'settings') . "</option>\n",$temparr[$i]);
         }         
       }
       $temparr[$i] = "<div class=\"settingsplugin\" id=\"" . $parts[$i-1] . "\"><fieldset>" . str_replace("</fieldset>","</fieldset></div>",$temparr[$i]);
@@ -218,7 +218,7 @@ class settings extends rcube_plugin
       $p['content'] .= 
 '<script type="text/javascript">
 /* <![CDATA[ */
-$(document).ready(function(){ rcmail.init(); document.getElementById("formfooter").innerHTML = ""});
+$(document).ready(function(){ cmail.init(); document.getElementById("formfooter").innerHTML = ""});
 /* ]]> */
 </script>';
     }

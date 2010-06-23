@@ -2,14 +2,14 @@
 
 /*accounts plugin */
 
-// navigation config (requires plugin settings @website http://myroundcube.googlecode.com)
-$rcmail_config['settingsnav'][] = array('part' => '', 'locale' => 'settings.accounts', 'href' => './?_task=settings&_action=plugin.accounts&_framed=1', 'onclick' => '', 'descr' => 'accounts');
+// navigation config (requires plugin settings @website http://mycrystalmail.googlecode.com)
+$cmail_config['settingsnav'][] = array('part' => '', 'locale' => 'settings.accounts', 'href' => './?_task=settings&_action=plugin.accounts&_framed=1', 'onclick' => '', 'descr' => 'accounts');
 
 /* database table name */
-$rcmail_config['db_table_accounts'] = 'accounts';
+$cmail_config['db_table_accounts'] = 'accounts';
 
 /* allowed hosts ::: array() = all */
-$rcmail_config['accounts_hosts'] = array(
+$cmail_config['accounts_hosts'] = array(
   "My Host" => "localhost",
   "Mail4Us" => "pop.roland-liebl.de",
   "Google Mail" => "ssl://imap.gmail.com:993",
@@ -18,9 +18,9 @@ $rcmail_config['accounts_hosts'] = array(
 );
 
 /* always use default smtp server */
-$rcmail_config['accounts_smtp_default'] = TRUE;
+$cmail_config['accounts_smtp_default'] = TRUE;
 
 /* imap_open flag (http://php.net/manual/en/function.imap-open.php) */
-$rcmail_config['imap_open_flag'] = 'novalidate-cert';
+$cmail_config['imap_open_flag'] = 'novalidate-cert';
 
 ?>

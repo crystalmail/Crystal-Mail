@@ -6,26 +6,26 @@
  * Settings
  */
 
-function rcube_init_settings_tabs()
+function crystal_init_settings_tabs()
 {
   var tab = '#settingstabdefault';
-  if (window.rcmail && rcmail.env.action)
-    tab = '#settingstab' + (rcmail.env.action=='preferences' ? 'default' : (rcmail.env.action.indexOf('identity')>0 ? 'identities' : rcmail.env.action.replace(/\./g, '')));
+  if (window.cmail && cmail.env.action)
+    tab = '#settingstab' + (cmail.env.action=='preferences' ? 'default' : (cmail.env.action.indexOf('identity')>0 ? 'identities' : cmail.env.action.replace(/\./g, '')));
 
   $(tab).addClass('tablink-selected');
   $(tab + '> a').removeAttr('onclick').unbind('click').bind('click', function(){return false;});
 }
 
-function rcube_init_address_tabs()
+function crystal_init_address_tabs()
 {
   var tab = '#addresstabbasic';
-  if (window.rcmail && rcmail.env.contacttab)
-    tab = '#addresstab' + rcmail.env.contacttab;
+  if (window.cmail && cmail.env.contacttab)
+    tab = '#addresstab' + cmail.env.contacttab;
 
   $(tab).addClass('tablink-selected');
 }
 
-function rcube_show_advanced(visible)
+function crystal_show_advanced(visible)
 {
   $('tr.advanced').css('display', (visible ? (bw.ie ? 'block' : 'table-row') : 'none'));
 }
@@ -34,16 +34,16 @@ function rcube_show_advanced(visible)
  * Mail Composing
  */
 
-function rcmail_show_header_form(id)
+function cmail_show_header_form(id)
 {
   var link, row, parent, ns, ps;
   
   link = document.getElementById(id + '-link');
   parent = link.parentNode;
 
-  if ((ns = rcmail_next_sibling(link)))
+  if ((ns = cmail_next_sibling(link)))
     ns.style.display = 'none';
-  else if ((ps = rcmail_prev_sibling(link)))
+  else if ((ps = cmail_prev_sibling(link)))
     ps.style.display = 'none';
     
   link.style.display = 'none';
@@ -59,7 +59,7 @@ function rcmail_show_header_form(id)
   return false;
 }
 
-function rcmail_hide_header_form(id)
+function cmail_hide_header_form(id)
 {
   var row, parent, ns, link, links;
 
@@ -73,7 +73,7 @@ function rcmail_hide_header_form(id)
     if (links[i].style.display != 'none')
       for (var j=i+1; j<links.length; j++)
 	if (links[j].style.display != 'none')
-          if ((ns = rcmail_next_sibling(links[i]))) {
+          if ((ns = cmail_next_sibling(links[i]))) {
 	    ns.style.display = '';
 	    break;
 	  }
@@ -91,7 +91,7 @@ function rcmail_hide_header_form(id)
   return false;
 }
 
-function rcmail_next_sibling(elm)
+function cmail_next_sibling(elm)
 {
   var ns = elm.nextSibling;
   while (ns && ns.nodeType == 3)
@@ -99,7 +99,7 @@ function rcmail_next_sibling(elm)
   return ns;
 }
 
-function rcmail_prev_sibling(elm)
+function cmail_prev_sibling(elm)
 {
   var ps = elm.previousSibling;
   while (ps && ps.nodeType == 3)
@@ -107,20 +107,20 @@ function rcmail_prev_sibling(elm)
   return ps;
 }
 
-function rcmail_init_compose_form()
+function cmail_init_compose_form()
 {
   var cc_field = document.getElementById('_cc');
   if (cc_field && cc_field.value!='')
-    rcmail_show_header_form('cc');
+    cmail_show_header_form('cc');
 
   var bcc_field = document.getElementById('_bcc');
   if (bcc_field && bcc_field.value!='')
-    rcmail_show_header_form('bcc');
+    cmail_show_header_form('bcc');
 
   // prevent from form data loss when pressing ESC key in IE
   if (bw.ie) {
-    var form = rcube_find_object('form');
-    form.onkeydown = function (e) { if (rcube_event.get_keycode(e) == 27) rcube_event.cancel(e); };
+    var form = crystal_find_object('form');
+    form.onkeydown = function (e) { if (crystal_event.get_keycode(e) == 27) crystal_event.cancel(e); };
   }
 
   // fix editor position on some browsers
@@ -133,7 +133,7 @@ function rcmail_init_compose_form()
  * Mailbox view
  */
 
-function rcube_mail_ui()
+function crystal_mail_ui()
 {
   this.popupmenus = {
     markmenu:'markmessagemenu',
@@ -152,14 +152,14 @@ function rcube_mail_ui()
   }
 }
 
-rcube_mail_ui.prototype = {
+crystal_mail_ui.prototype = {
 
 show_popupmenu: function(obj, refname, show, above)
 {
   if (typeof show == 'undefined')
     show = obj.is(':visible') ? false : true;
   
-  var ref = rcube_find_object(refname);
+  var ref = crystal_find_object(refname);
   if (show && ref) {
     var pos = $(ref).offset();
     obj.css({ left:pos.left, top:(pos.top + (above ? -obj.height() : ref.offsetHeight)) });
@@ -188,14 +188,14 @@ show_searchmenu: function(show)
   if (typeof show == 'undefined')
     show = this.searchmenu.is(':visible') ? false : true;
 
-  var ref = rcube_find_object('searchmod');
+  var ref = crystal_find_object('searchmod');
   if (show && ref) {
     var pos = $(ref).offset();
     this.searchmenu.css({ left:pos.left, top:(pos.top + ref.offsetHeight + 2)});
     this.searchmenu.find(":checked").attr('checked', false);
 
-    if (rcmail.env.search_mods) {
-      var search_mods = rcmail.env.search_mods[rcmail.env.mailbox] ? rcmail.env.search_mods[rcmail.env.mailbox] : rcmail.env.search_mods['*'];
+    if (cmail.env.search_mods) {
+      var search_mods = cmail.env.search_mods[cmail.env.mailbox] ? cmail.env.search_mods[cmail.env.mailbox] : cmail.env.search_mods['*'];
       for (var n in search_mods)
         $('#s_mod_' + n).attr('checked', true);
     }
@@ -205,16 +205,16 @@ show_searchmenu: function(show)
  
 set_searchmod: function(elem)
 {
-  if (!rcmail.env.search_mods)
-    rcmail.env.search_mods = {};
+  if (!cmail.env.search_mods)
+    cmail.env.search_mods = {};
   
-  if (!rcmail.env.search_mods[rcmail.env.mailbox])
-    rcmail.env.search_mods[rcmail.env.mailbox] = rcube_clone_object(rcmail.env.search_mods['*']);
+  if (!cmail.env.search_mods[cmail.env.mailbox])
+    cmail.env.search_mods[cmail.env.mailbox] = crystal_clone_object(cmail.env.search_mods['*']);
   
   if (!elem.checked)
-    delete(rcmail.env.search_mods[rcmail.env.mailbox][elem.value]);
+    delete(cmail.env.search_mods[cmail.env.mailbox][elem.value]);
   else
-    rcmail.env.search_mods[rcmail.env.mailbox][elem.value] = elem.value;
+    cmail.env.search_mods[cmail.env.mailbox][elem.value] = elem.value;
 },
 
 show_listmenu: function(show)
@@ -222,25 +222,25 @@ show_listmenu: function(show)
   if (typeof show == 'undefined')
     show = this.listmenu.is(':visible') ? false : true;
 
-  var ref = rcube_find_object('listmenulink');
+  var ref = crystal_find_object('listmenulink');
   if (show && ref) {
     var pos = $(ref).offset();
     this.listmenu.css({ left:pos.left, top:(pos.top + ref.offsetHeight + 2)});
     // set form values
-    $('input[name="sort_col"][value="'+rcmail.env.sort_col+'"]').attr('checked', 1);
-    $('input[name="sort_ord"][value="DESC"]').attr('checked', rcmail.env.sort_order=='DESC' ? 1 : 0);
-    $('input[name="sort_ord"][value="ASC"]').attr('checked', rcmail.env.sort_order=='DESC' ? 0 : 1);
-    $('input[name="view"][value="thread"]').attr('checked', rcmail.env.threading ? 1 : 0);
-    $('input[name="view"][value="list"]').attr('checked', rcmail.env.threading ? 0 : 1);
+    $('input[name="sort_col"][value="'+cmail.env.sort_col+'"]').attr('checked', 1);
+    $('input[name="sort_ord"][value="DESC"]').attr('checked', cmail.env.sort_order=='DESC' ? 1 : 0);
+    $('input[name="sort_ord"][value="ASC"]').attr('checked', cmail.env.sort_order=='DESC' ? 0 : 1);
+    $('input[name="view"][value="thread"]').attr('checked', cmail.env.threading ? 1 : 0);
+    $('input[name="view"][value="list"]').attr('checked', cmail.env.threading ? 0 : 1);
     // list columns
     var cols = $('input[name="list_col[]"]');
     for (var i=0; i<cols.length; i++) {
       var found = 0;
       if (cols[i].value != 'from')
-        found = jQuery.inArray(cols[i].value, rcmail.env.coltypes) != -1;
+        found = jQuery.inArray(cols[i].value, cmail.env.coltypes) != -1;
       else
-        found = (jQuery.inArray('from', rcmail.env.coltypes) != -1
-	    || jQuery.inArray('to', rcmail.env.coltypes) != -1);
+        found = (jQuery.inArray('from', cmail.env.coltypes) != -1
+	    || jQuery.inArray('to', cmail.env.coltypes) != -1);
       $(cols[i]).attr('checked',found ? 1 : 0);
     }
   }
@@ -278,23 +278,23 @@ save_listmenu: function()
   var cols = $('input[name="list_col[]"]:checked')
     .map(function(){ return this.value; }).get();
 
-  rcmail.set_list_options(cols, sort, ord, thread == 'thread' ? 1 : 0);
+  cmail.set_list_options(cols, sort, ord, thread == 'thread' ? 1 : 0);
 },
 
 body_mouseup: function(evt, p)
 {
-  var target = rcube_event.get_target(evt);
+  var target = crystal_event.get_target(evt);
 
-  if (this.markmenu && this.markmenu.is(':visible') && target != rcube_find_object('markreadbutton'))
+  if (this.markmenu && this.markmenu.is(':visible') && target != crystal_find_object('markreadbutton'))
     this.show_markmenu(false);
-  else if (this.messagemenu && this.messagemenu.is(':visible') && target != rcube_find_object('messagemenulink'))
+  else if (this.messagemenu && this.messagemenu.is(':visible') && target != crystal_find_object('messagemenulink'))
     this.show_messagemenu(false);
-  else if (this.dragmessagemenu && this.dragmessagemenu.is(':visible') && !rcube_mouse_is_over(evt, rcube_find_object('dragmessagemenu')))
+  else if (this.dragmessagemenu && this.dragmessagemenu.is(':visible') && !crystal_mouse_is_over(evt, crystal_find_object('dragmessagemenu')))
     this.dragmessagemenu.hide();
-  else if (this.groupmenu &&  this.groupmenu.is(':visible') && target != rcube_find_object('groupactionslink'))
+  else if (this.groupmenu &&  this.groupmenu.is(':visible') && target != crystal_find_object('groupactionslink'))
     this.show_groupmenu(false);
-  else if (this.listmenu && this.listmenu.is(':visible') && target != rcube_find_object('listmenulink')) {
-    var menu = rcube_find_object('listmenu');
+  else if (this.listmenu && this.listmenu.is(':visible') && target != crystal_find_object('listmenulink')) {
+    var menu = crystal_find_object('listmenu');
     while (target.parentNode) {
       if (target.parentNode == menu)
         return;
@@ -302,8 +302,8 @@ body_mouseup: function(evt, p)
     }
     this.show_listmenu(false);
   }
-  else if (this.searchmenu && this.searchmenu.is(':visible') && target != rcube_find_object('searchmod')) {
-    var menu = rcube_find_object('searchmenu');
+  else if (this.searchmenu && this.searchmenu.is(':visible') && target != crystal_find_object('searchmod')) {
+    var menu = crystal_find_object('searchmenu');
     while (target.parentNode) {
       if (target.parentNode == menu)
         return;
@@ -315,7 +315,7 @@ body_mouseup: function(evt, p)
 
 body_keypress: function(evt, p)
 {
-  if (rcube_event.get_keycode(evt) == 27) {
+  if (crystal_event.get_keycode(evt) == 27) {
     for (var k in this.popupmenus) {
       if (this[k] && this[k].is(':visible'))
         this[k].hide();
@@ -325,16 +325,16 @@ body_keypress: function(evt, p)
 
 };
 
-var rcmail_ui;
+var cmail_ui;
 
-function rcube_init_mail_ui()
+function crystal_init_mail_ui()
 {
-  rcmail_ui = new rcube_mail_ui();
-  rcube_event.add_listener({ object:rcmail_ui, method:'body_mouseup', event:'mouseup' });
-  rcube_event.add_listener({ object:rcmail_ui, method:'body_keypress', event:'keypress' });
-  if (rcmail.env.task == 'mail') {
-    rcmail.addEventListener('menu-open', 'open_listmenu', rcmail_ui);
-    rcmail.addEventListener('menu-save', 'save_listmenu', rcmail_ui);
-    rcmail.gui_object('message_dragmenu', 'dragmessagemenu');
+  cmail_ui = new crystal_mail_ui();
+  crystal_event.add_listener({ object:cmail_ui, method:'body_mouseup', event:'mouseup' });
+  crystal_event.add_listener({ object:cmail_ui, method:'body_keypress', event:'keypress' });
+  if (cmail.env.task == 'mail') {
+    cmail.addEventListener('menu-open', 'open_listmenu', cmail_ui);
+    cmail.addEventListener('menu-save', 'save_listmenu', cmail_ui);
+    cmail.gui_object('message_dragmenu', 'dragmessagemenu');
   }
 }

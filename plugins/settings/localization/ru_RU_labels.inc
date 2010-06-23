@@ -28,6 +28,6 @@ $labels['managefolders'] = 'Управление папками';
 $labels['account'] = 'Управление аккаунтом';
 $labels['default'] = 'Настройки по умолчанию';
 $labels['remotefolders'] = 'Особые папки';
-$labels['myroundcube'] = 'МойКруглоКуб';
+$labels['mycrystalmail'] = 'МойКруглоКуб';
 
 ?>

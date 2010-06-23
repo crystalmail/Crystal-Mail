@@ -12,7 +12,7 @@
  |   Send message list to client (as remote response)                    |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: list.inc 3367 2010-03-17 12:24:09Z thomasb $
@@ -24,7 +24,7 @@ if (!$OUTPUT->ajax_call) {
 }
 
 // is there a sort type for this request?
-if ($sort = get_input_value('_sort', RCUBE_INPUT_GET))
+if ($sort = get_input_value('_sort', crystal_INPUT_GET))
 {
   // yes, so set the sort vars
   list($sort_col, $sort_order) = explode('_', $sort);
@@ -42,14 +42,14 @@ else
 }
 
 // is there a set of columns for this request?
-if ($cols = get_input_value('_cols', RCUBE_INPUT_GET))
+if ($cols = get_input_value('_cols', crystal_INPUT_GET))
 {
   $save_arr = array();
   $_SESSION['list_columns'] = $save_arr['list_cols'] = explode(',', $cols);
 }
 
 if ($save_arr)  
-  $RCMAIL->user->save_prefs($save_arr);
+  $CMAIL->user->save_prefs($save_arr);
 
 $mbox_name = $IMAP->get_mailbox_name();
 
@@ -57,7 +57,7 @@ $mbox_name = $IMAP->get_mailbox_name();
 if ($_SESSION['search_filter'] && $_SESSION['search_filter'] != 'ALL')
 {
   $search_request = md5($mbox_name.$_SESSION['search_filter']);
-  $IMAP->search($mbox_name, $_SESSION['search_filter'], RCMAIL_CHARSET, $sort_col);
+  $IMAP->search($mbox_name, $_SESSION['search_filter'], cmail_CHARSET, $sort_col);
   $_SESSION['search'][$search_request] = $IMAP->get_search_set();
   $OUTPUT->set_env('search_request', $search_request);
 }
@@ -71,18 +71,18 @@ if (!empty($_REQUEST['_search']) && isset($_SESSION['search'][$_REQUEST['_search
   $_SESSION['search'][$_REQUEST['_search']] = $IMAP->get_search_set();
 
 // update mailboxlist
-rcmail_send_unread_count($mbox_name, !empty($_REQUEST['_refresh']));
+cmail_send_unread_count($mbox_name, !empty($_REQUEST['_refresh']));
 
 // update message count display
 $pages = ceil($count/$IMAP->page_size);
 $OUTPUT->set_env('messagecount', $count);
 $OUTPUT->set_env('pagecount', $pages);
 $OUTPUT->set_env('threading', (bool) $IMAP->threading);
-$OUTPUT->command('set_rowcount', rcmail_get_messagecount_text($count));
-$OUTPUT->command('set_mailboxname', rcmail_get_mailbox_name_text());
+$OUTPUT->command('set_rowcount', cmail_get_messagecount_text($count));
+$OUTPUT->command('set_mailboxname', cmail_get_mailbox_name_text());
 
 // add message rows
-rcmail_js_message_list($a_headers, FALSE, TRUE, (bool) $cols);
+cmail_js_message_list($a_headers, FALSE, TRUE, (bool) $cols);
 if (isset($a_headers) && count($a_headers))
 {
   if ($search_request)

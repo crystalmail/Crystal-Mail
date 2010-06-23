@@ -9,7 +9,7 @@
  * @version 1.0
  */
 
-class google_contacts_backend extends rcube_contacts
+class google_contacts_backend extends crystal_contacts
 {
     function __construct($dbconn, $user)
     {

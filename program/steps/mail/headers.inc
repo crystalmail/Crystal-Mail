@@ -18,7 +18,7 @@
 
 */
 
-if ($uid = get_input_value('_uid', RCUBE_INPUT_POST))
+if ($uid = get_input_value('_uid', crystal_INPUT_POST))
 {
   $source = $IMAP->get_raw_headers($uid);
 

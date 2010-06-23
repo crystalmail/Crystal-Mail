@@ -3,20 +3,20 @@
 /* settings plugin */
 
 /* limit languages:
-$rcmail_config['limit_languages'] = array();
+$cmail_config['limit_languages'] = array();
 shows all available languages!
 
 NOTICE: User's preferred language is always shown!
 */
-$rcmail_config['limit_languages'] = array();
+$cmail_config['limit_languages'] = array();
 
 /* limit skins:
-$rcmail_config['limit_skins'] = array();
+$cmail_config['limit_skins'] = array();
 shows all available skins!
 
 NOTICE: User's preferred skin is always shown!
 */
-$rcmail_config['limit_skins'] = array();
+$cmail_config['limit_skins'] = array();
 
 
 ?>

@@ -12,7 +12,7 @@
  |   Upload, remove, display attachments in compose form                 |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: attachments.inc 3261 2010-02-09 13:10:12Z alec $
@@ -26,13 +26,13 @@ if (!$_SESSION['compose']) {
 
 
 // remove an attachment
-if ($RCMAIL->action=='remove-attachment')
+if ($CMAIL->action=='remove-attachment')
 {
   $id = 'undefined';
   if (preg_match('/^rcmfile(\w+)$/', $_POST['_file'], $regs))
     $id = $regs[1];
   if ($attachment = $_SESSION['compose']['attachments'][$id])
-    $attachment = $RCMAIL->plugins->exec_hook('remove_attachment', $attachment);
+    $attachment = $CMAIL->plugins->exec_hook('remove_attachment', $attachment);
   if ($attachment['status']) {
     if (is_array($_SESSION['compose']['attachments'][$id])) {
       unset($_SESSION['compose']['attachments'][$id]);
@@ -44,13 +44,13 @@ if ($RCMAIL->action=='remove-attachment')
   exit;
 }
 
-if ($RCMAIL->action=='display-attachment')
+if ($CMAIL->action=='display-attachment')
 {
   $id = 'undefined';
   if (preg_match('/^rcmfile(\w+)$/', $_GET['_file'], $regs))
     $id = $regs[1];
   if ($attachment = $_SESSION['compose']['attachments'][$id])
-    $attachment = $RCMAIL->plugins->exec_hook('display_attachment', $attachment);
+    $attachment = $CMAIL->plugins->exec_hook('display_attachment', $attachment);
     
   if ($attachment['status']) {
     if (empty($attachment['size']))
@@ -76,7 +76,7 @@ if (!is_array($_SESSION['compose']['attachments'])) {
 // clear all stored output properties (like scripts and env vars)
 $OUTPUT->reset();
 
-$uploadid = get_input_value('_uploadid', RCUBE_INPUT_GET);
+$uploadid = get_input_value('_uploadid', crystal_INPUT_GET);
 
 if (is_array($_FILES['_attachments']['tmp_name'])) {
   foreach ($_FILES['_attachments']['tmp_name'] as $i => $filepath) {
@@ -87,7 +87,7 @@ if (is_array($_FILES['_attachments']['tmp_name'])) {
       'mimetype' => rc_mime_content_type($filepath, $_FILES['_attachments']['name'][$i], $_FILES['_attachments']['type'][$i])
     );
 
-    $attachment = $RCMAIL->plugins->exec_hook('upload_attachment', $attachment);
+    $attachment = $CMAIL->plugins->exec_hook('upload_attachment', $attachment);
 
     if ($attachment['status'] && !$attachment['abort']) {
       $id = $attachment['id'];
@@ -99,17 +99,17 @@ if (is_array($_FILES['_attachments']['tmp_name'])) {
       if (($icon = $_SESSION['compose']['deleteicon']) && is_file($icon)) {
         $button = html::img(array(
           'src' => $icon,
-          'alt' => rcube_label('delete')
+          'alt' => crystal_label('delete')
         ));
       }
       else {
-        $button = Q(rcube_label('delete'));
+        $button = Q(crystal_label('delete'));
       }
 
       $content = html::a(array(
         'href' => "#delete",
         'onclick' => sprintf("return %s.command('remove-attachment','rcmfile%s', this)", JS_OBJECT_NAME, $id),
-        'title' => rcube_label('delete'),
+        'title' => crystal_label('delete'),
       ), $button);
 
       $content .= Q($attachment['name']);
@@ -123,13 +123,13 @@ if (is_array($_FILES['_attachments']['tmp_name'])) {
     else {  // upload failed
       $err = $_FILES['_attachments']['error'][$i];
       if ($err == UPLOAD_ERR_INI_SIZE || $err == UPLOAD_ERR_FORM_SIZE) {
-        $msg = rcube_label(array('name' => 'filesizeerror', 'vars' => array('size' => show_bytes(parse_bytes(ini_get('upload_max_filesize'))))));
+        $msg = crystal_label(array('name' => 'filesizeerror', 'vars' => array('size' => show_bytes(parse_bytes(ini_get('upload_max_filesize'))))));
       }
       else if ($attachment['error']) {
         $msg = $attachment['error'];
       }
       else {
-        $msg = rcube_label('fileuploaderror');
+        $msg = crystal_label('fileuploaderror');
       }
     
       $OUTPUT->command('display_message', $msg, 'error');
@@ -141,9 +141,9 @@ else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   // if filesize exceeds post_max_size then $_FILES array is empty,
   // show filesizeerror instead of fileuploaderror
   if ($maxsize = ini_get('post_max_size'))
-    $msg = rcube_label(array('name' => 'filesizeerror', 'vars' => array('size' => show_bytes(parse_bytes($maxsize)))));
+    $msg = crystal_label(array('name' => 'filesizeerror', 'vars' => array('size' => show_bytes(parse_bytes($maxsize)))));
   else
-    $msg = rcube_label('fileuploaderror');
+    $msg = crystal_label('fileuploaderror');
   $OUTPUT->command('display_message', $msg, 'error');
   $OUTPUT->command('remove_from_attachment_list', $uploadid);
 }

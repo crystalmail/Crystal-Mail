@@ -4,7 +4,7 @@
  *
  * @constructor
  */
-function rcube_splitter(attrib)
+function crystal_splitter(attrib)
   {
   this.p1id = attrib.p1;
   this.p2id = attrib.p2;
@@ -28,13 +28,13 @@ function rcube_splitter(attrib)
     if (this.horizontal)
       {
       var top = this.p1pos.top + this.p1.offsetHeight;
-      this.layer = new rcube_layer(this.id, {x: 0, y: top, height: 10, 
+      this.layer = new crystal_layer(this.id, {x: 0, y: top, height: 10, 
     	    width: '100%', vis: 1, parent: this.p1.parentNode});
       }
     else
       {
       var left = this.p1pos.left + this.p1.offsetWidth;
-      this.layer = new rcube_layer(this.id, {x: left, y: 0, width: 10, 
+      this.layer = new crystal_layer(this.id, {x: left, y: 0, width: 10, 
     	    height: '100%', vis: 1,  parent: this.p1.parentNode});
       }
 
@@ -43,9 +43,9 @@ function rcube_splitter(attrib)
     this.elm.unselectable = 'on';
 
     // add the mouse event listeners
-    rcube_event.add_listener({element: this.elm, event:'mousedown', object:this, method:'onDragStart'});
+    crystal_event.add_listener({element: this.elm, event:'mousedown', object:this, method:'onDragStart'});
     if (bw.ie)
-      rcube_event.add_listener({element: window, event:'resize', object:this, method:'onResize'});
+      crystal_event.add_listener({element: window, event:'resize', object:this, method:'onResize'});
 
     // read saved position from cookie
     var cookie = bw.get_cookie(this.id);
@@ -103,8 +103,8 @@ function rcube_splitter(attrib)
     this.drag_active = true;
 
     // start listening to mousemove events
-    rcube_event.add_listener({element:document, event:'mousemove', object:this, method:'onDrag'});
-    rcube_event.add_listener({element:document, event:'mouseup', object:this, method:'onDragStop'});
+    crystal_event.add_listener({element:document, event:'mousemove', object:this, method:'onDrag'});
+    crystal_event.add_listener({element:document, event:'mouseup', object:this, method:'onDragStop'});
 
     // need to listen in any iframe documents too, b/c otherwise the splitter stops moving when we move over an iframe
     var iframes = document.getElementsByTagName('iframe');
@@ -133,7 +133,7 @@ function rcube_splitter(attrib)
         else
           iframedoc.onmousemove = this.iframe_events[n];
 
-        rcube_event.add_listener({element:iframedoc, event:'mouseup', object:this, method:'onDragStop'});
+        crystal_event.add_listener({element:iframedoc, event:'mouseup', object:this, method:'onDragStop'});
         }
       }
     }
@@ -145,7 +145,7 @@ function rcube_splitter(attrib)
     {
     if (!this.drag_active) return false;
 
-    var pos = rcube_event.get_mouse_pos(e);
+    var pos = crystal_event.get_mouse_pos(e);
 
     if (this.relative)
       {
@@ -186,8 +186,8 @@ function rcube_splitter(attrib)
       document.body.style.webkitUserSelect = 'auto';
 
     // cancel the listening for drag events
-    rcube_event.remove_listener({element:document, event:'mousemove', object:this, method:'onDrag'});
-    rcube_event.remove_listener({element:document, event:'mouseup', object:this, method:'onDragStop'});
+    crystal_event.remove_listener({element:document, event:'mousemove', object:this, method:'onDrag'});
+    crystal_event.remove_listener({element:document, event:'mouseup', object:this, method:'onDragStop'});
     this.drag_active = false;
 
     var iframes = document.getElementsByTagName('iframe');
@@ -213,13 +213,13 @@ function rcube_splitter(attrib)
             iframedoc.onmousemove = null;
           }
 
-        rcube_event.remove_listener({element:iframedoc, event:'mouseup', object:this, method:'onDragStop'});
+        crystal_event.remove_listener({element:iframedoc, event:'mouseup', object:this, method:'onDragStop'});
         }
       }
 
     this.set_cookie();
 
-    return bw.safari ? true : rcube_event.cancel(e);
+    return bw.safari ? true : crystal_event.cancel(e);
     };
 
   /**
@@ -244,4 +244,4 @@ function rcube_splitter(attrib)
     bw.set_cookie(this.id, this.pos, exp);
     };
 
-  }  // end class rcube_splitter
+  }  // end class crystal_splitter

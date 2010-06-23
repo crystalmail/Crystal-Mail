@@ -7,7 +7,7 @@
  *
  * @author Thomas Bruederli
  */
-class example_addressbook_backend extends rcube_addressbook
+class example_addressbook_backend extends crystal_addressbook
 {
   public $primary_key = 'ID';
   public $readonly = true;
@@ -39,7 +39,7 @@ class example_addressbook_backend extends rcube_addressbook
   public function list_records($cols=null, $subset=0)
   {
     $this->result = $this->count();
-    $this->result->add(array('ID' => '111', 'name' => "Example Contact", 'firstname' => "Example", 'surname' => "Contact", 'email' => "example@roundcube.net"));
+    $this->result->add(array('ID' => '111', 'name' => "Example Contact", 'firstname' => "Example", 'surname' => "Contact", 'email' => "example@crystalmail.net"));
     
     return $this->result;
   }
@@ -52,7 +52,7 @@ class example_addressbook_backend extends rcube_addressbook
 
   public function count()
   {
-    return new rcube_result_set(1, ($this->list_page-1) * $this->page_size);
+    return new crystal_result_set(1, ($this->list_page-1) * $this->page_size);
   }
 
   public function get_result()

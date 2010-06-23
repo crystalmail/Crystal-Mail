@@ -12,7 +12,7 @@
  |   Delivering a specific part of a mail message                        |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: get.inc 3293 2010-02-26 08:06:48Z alec $
@@ -23,12 +23,12 @@
 // show loading page
 if (!empty($_GET['_preload'])) {
   $url = str_replace('&_preload=1', '', $_SERVER['REQUEST_URI']);
-  $message = rcube_label('loadingdata');
+  $message = crystal_label('loadingdata');
 
-  header('Content-Type: text/html; charset=' . RCMAIL_CHARSET);
+  header('Content-Type: text/html; charset=' . cmail_CHARSET);
   print "<html>\n<head>\n"
         . '<meta http-equiv="refresh" content="0; url='.Q($url).'">' . "\n"
-        . '<meta http-equiv="content-type" content="text/html; charset='.RCMAIL_CHARSET.'">' . "\n"
+        . '<meta http-equiv="content-type" content="text/html; charset='.cmail_CHARSET.'">' . "\n"
         . "</head>\n<body>\n$message\n</body>\n</html>";
   exit;
 }
@@ -37,8 +37,8 @@ ob_end_clean();
 
 // similar code as in program/steps/mail/show.inc
 if (!empty($_GET['_uid'])) {
-  $RCMAIL->config->set('prefer_html', true);
-  $MESSAGE = new rcube_message(get_input_value('_uid', RCUBE_INPUT_GET));
+  $CMAIL->config->set('prefer_html', true);
+  $MESSAGE = new crystal_message(get_input_value('_uid', crystal_INPUT_GET));
 }
 
 send_nocacheing_headers();
@@ -49,13 +49,13 @@ if (!empty($_GET['_frame'])) {
   exit;
 }
 
-else if ($pid = get_input_value('_part', RCUBE_INPUT_GET)) {
+else if ($pid = get_input_value('_part', crystal_INPUT_GET)) {
   // TNEF encoded attachment part
   if (preg_match('/^winmail\.([0-9.]+)\.([0-9]+)$/', $pid, $nt)) {
     $pid = $nt[1]; $i = $nt[2];
     if ($part = $MESSAGE->mime_parts[$pid]) {
       $tnef_arr = $IMAP->tnef_decode($part, $MESSAGE->uid);
-      if (is_a($tnef_arr[$i], 'rcube_message_part'))
+      if (is_a($tnef_arr[$i], 'crystal_message_part'))
         $MESSAGE->mime_parts[$pid] = $tnef_arr[$i];
     }
   }
@@ -65,7 +65,7 @@ else if ($pid = get_input_value('_part', RCUBE_INPUT_GET)) {
     $ctype_secondary = strtolower($part->ctype_secondary);
     $mimetype = sprintf('%s/%s', $ctype_primary, $ctype_secondary);
     
-    $browser = new rcube_browser;
+    $browser = new crystal_browser;
 
     // send download headers
     if ($_GET['_download']) {
@@ -74,7 +74,7 @@ else if ($pid = get_input_value('_part', RCUBE_INPUT_GET)) {
         header("Content-Type: application/force-download");
     }
     else if ($ctype_primary == 'text') {
-      header("Content-Type: text/$ctype_secondary; charset=" . ($part->charset ? $part->charset : RCMAIL_CHARSET));
+      header("Content-Type: text/$ctype_secondary; charset=" . ($part->charset ? $part->charset : cmail_CHARSET));
     }
     else {
       header("Content-Type: $mimetype");
@@ -87,14 +87,14 @@ else if ($pid = get_input_value('_part', RCUBE_INPUT_GET)) {
       if (!$part->body)
         $part->body = $MESSAGE->get_part_content($part->mime_id);
 
-      $OUTPUT = new rcube_html_page();
-      $OUTPUT->write(rcmail_print_body($part, array('safe' => $MESSAGE->is_safe, 'inline_html' => false)));
+      $OUTPUT = new crystal_html_page();
+      $OUTPUT->write(cmail_print_body($part, array('safe' => $MESSAGE->is_safe, 'inline_html' => false)));
     }
     else {
       // don't kill the connection if download takes more than 30 sec.
       @set_time_limit(0);
       
-      $filename = $part->filename ? $part->filename : ($MESSAGE->subject ? $MESSAGE->subject : 'roundcube') . '.'.$ctype_secondary;
+      $filename = $part->filename ? $part->filename : ($MESSAGE->subject ? $MESSAGE->subject : 'crystalmail') . '.'.$ctype_secondary;
       
       if ($browser->ie && $browser->ver < 7)
         $filename = rawurlencode(abbreviate_string($filename, 55));
@@ -124,10 +124,10 @@ else {
   header("Content-Type: text/html");
 
   $cont = "<html>\n<head><title></title>\n</head>\n<body>";
-  $cont .= rcmail_message_body(array());
+  $cont .= cmail_message_body(array());
   $cont .= "\n</body>\n</html>";
 
-  $OUTPUT = new rcube_html_page();
+  $OUTPUT = new crystal_html_page();
   $OUTPUT->write($cont);
 
   exit;

@@ -12,29 +12,29 @@
  |   Save a contact entry or to add a new one                            |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: save.inc 3536 2010-04-22 13:39:13Z alec $
 
 */
 
-$cid = get_input_value('_cid', RCUBE_INPUT_POST);
+$cid = get_input_value('_cid', crystal_INPUT_POST);
 $return_action = empty($cid) ? 'add' : 'show';
 
 // cannot edit record
 if ($CONTACTS->readonly)
 {
   $OUTPUT->show_message('contactreadonly', 'error');
-  rcmail_overwrite_action($return_action);
+  cmail_overwrite_action($return_action);
   return;
 }
 
 // check input
-if ((!get_input_value('_name', RCUBE_INPUT_POST) || !get_input_value('_email', RCUBE_INPUT_POST)))
+if ((!get_input_value('_name', crystal_INPUT_POST) || !get_input_value('_email', crystal_INPUT_POST)))
 {
   $OUTPUT->show_message('formincomplete', 'warning');
-  rcmail_overwrite_action($return_action);
+  cmail_overwrite_action($return_action);
   return;
 }
 
@@ -50,21 +50,21 @@ foreach ($a_save_cols as $col)
 {
   $fname = '_'.$col;
   if (isset($_POST[$fname]))
-    $a_record[$col] = get_input_value($fname, RCUBE_INPUT_POST);
+    $a_record[$col] = get_input_value($fname, crystal_INPUT_POST);
 }
 
 if (array_key_exists('vcard', $CONTACTS->fieldmap)) {
-  $fields = rcmail_contact_fields();
+  $fields = cmail_contact_fields();
   $a_vcard_vols = array_merge($fields['basic'], $fields['home'], $fields['business'], $fields['other']);
 
   // read other POST values into vCard
-  $vcard = new rcube_vcard();
+  $vcard = new crystal_vcard();
   foreach ($a_vcard_vols as $col)
   {
     $fname = '_'.$col;
     if (isset($_POST[$fname])) {
-      if (get_input_value($fname, RCUBE_INPUT_POST) != '')
-        $vcard->set($col, get_input_value($fname, RCUBE_INPUT_POST));
+      if (get_input_value($fname, crystal_INPUT_POST) != '')
+        $vcard->set($col, get_input_value($fname, crystal_INPUT_POST));
     }
   }
   $a_record['vcard'] = $vcard->export();
@@ -73,7 +73,7 @@ if (array_key_exists('vcard', $CONTACTS->fieldmap)) {
 // update an existing contact
 if (!empty($cid))
 {
-  $plugin = $RCMAIL->plugins->exec_hook('save_contact', array('id' => $cid, 'record' => $a_record, 'source' => get_input_value('_source', RCUBE_INPUT_GPC)));
+  $plugin = $CMAIL->plugins->exec_hook('save_contact', array('id' => $cid, 'record' => $a_record, 'source' => get_input_value('_source', crystal_INPUT_GPC)));
   $a_record = $plugin['record'];
   
   if (!$plugin['abort'] && ($result = $CONTACTS->update($cid, $a_record)))
@@ -97,13 +97,13 @@ if (!empty($cid))
       
     // show confirmation
     $OUTPUT->show_message('successfullysaved', 'confirmation', null, false);
-    rcmail_overwrite_action('show');
+    cmail_overwrite_action('show');
   }
   else
   {
     // show error message
     $OUTPUT->show_message('errorsaving', 'error', null, false);
-    rcmail_overwrite_action('show');
+    cmail_overwrite_action('show');
   }
 }
 
@@ -117,11 +117,11 @@ else
   if ($existing->count)
   {
     $OUTPUT->show_message('contactexists', 'warning', null, false);
-    rcmail_overwrite_action('add');
+    cmail_overwrite_action('add');
     return;
   }
 
-  $plugin = $RCMAIL->plugins->exec_hook('create_contact', array('record' => $a_record, 'source' => get_input_value('_source', RCUBE_INPUT_GPC)));
+  $plugin = $CMAIL->plugins->exec_hook('create_contact', array('record' => $a_record, 'source' => get_input_value('_source', crystal_INPUT_GPC)));
   $a_record = $plugin['record'];
 
   // insert record and send response
@@ -131,12 +131,12 @@ else
     $CONTACTS->reset();
     $result = $CONTACTS->search($CONTACTS->primary_key, $insert_id);
 
-    rcmail_js_contacts_list($result, 'parent.');
+    cmail_js_contacts_list($result, 'parent.');
     $OUTPUT->command('parent.contact_list.select', $insert_id);
 
     // update record count display
     $CONTACTS->reset();
-    $OUTPUT->command('parent.set_rowcount', rcmail_get_rowcount_text());
+    $OUTPUT->command('parent.set_rowcount', cmail_get_rowcount_text());
 
     // show confirmation
     $OUTPUT->show_message('successfullysaved', 'confirmation', null, false);
@@ -146,7 +146,7 @@ else
   {
     // show error message
     $OUTPUT->show_message('errorsaving', 'error', null, false);
-    rcmail_overwrite_action('add');
+    cmail_overwrite_action('add');
   }
 }
 

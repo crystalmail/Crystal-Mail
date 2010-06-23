@@ -10,14 +10,14 @@
  * 
  **/
 
-class help extends rcube_plugin
+class help extends crystal_plugin
 {
     // all task excluding 'login' and 'logout'
     public $task = '?(?!login|logout).*';
 
     function init()
     {
-      $rcmail = rcmail::get_instance();
+      $cmail = cmail::get_instance();
       
       $this->add_texts('localization/', false);
       
@@ -34,7 +34,7 @@ class help extends rcube_plugin
 	'href'	=> './?_task=dummy&_action=plugin.help',
         ), 'taskbar');
 
-      $skin = $rcmail->config->get('skin');
+      $skin = $cmail->config->get('skin');
       if (!file_exists($this->home."/skins/$skin/help.css"))
 	$skin = 'default';
 
@@ -44,43 +44,43 @@ class help extends rcube_plugin
 
     function action()
     {
-      $rcmail = rcmail::get_instance();
+      $cmail = cmail::get_instance();
 
       $this->load_config();
 
       // register UI objects
-      $rcmail->output->add_handlers(array(
+      $cmail->output->add_handlers(array(
 	    'helpcontent' => array($this, 'content'),
       ));
 
-      if ($rcmail->action == 'plugin.helpabout')
-	$rcmail->output->set_pagetitle($this->gettext('about'));
-      else if ($rcmail->action == 'plugin.helplicense')
-        $rcmail->output->set_pagetitle($this->gettext('license'));
+      if ($cmail->action == 'plugin.helpabout')
+	$cmail->output->set_pagetitle($this->gettext('about'));
+      else if ($cmail->action == 'plugin.helplicense')
+        $cmail->output->set_pagetitle($this->gettext('license'));
       else
-        $rcmail->output->set_pagetitle($this->gettext('help'));
+        $cmail->output->set_pagetitle($this->gettext('help'));
 
-      $rcmail->output->send('help.help');
+      $cmail->output->send('help.help');
     }
     
     function content($attrib)
     {
-      $rcmail = rcmail::get_instance();
+      $cmail = cmail::get_instance();
 
-      if ($rcmail->action == 'plugin.helpabout') {
+      if ($cmail->action == 'plugin.helpabout') {
 	return @file_get_contents($this->home.'/content/about.html');
       }
-      else if ($rcmail->action == 'plugin.helplicense') {
+      else if ($cmail->action == 'plugin.helplicense') {
 	return @file_get_contents($this->home.'/content/license.html');
       }
 
       // default content: iframe
 
-      if ($src = $rcmail->config->get('help_source'))
+      if ($src = $cmail->config->get('help_source'))
 	$attrib['src'] = $src;
 
       if (empty($attrib['id']))
-        $attrib['id'] = 'rcmailhelpcontent';
+        $attrib['id'] = 'cmailhelpcontent';
     
       // allow the following attributes to be added to the <iframe> tag
       $attrib_str = create_attrib_string($attrib, array('id', 'class', 'style', 'src', 'width', 'height', 'frameborder'));

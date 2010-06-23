@@ -4,13 +4,13 @@
     http://pear.php.net/dtd/package-2.0
     http://pear.php.net/dtd/package-2.0.xsd">
 	<name>archive</name>
-	<channel>pear.roundcube.net</channel>
+	<channel>pear.crystalmail.net</channel>
 	<summary>Archive feature for Roundcube</summary>
 	<description>This adds a button to move the selected messages to an archive folder. The folder can be selected in the settings panel.</description>
 	<lead>
 		<name>Thomas Bruederli</name>
 		<user>thomasb</user>
-		<email>roundcube@gmail.com</email>
+		<email>crystalmail@gmail.com</email>
 		<active>yes</active>
 	</lead>
 	<date>2010-02-06</date>

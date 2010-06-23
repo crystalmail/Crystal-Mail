@@ -40,16 +40,16 @@ $data = file_get_contents('php://input');
 $left = strpos($data, '<text>');
 $right = strrpos($data, '</text>');
 $text = substr($data, $left+6, $right-($left+6));
-$text = html_entity_decode($text, ENT_QUOTES, RCMAIL_CHARSET);
+$text = html_entity_decode($text, ENT_QUOTES, cmail_CHARSET);
 
 // tokenize
 $words = preg_split('/[ !"#$%&()*+\\,\/\n:;<=>?@\[\]^_{|}-]+|\.[^\w]/', $text, NULL,  PREG_SPLIT_NO_EMPTY | PREG_SPLIT_OFFSET_CAPTURE );
 
 // init spellchecker
-$plink = pspell_new(get_input_value('lang', RCUBE_INPUT_GET), null, null, RCMAIL_CHARSET, PSPELL_FAST);
+$plink = pspell_new(get_input_value('lang', crystal_INPUT_GET), null, null, cmail_CHARSET, PSPELL_FAST);
 
 // send output
-$out = '<?xml version="1.0" encoding="'.RCMAIL_CHARSET.'"?><spellresult charschecked="'.mb_strlen($text).'">';
+$out = '<?xml version="1.0" encoding="'.cmail_CHARSET.'"?><spellresult charschecked="'.mb_strlen($text).'">';
 
 $diff = 0;
 foreach ($words as $w) {
@@ -71,7 +71,7 @@ foreach ($words as $w) {
 
 $out .= '</spellresult>';
 
-header("Content-Type: text/xml; charset=".RCMAIL_CHARSET);
+header("Content-Type: text/xml; charset=".cmail_CHARSET);
 echo $out;
 exit;
 

@@ -144,7 +144,7 @@ if(jQuery)( function() {
 						}
 
 				        // pop event bubble (when drag 'n drop not active)
-				        if (!rcmail.drag_active) {
+				        if (!cmail.drag_active) {
 				        	e.cancelBubble = true;
 				        	if (e.stopPropagation) e.stopPropagation();
 			        	}

@@ -9,20 +9,20 @@
  * @version @package_version@
  * @author Andre Rodier, Thomas Bruederli
  */
-class archive extends rcube_plugin
+class archive extends crystal_plugin
 {
   public $task = 'mail|settings';
 
   function init()
   {
-    $rcmail = rcmail::get_instance();
+    $cmail = cmail::get_instance();
 
     $this->register_action('plugin.archive', array($this, 'request_action'));
 
     // There is no "Archived flags"
     // $GLOBALS['IMAP_FLAGS']['ARCHIVED'] = 'Archive';
-    if ($rcmail->task == 'mail' && ($rcmail->action == '' || $rcmail->action == 'show')
-      && ($archive_folder = $rcmail->config->get('archive_mbox'))) {
+    if ($cmail->task == 'mail' && ($cmail->action == '' || $cmail->action == 'show')
+      && ($archive_folder = $cmail->config->get('archive_mbox'))) {
       $skin_path = $this->local_skin_path();
       
       $this->include_script('archive.js');
@@ -41,17 +41,17 @@ class archive extends rcube_plugin
       $this->add_hook('render_mailboxlist', array($this, 'render_mailboxlist'));
 
       // set env variable for client
-      $rcmail->output->set_env('archive_folder', $archive_folder);
-      $rcmail->output->set_env('archive_folder_icon', $this->url($skin_path.'/foldericon.png'));
+      $cmail->output->set_env('archive_folder', $archive_folder);
+      $cmail->output->set_env('archive_folder_icon', $this->url($skin_path.'/foldericon.png'));
 
       // add archive folder to the list of default mailboxes
-      if (($default_folders = $rcmail->config->get('default_imap_folders')) && !in_array($archive_folder, $default_folders)) {
+      if (($default_folders = $cmail->config->get('default_imap_folders')) && !in_array($archive_folder, $default_folders)) {
         $default_folders[] = $archive_folder;
-        $rcmail->config->set('default_imap_folders', $default_folders);
+        $cmail->config->set('default_imap_folders', $default_folders);
       }  
     }
-    else if ($rcmail->task == 'settings') {
-      $dont_override = $rcmail->config->get('dont_override', array());
+    else if ($cmail->task == 'settings') {
+      $dont_override = $cmail->config->get('dont_override', array());
       if (!in_array('archive_mbox', $dont_override)) {
         $this->add_hook('user_preferences', array($this, 'prefs_table'));
         $this->add_hook('save_preferences', array($this, 'save_prefs'));
@@ -61,8 +61,8 @@ class archive extends rcube_plugin
   
   function render_mailboxlist($p)
   {
-    $rcmail = rcmail::get_instance();
-    $archive_folder = $rcmail->config->get('archive_mbox');
+    $cmail = cmail::get_instance();
+    $archive_folder = $cmail->config->get('archive_mbox');
 
     // set localized name for the configured archive folder
     if ($archive_folder) {
@@ -92,20 +92,20 @@ class archive extends rcube_plugin
   {
     $this->add_texts('localization');
     
-    $uids = get_input_value('_uid', RCUBE_INPUT_POST);
-    $mbox = get_input_value('_mbox', RCUBE_INPUT_POST);
+    $uids = get_input_value('_uid', crystal_INPUT_POST);
+    $mbox = get_input_value('_mbox', crystal_INPUT_POST);
     
-    $rcmail = rcmail::get_instance();
+    $cmail = cmail::get_instance();
     
     // There is no "Archive flags", but I left this line in case it may be useful
-    // $rcmail->imap->set_flag($uids, 'ARCHIVE');
+    // $cmail->imap->set_flag($uids, 'ARCHIVE');
     
-    if (($archive_mbox = $rcmail->config->get('archive_mbox')) && $mbox != $archive_mbox) {
-      $rcmail->output->command('move_messages', $archive_mbox);
-      $rcmail->output->command('display_message', $this->gettext('archived'), 'confirmation');
+    if (($archive_mbox = $cmail->config->get('archive_mbox')) && $mbox != $archive_mbox) {
+      $cmail->output->command('move_messages', $archive_mbox);
+      $cmail->output->command('display_message', $this->gettext('archived'), 'confirmation');
     }
     
-    $rcmail->output->send();
+    $cmail->output->send();
   }
 
   function prefs_table($args)
@@ -115,18 +115,18 @@ class archive extends rcube_plugin
     if ($args['section'] == 'folders') {
       $this->add_texts('localization');
 
-      $rcmail = rcmail::get_instance();
+      $cmail = cmail::get_instance();
 
       // load folders list when needed
       if ($CURR_SECTION)
-        $select = rcmail_mailbox_select(array('noselection' => '---', 'realnames' => true,
+        $select = cmail_mailbox_select(array('noselection' => '---', 'realnames' => true,
           'maxlength' => 30, 'exceptions' => array('INBOX')));
       else
         $select = new html_select();
 
       $args['blocks']['main']['options']['archive_mbox'] = array(
           'title' => $this->gettext('archivefolder'),
-          'content' => $select->show($rcmail->config->get('archive_mbox'), array('name' => "_archive_mbox"))
+          'content' => $select->show($cmail->config->get('archive_mbox'), array('name' => "_archive_mbox"))
       );
     }
 
@@ -136,7 +136,7 @@ class archive extends rcube_plugin
   function save_prefs($args)
   {
     if ($args['section'] == 'folders') {
-      $args['prefs']['archive_mbox'] = get_input_value('_archive_mbox', RCUBE_INPUT_POST);
+      $args['prefs']['archive_mbox'] = get_input_value('_archive_mbox', crystal_INPUT_POST);
       return $args;
     }
   }

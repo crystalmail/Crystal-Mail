@@ -11,7 +11,7 @@
  |   Mark the submitted messages with the specified flag                 |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: mark.inc 3419 2010-03-25 16:29:02Z alec $
@@ -30,7 +30,7 @@ $a_flags_map = array(
   'flagged' => 'FLAGGED',
   'unflagged' => 'UNFLAGGED');
 
-if (($uids = get_input_value('_uid', RCUBE_INPUT_POST)) && ($flag = get_input_value('_flag', RCUBE_INPUT_POST)))
+if (($uids = get_input_value('_uid', crystal_INPUT_POST)) && ($flag = get_input_value('_flag', crystal_INPUT_POST)))
 {
   $flag = $a_flags_map[$flag] ? $a_flags_map[$flag] : strtoupper($flag);
 
@@ -53,7 +53,7 @@ if (($uids = get_input_value('_uid', RCUBE_INPUT_POST)) && ($flag = get_input_va
   }
 
   if ($flag == 'DELETED' && $CONFIG['read_when_deleted'] && !empty($_POST['_ruid'])) {
-    $ruids = get_input_value('_ruid', RCUBE_INPUT_POST);
+    $ruids = get_input_value('_ruid', crystal_INPUT_POST);
     $read = $IMAP->set_flag($ruids, 'SEEN');
     
     if ($read != -1 && !$CONFIG['skip_deleted'])
@@ -61,17 +61,17 @@ if (($uids = get_input_value('_uid', RCUBE_INPUT_POST)) && ($flag = get_input_va
   }
 
   if ($flag == 'SEEN' || $flag == 'UNSEEN' || ($flag == 'DELETED' && !$CONFIG['skip_deleted'])) {
-    rcmail_send_unread_count($IMAP->get_mailbox_name());
+    cmail_send_unread_count($IMAP->get_mailbox_name());
   }
   else if ($flag == 'DELETED' && $CONFIG['skip_deleted']) {
     if ($_POST['_from'] == 'show') {
-      if ($next = get_input_value('_next_uid', RCUBE_INPUT_GPC))
+      if ($next = get_input_value('_next_uid', crystal_INPUT_GPC))
         $OUTPUT->command('show_message', $next);
       else
         $OUTPUT->command('command', 'list');
     } else {
       // refresh saved search set after moving some messages
-      if (($search_request = get_input_value('_search', RCUBE_INPUT_GPC)) && $IMAP->search_set) {
+      if (($search_request = get_input_value('_search', crystal_INPUT_GPC)) && $IMAP->search_set) {
         $_SESSION['search'][$search_request] = $IMAP->refresh_search();
       }
 
@@ -101,10 +101,10 @@ if (($uids = get_input_value('_uid', RCUBE_INPUT_POST)) && ($flag = get_input_va
         $OUTPUT->command('set_unread_count', $mbox, $unseen_count, ($mbox == 'INBOX'));
 	    $_SESSION['unseen_count'][$mbox] = $unseen_count;
       }
-      $OUTPUT->command('set_rowcount', rcmail_get_messagecount_text($msg_count));
+      $OUTPUT->command('set_rowcount', cmail_get_messagecount_text($msg_count));
 
       if ($IMAP->threading)
-	    $count = get_input_value('_count', RCUBE_INPUT_POST);
+	    $count = get_input_value('_count', crystal_INPUT_POST);
 
       // add new rows from next page (if any)
       if ($count && $uids != '*' && ($jump_back || $nextpage_count > 0)) {
@@ -114,7 +114,7 @@ if (($uids = get_input_value('_uid', RCUBE_INPUT_POST)) && ($flag = get_input_va
         $a_headers = $IMAP->list_headers($mbox, NULL, $sort_col, $sort_order,
 	    $jump_back ? NULL : $count);
       
-        rcmail_js_message_list($a_headers, false, false);
+        cmail_js_message_list($a_headers, false, false);
       }
     }
   }

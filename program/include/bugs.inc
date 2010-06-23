@@ -12,7 +12,7 @@
  |   Provide error handling and logging functions                        |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: bugs.inc 3212 2010-01-18 19:15:28Z alec $

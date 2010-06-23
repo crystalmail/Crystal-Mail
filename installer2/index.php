@@ -4,7 +4,7 @@
 <?php
 if (file_exists('../config/main.inc.php')) {
 include ('../config/main.inc.php');
-if ($rcmail_config['enable_installer'] == True)
+if ($cmail_config['enable_installer'] == True)
 {
 
 error_reporting(0);

@@ -17,19 +17,19 @@
  *
  * @version 1.0
  * @author Ziba Scott
- * @website http://roundcube.net
+ * @website http://crystalmail.net
  * 
  * Example:
  *
  * config/main.inc.php:
  *
- *   // $rcmail_config['debug_logger'][type of logging] = name of file in log_dir
+ *   // $cmail_config['debug_logger'][type of logging] = name of file in log_dir
  *   // The 'master' log includes timing information
- *   $rcmail_config['debug_logger']['master'] = 'master';
+ *   $cmail_config['debug_logger']['master'] = 'master';
  *   // If you want sql messages to also go into a separate file 
- *   $rcmail_config['debug_logger']['sql'] = 'sql';
+ *   $cmail_config['debug_logger']['sql'] = 'sql';
  *
- * index.php (just after $RCMAIL->plugins->init()):
+ * index.php (just after $CMAIL->plugins->init()):
  *
  *   console("my test","start");
  *   console("my message");
@@ -62,26 +62,26 @@
  *   [17-Feb-2009 16:51:37 -0500]       sql: select * from example
  *   [17-Feb-2009 16:51:37 -0500]       sql: select * from example
  */
-class debug_logger extends rcube_plugin
+class debug_logger extends crystal_plugin
 {
     function init()
     {
         require_once(dirname(__FILE__).'/runlog/runlog.php');
         $this->runlog = new runlog(); 
 
-        if(!rcmail::get_instance()->config->get('log_dir')){
-            rcmail::get_instance()->config->set('log_dir',INSTALL_PATH.'logs');
+        if(!cmail::get_instance()->config->get('log_dir')){
+            cmail::get_instance()->config->set('log_dir',INSTALL_PATH.'logs');
         }
 
-        $log_config = rcmail::get_instance()->config->get('debug_logger',array());
+        $log_config = cmail::get_instance()->config->get('debug_logger',array());
 
         foreach($log_config as $type=>$file){
-            $this->runlog->set_file(rcmail::get_instance()->config->get('log_dir').'/'.$file, $type);
+            $this->runlog->set_file(cmail::get_instance()->config->get('log_dir').'/'.$file, $type);
         }
 
         $start_string = "";
-        $action = rcmail::get_instance()->action;
-        $task = rcmail::get_instance()->task;
+        $action = cmail::get_instance()->action;
+        $task = cmail::get_instance()->task;
         if($action){
                $start_string .= "Action: ".$action.". "; 
         }
@@ -106,11 +106,11 @@ class debug_logger extends rcube_plugin
 
         if(!isset($args[1])){
             // This could be extended to detect types based on the 
-            // file which called console.  For now only rcube_imap.inc is supported
+            // file which called console.  For now only crystal_imap.inc is supported
             $bt = debug_backtrace();
             $file  = $bt[3]['file'];
             switch(basename($file)){
-                case 'rcube_imap.php':
+                case 'crystal_imap.php':
                     $type = 'imap';
                     break;
                 default:

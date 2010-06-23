@@ -12,14 +12,14 @@
  |   Save an identity record or to add a new one                         |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: save_identity.inc 2778 2009-07-21 16:02:33Z thomasb $
 
 */
 
-define('IDENTITIES_LEVEL', intval($RCMAIL->config->get('identities_level', 0)));
+define('IDENTITIES_LEVEL', intval($CMAIL->config->get('identities_level', 0)));
 
 $a_save_cols = array('name', 'email', 'organization', 'reply-to', 'bcc', 'standard', 'signature', 'html_signature');
 $a_html_cols = array('signature');
@@ -30,7 +30,7 @@ $updated = $default_id = false;
 if (empty($_POST['_name']) || (empty($_POST['_email']) && IDENTITIES_LEVEL != 1 && IDENTITIES_LEVEL != 3))
   {
   $OUTPUT->show_message('formincomplete', 'warning');
-  rcmail_overwrite_action('edit-identity');
+  cmail_overwrite_action('edit-identity');
   return;
   }
 
@@ -40,7 +40,7 @@ foreach ($a_save_cols as $col)
 {
   $fname = '_'.$col;
   if (isset($_POST[$fname]))
-    $save_data[$col] = get_input_value($fname, RCUBE_INPUT_POST, in_array($col, $a_html_cols));
+    $save_data[$col] = get_input_value($fname, crystal_INPUT_POST, in_array($col, $a_html_cols));
 }
 
 // set "off" values for checkboxes that were not checked, and therefore
@@ -60,8 +60,8 @@ if (IDENTITIES_LEVEL == 1 || IDENTITIES_LEVEL == 3)
 // update an existing contact
 if ($_POST['_iid'])
 {
-  $iid = get_input_value('_iid', RCUBE_INPUT_POST);
-  $plugin = $RCMAIL->plugins->exec_hook('save_identity', array('id' => $iid, 'record' => $save_data));
+  $iid = get_input_value('_iid', crystal_INPUT_POST);
+  $plugin = $CMAIL->plugins->exec_hook('save_identity', array('id' => $iid, 'record' => $save_data));
   $save_data = $plugin['record'];
 
   if (!$plugin['abort'] && ($updated = $USER->update_identity($iid, $save_data)))
@@ -69,7 +69,7 @@ if ($_POST['_iid'])
     $OUTPUT->show_message('successfullysaved', 'confirmation');
     
     if (!empty($_POST['_standard']))
-      $default_id = get_input_value('_iid', RCUBE_INPUT_POST);
+      $default_id = get_input_value('_iid', crystal_INPUT_POST);
     
     if ($_POST['_framed'])
     {
@@ -81,7 +81,7 @@ if ($_POST['_iid'])
   {
     // show error message
     $OUTPUT->show_message('errorsaving', 'error', null, false);
-    rcmail_overwrite_action('edit-identity');
+    cmail_overwrite_action('edit-identity');
     return;
   }
 }
@@ -90,9 +90,9 @@ if ($_POST['_iid'])
 else if (IDENTITIES_LEVEL < 2)
 {
   if (IDENTITIES_LEVEL == 1)
-    $save_data['email'] = $RCMAIL->user->get_username();
+    $save_data['email'] = $CMAIL->user->get_username();
 
-  $plugin = $RCMAIL->plugins->exec_hook('create_identity', array('record' => $save_data));
+  $plugin = $CMAIL->plugins->exec_hook('create_identity', array('record' => $save_data));
   $save_data = $plugin['record'];
 
   if (!$plugin['abort'] && $save_data['email'] && ($insert_id = $USER->insert_identity($save_data)))
@@ -108,7 +108,7 @@ else if (IDENTITIES_LEVEL < 2)
   {
     // show error message
     $OUTPUT->show_message('errorsaving', 'error', null, false);
-    rcmail_overwrite_action('edit-identity');
+    cmail_overwrite_action('edit-identity');
     return;
   }
 }
@@ -121,6 +121,6 @@ if ($default_id)
   $USER->set_default($default_id);
 
 // go to next step
-rcmail_overwrite_action('identities');
+cmail_overwrite_action('identities');
 
 ?>

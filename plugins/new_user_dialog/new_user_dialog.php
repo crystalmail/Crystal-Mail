@@ -10,7 +10,7 @@
  * @version @package_version@
  * @author Thomas Bruederli
  */
-class new_user_dialog extends rcube_plugin
+class new_user_dialog extends crystal_plugin
 {
   public $task = 'login|mail';
   
@@ -44,9 +44,9 @@ class new_user_dialog extends rcube_plugin
     if ($_SESSION['plugin.newuserdialog']) {
       $this->add_texts('localization');
       
-      $rcmail = rcmail::get_instance();
-      $identity = $rcmail->user->get_identity();
-      $identities_level = intval($rcmail->config->get('identities_level', 0));
+      $cmail = cmail::get_instance();
+      $identity = $cmail->user->get_identity();
+      $identities_level = intval($cmail->config->get('identities_level', 0));
       
       // compose user-identity dialog
       $table = new html_table(array('cols' => 2));
@@ -58,9 +58,9 @@ class new_user_dialog extends rcube_plugin
       $table->add(null, html::tag('input', array('type' => "text", 'name' => "_email", 'value' => $identity['email'], 'disabled' => ($identities_level == 1 || $identities_level == 3))));
       
       // add overlay input box to html page
-      $rcmail->output->add_footer(html::div(array('id' => "newuseroverlay"),
+      $cmail->output->add_footer(html::div(array('id' => "newuseroverlay"),
         html::tag('form', array(
-            'action' => $rcmail->url('plugin.newusersave'),
+            'action' => $cmail->url('plugin.newusersave'),
             'method' => "post"),
           html::tag('h3', null, Q($this->gettext('identitydialogtitle'))) .
           html::p('hint', Q($this->gettext('identitydialoghint'))) .
@@ -82,13 +82,13 @@ class new_user_dialog extends rcube_plugin
    */
   function save_data()
   {
-    $rcmail = rcmail::get_instance();
-    $identity = $rcmail->user->get_identity();
-    $identities_level = intval($rcmail->config->get('identities_level', 0));
+    $cmail = cmail::get_instance();
+    $identity = $cmail->user->get_identity();
+    $identities_level = intval($cmail->config->get('identities_level', 0));
     
     $save_data = array(
-      'name' => get_input_value('_name', RCUBE_INPUT_POST),
-      'email' => get_input_value('_email', RCUBE_INPUT_POST),
+      'name' => get_input_value('_name', crystal_INPUT_POST),
+      'email' => get_input_value('_email', crystal_INPUT_POST),
     );
     
     // don't let the user alter the e-mail address if disabled by config
@@ -97,11 +97,11 @@ class new_user_dialog extends rcube_plugin
     
     // save data if not empty
     if (!empty($save_data['name']) && !empty($save_data['email'])) {
-      $rcmail->user->update_identity($identity['identity_id'], $save_data);
-      $rcmail->session->remove('plugin.newuserdialog');
+      $cmail->user->update_identity($identity['identity_id'], $save_data);
+      $cmail->session->remove('plugin.newuserdialog');
     }
     
-    $rcmail->output->redirect('');
+    $cmail->output->redirect('');
   }
   
 }

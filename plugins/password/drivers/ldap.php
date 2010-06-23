@@ -16,14 +16,14 @@
 
 function password_save($curpass, $passwd)
 {
-    $rcmail = rcmail::get_instance();
+    $cmail = cmail::get_instance();
     require_once ('Net/LDAP2.php');
     
     // Building user DN
-    if ($userDN = $rcmail->config->get('password_ldap_userDN_mask')) {
+    if ($userDN = $cmail->config->get('password_ldap_userDN_mask')) {
         $userDN = substitute_vars($userDN);
     } else {
-        $userDN = search_userdn($rcmail);
+        $userDN = search_userdn($cmail);
     }
     
     if (empty($userDN)) {
@@ -31,10 +31,10 @@ function password_save($curpass, $passwd)
     }
     
     // Connection Method
-    switch($rcmail->config->get('password_ldap_method')) {
+    switch($cmail->config->get('password_ldap_method')) {
         case 'admin':
-            $binddn = $rcmail->config->get('password_ldap_adminDN');
-            $bindpw = $rcmail->config->get('password_ldap_adminPW');
+            $binddn = $cmail->config->get('password_ldap_adminDN');
+            $bindpw = $cmail->config->get('password_ldap_adminPW');
             break;
         case 'user':
         default:
@@ -47,11 +47,11 @@ function password_save($curpass, $passwd)
     $ldapConfig = array (
         'binddn'    => $binddn,
         'bindpw'    => $bindpw,
-        'basedn'    => $rcmail->config->get('password_ldap_basedn'),
-        'host'      => $rcmail->config->get('password_ldap_host'),
-        'port'      => $rcmail->config->get('password_ldap_port'),
-        'starttls'  => $rcmail->config->get('password_ldap_starttls'),
-        'version'   => $rcmail->config->get('password_ldap_version'),
+        'basedn'    => $cmail->config->get('password_ldap_basedn'),
+        'host'      => $cmail->config->get('password_ldap_host'),
+        'port'      => $cmail->config->get('password_ldap_port'),
+        'starttls'  => $cmail->config->get('password_ldap_starttls'),
+        'version'   => $cmail->config->get('password_ldap_version'),
     );
     
     // Connecting using the configuration array
@@ -63,7 +63,7 @@ function password_save($curpass, $passwd)
     }
     
     // Crypting new password
-    $newCryptedPassword = hashPassword($passwd, $rcmail->config->get('password_ldap_encodage'));
+    $newCryptedPassword = hashPassword($passwd, $cmail->config->get('password_ldap_encodage'));
     if (!$newCryptedPassword) {
         return PASSWORD_CRYPT_ERROR;
     }
@@ -74,8 +74,8 @@ function password_save($curpass, $passwd)
         return PASSWORD_CONNECT_ERROR;
     }
     
-    $pwattr = $rcmail->config->get('password_ldap_pwattr');
-    $force = $rcmail->config->get('password_ldap_force_replace');
+    $pwattr = $cmail->config->get('password_ldap_pwattr');
+    $force = $cmail->config->get('password_ldap_force_replace');
 
     if (!$userEntry->replace(array($pwattr => $newCryptedPassword), $force)) {
         return PASSWORD_CONNECT_ERROR;
@@ -93,16 +93,16 @@ function password_save($curpass, $passwd)
  * Use search_base and search_filter defined in config file.
  * Return the found DN.
  */
-function search_userdn($rcmail)
+function search_userdn($cmail)
 {
     $ldapConfig = array (
-        'binddn'    => $rcmail->config->get('password_ldap_searchDN'),
-        'bindpw'    => $rcmail->config->get('password_ldap_searchPW'),
-        'basedn'    => $rcmail->config->get('password_ldap_basedn'),
-        'host'      => $rcmail->config->get('password_ldap_host'),
-        'port'      => $rcmail->config->get('password_ldap_port'),
-        'starttls'  => $rcmail->config->get('password_ldap_starttls'),
-        'version'   => $rcmail->config->get('password_ldap_version'),
+        'binddn'    => $cmail->config->get('password_ldap_searchDN'),
+        'bindpw'    => $cmail->config->get('password_ldap_searchPW'),
+        'basedn'    => $cmail->config->get('password_ldap_basedn'),
+        'host'      => $cmail->config->get('password_ldap_host'),
+        'port'      => $cmail->config->get('password_ldap_port'),
+        'starttls'  => $cmail->config->get('password_ldap_starttls'),
+        'version'   => $cmail->config->get('password_ldap_version'),
     );
 
     $ldap = Net_LDAP2::connect($ldapConfig);
@@ -111,8 +111,8 @@ function search_userdn($rcmail)
         return '';
     }
 
-    $base = $rcmail->config->get('password_ldap_search_base');
-    $filter = substitute_vars($rcmail->config->get('password_ldap_search_filter'));
+    $base = $cmail->config->get('password_ldap_search_base');
+    $filter = substitute_vars($cmail->config->get('password_ldap_search_filter'));
     $options = array (
             'scope' => 'sub',
             'attributes' => array(),

@@ -26,7 +26,7 @@ ini_set('error_reporting', E_ALL&~E_NOTICE);
 ini_set('display_errors', 1);
 
 define('INSTALL_PATH', realpath(dirname(__FILE__) . '/../').'/');
-define('RCMAIL_CONFIG_DIR', INSTALL_PATH . 'config');
+define('cmail_CONFIG_DIR', INSTALL_PATH . 'config');
 
 $include_path  = INSTALL_PATH . 'program/lib' . PATH_SEPARATOR;
 $include_path .= INSTALL_PATH . 'program' . PATH_SEPARATOR;

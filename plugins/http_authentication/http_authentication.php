@@ -8,7 +8,7 @@
  * @version 1.1
  * @author Thomas Bruederli
  */
-class http_authentication extends rcube_plugin
+class http_authentication extends crystal_plugin
 {
   public $task = 'login';
 

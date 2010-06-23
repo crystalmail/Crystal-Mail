@@ -12,7 +12,7 @@
  |   Export the selected address book as vCard file                      |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id:  $
@@ -26,11 +26,11 @@ $result = $CONTACTS->list_records();
 
 // send downlaod headers
 send_nocacheing_headers();
-header('Content-Type: text/x-vcard; charset='.RCMAIL_CHARSET);
-header('Content-Disposition: attachment; filename="rcube_contacts.vcf"');
+header('Content-Type: text/x-vcard; charset='.cmail_CHARSET);
+header('Content-Disposition: attachment; filename="crystal_contacts.vcf"');
 
 while ($result && ($row = $result->next())) {
-  $vcard = new rcube_vcard($row['vcard']);
+  $vcard = new crystal_vcard($row['vcard']);
   $vcard->set('displayname', $row['name']);
   $vcard->set('firstname', $row['firstname']);
   $vcard->set('surname', $row['surname']);

@@ -12,7 +12,7 @@
  |   Check all mailboxes for unread messages and update GUI              |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: getunread.inc 3167 2009-12-06 11:55:28Z alec $
@@ -25,7 +25,7 @@ if (!empty($a_folders))
 {
   $current = $IMAP->get_mailbox_name();
   $inbox = ($current == 'INBOX');
-  $check_all = (bool)$RCMAIL->config->get('check_all_folders');
+  $check_all = (bool)$CMAIL->config->get('check_all_folders');
 
   foreach ($a_folders as $mbox_row) {
     if (!$check_all && isset($_SESSION['unseen_count'][$mbox_row]) && $mbox_row != $current)

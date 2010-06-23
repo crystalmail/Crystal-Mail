@@ -63,8 +63,8 @@ if ($argc < 2) {
 	die("Usage: " . basename($argv[0]) . " encrypted-hdr-part [encrypted-hdr-part ...]\n");
 }
 
-$RCMAIL = rcmail::get_instance();
+$CMAIL = cmail::get_instance();
 
 for ($i = 1; $i < $argc; $i++) {
-	printf("%s\n", $RCMAIL->decrypt($argv[$i]));
+	printf("%s\n", $CMAIL->decrypt($argv[$i]));
 };

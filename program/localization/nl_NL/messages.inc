@@ -11,7 +11,7 @@
 |                                                                       |
 +-----------------------------------------------------------------------+
 | Author: Mark Moses <mark@katmoda.com>                                 |
-|         Lazlo Westerhof <roundcube@lazlo.me>                          |
+|         Lazlo Westerhof <crystalmail@lazlo.me>                          |
 |         Frits Letteboer <f.letteboer@radiotwenterand.nl>              |
 |         Justin van Beusekom <j.v.beusekom@beus-it.nl>                 |
 +-----------------------------------------------------------------------+

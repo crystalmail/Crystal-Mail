@@ -15,6 +15,6 @@ Required Plugins: settings
 
 5: add "accounts" to your plugin array settings in your <install directory>\config\main.inc.php
 
-   $rcmail_config['plugins'] = array('settings','accounts')
+   $cmail_config['plugins'] = array('settings','accounts')
    
 Once configured, you should have "Remote IMAP Accounts" menu item under the "Account Administration" listing in Settings

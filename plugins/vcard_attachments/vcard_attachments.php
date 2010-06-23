@@ -6,7 +6,7 @@
  * @version 1.0
  * @author Thomas Bruederli
  */
-class vcard_attachments extends rcube_plugin
+class vcard_attachments extends crystal_plugin
 {
   public $task = 'mail';
   
@@ -15,8 +15,8 @@ class vcard_attachments extends rcube_plugin
 
   function init()
   {
-    $rcmail = rcmail::get_instance();
-    if ($rcmail->action == 'show' || $rcmail->action == 'preview') {
+    $cmail = cmail::get_instance();
+    if ($cmail->action == 'show' || $cmail->action == 'preview') {
       $this->add_hook('message_load', array($this, 'message_load'));
       $this->add_hook('template_object_messagebody', array($this, 'html_output'));
     }
@@ -47,7 +47,7 @@ class vcard_attachments extends rcube_plugin
   function html_output($p)
   {
     if ($this->vcard_part) {
-      $vcard = new rcube_vcard($this->message->get_part_content($this->vcard_part));
+      $vcard = new crystal_vcard($this->message->get_part_content($this->vcard_part));
       
       // successfully parsed vcard
       if ($vcard->displayname) {
@@ -78,22 +78,22 @@ class vcard_attachments extends rcube_plugin
   {
 	  $this->add_texts('localization', true);
 
-    $uid = get_input_value('_uid', RCUBE_INPUT_POST);
-    $mbox = get_input_value('_mbox', RCUBE_INPUT_POST);
-    $mime_id = get_input_value('_part', RCUBE_INPUT_POST);
+    $uid = get_input_value('_uid', crystal_INPUT_POST);
+    $mbox = get_input_value('_mbox', crystal_INPUT_POST);
+    $mime_id = get_input_value('_part', crystal_INPUT_POST);
     
-    $rcmail = rcmail::get_instance();
-    $part = $uid && $mime_id ? $rcmail->imap->get_message_part($uid, $mime_id) : null;
+    $cmail = cmail::get_instance();
+    $part = $uid && $mime_id ? $cmail->imap->get_message_part($uid, $mime_id) : null;
     
     $error_msg = $this->gettext('vcardsavefailed');
     
-    if ($part && ($vcard = new rcube_vcard($part)) && $vcard->displayname && $vcard->email) {
-      $contacts = $rcmail->get_address_book(null, true);
+    if ($part && ($vcard = new crystal_vcard($part)) && $vcard->displayname && $vcard->email) {
+      $contacts = $cmail->get_address_book(null, true);
       
       // check for existing contacts
       $existing = $contacts->search('email', $vcard->email[0], true, false);
       if ($done = $existing->count) {
-        $rcmail->output->command('display_message', $this->gettext('contactexists'), 'warning');
+        $cmail->output->command('display_message', $this->gettext('contactexists'), 'warning');
       }
       else {
         // add contact
@@ -106,14 +106,14 @@ class vcard_attachments extends rcube_plugin
         ));
         
         if ($success)
-          $rcmail->output->command('display_message', $this->gettext('addedsuccessfully'), 'confirmation');
+          $cmail->output->command('display_message', $this->gettext('addedsuccessfully'), 'confirmation');
         else
-          $rcmail->output->command('display_message', $error_msg, 'error');
+          $cmail->output->command('display_message', $error_msg, 'error');
       }
     }
     else
-      $rcmail->output->command('display_message', $error_msg, 'error');
+      $cmail->output->command('display_message', $error_msg, 'error');
     
-    $rcmail->output->send();
+    $cmail->output->send();
   }
 }

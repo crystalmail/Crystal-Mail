@@ -13,7 +13,7 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  Translated from C to PHP by Thomas Bruederli <roundcube@gmail.com>
+ *  Translated from C to PHP by Thomas Bruederli <crystalmail@gmail.com>
  */ 
 
 

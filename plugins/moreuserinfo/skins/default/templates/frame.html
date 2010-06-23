@@ -1,23 +1,23 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title><roundcube:object name="pagetitle" /></title>
-<roundcube:include file="/includes/links.html" />
+<title><crystalmail:object name="pagetitle" /></title>
+<crystalmail:include file="/includes/links.html" />
 <script type="text/javascript" src="/functions.js"></script>
 <script type="text/javascript" src="/splitter.js"></script>
 
 <style type="text/css">
-#sectionslist { width: <roundcube:exp expression="!empty(cookie:prefsviewsplitter) ? cookie:prefsviewsplitter-5 : 190" />px; }
-#prefs-box { left: <roundcube:exp expression="!empty(cookie:prefsviewsplitter) ? cookie:prefsviewsplitter+5 : 200" />px;
-<roundcube:exp expression="browser:ie ? ('width:expression((parseInt(this.parentNode.offsetWidth)-'.(!empty(cookie:prefsviewsplitter) ? cookie:prefsviewsplitter+5 : 200).')+\\'px\\');') : ''" />
+#sectionslist { width: <crystalmail:exp expression="!empty(cookie:prefsviewsplitter) ? cookie:prefsviewsplitter-5 : 190" />px; }
+#prefs-box { left: <crystalmail:exp expression="!empty(cookie:prefsviewsplitter) ? cookie:prefsviewsplitter+5 : 200" />px;
+<crystalmail:exp expression="browser:ie ? ('width:expression((parseInt(this.parentNode.offsetWidth)-'.(!empty(cookie:prefsviewsplitter) ? cookie:prefsviewsplitter+5 : 200).')+\\'px\\');') : ''" />
 }
 </style>
 
 </head>
 <body>
 
-<roundcube:include file="/includes/taskbar.html" />
-<roundcube:include file="/includes/header.html" />
+<crystalmail:include file="/includes/taskbar.html" />
+<crystalmail:include file="/includes/header.html" />
 
 <div id="prefsscreen">
 

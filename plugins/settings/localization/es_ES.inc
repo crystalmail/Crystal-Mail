@@ -13,6 +13,6 @@ $labels['managefolders']  = 'Administrar carpetas';
 $labels['account'] = 'Administración de cuentas';
 $labels['default'] = 'Por defecto';
 $labels['remotefolders'] = 'Carpetas especiales';
-$labels['myroundcube'] = 'MyRoundCube';
+$labels['mycrystalmail'] = 'MyRoundCube';
 
 ?>

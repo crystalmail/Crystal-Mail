@@ -6,9 +6,9 @@ if (php_sapi_name() != 'cli') {
 define('INSTALL_PATH', realpath(dirname(__FILE__) . '/..') . '/' );
 
 require_once INSTALL_PATH . 'program/include/iniset.php';
-require_once INSTALL_PATH . 'installer/rcube_install.php';
+require_once INSTALL_PATH . 'installer/crystal_install.php';
 
-$RCI = rcube_install::get_instance();
+$RCI = crystal_install::get_instance();
 $RCI->load_config();
 
 if ($RCI->configured) {
@@ -65,16 +65,16 @@ if ($RCI->configured) {
         
         // backup current config
         echo ". backing up the current config files...\n";
-        $copy1 = copy(RCMAIL_CONFIG_DIR . '/main.inc.php', RCMAIL_CONFIG_DIR . '/main.old.php');
-        $copy2 = copy(RCMAIL_CONFIG_DIR . '/db.inc.php', RCMAIL_CONFIG_DIR . '/db.old.php');
+        $copy1 = copy(cmail_CONFIG_DIR . '/main.inc.php', cmail_CONFIG_DIR . '/main.old.php');
+        $copy2 = copy(cmail_CONFIG_DIR . '/db.inc.php', cmail_CONFIG_DIR . '/db.old.php');
         
         if ($copy1 && $copy2) {
           $RCI->merge_config();
         
-          echo ". writing " . RCMAIL_CONFIG_DIR . "/main.inc.php...\n";
-          $write1 = file_put_contents(RCMAIL_CONFIG_DIR . '/main.inc.php', $RCI->create_config('main', true));
-          echo ". writing " . RCMAIL_CONFIG_DIR . "/main.db.php...\n";
-          $write2 = file_put_contents(RCMAIL_CONFIG_DIR . '/db.inc.php', $RCI->create_config('db', true));
+          echo ". writing " . cmail_CONFIG_DIR . "/main.inc.php...\n";
+          $write1 = file_put_contents(cmail_CONFIG_DIR . '/main.inc.php', $RCI->create_config('main', true));
+          echo ". writing " . cmail_CONFIG_DIR . "/main.db.php...\n";
+          $write2 = file_put_contents(cmail_CONFIG_DIR . '/db.inc.php', $RCI->create_config('db', true));
         }
         
         // Success!
@@ -107,7 +107,7 @@ if ($RCI->configured) {
 
   // check database schema
   if ($RCI->config['db_dsnw']) {
-    $DB = new rcube_mdb2($RCI->config['db_dsnw'], '', false);
+    $DB = new crystal_mdb2($RCI->config['db_dsnw'], '', false);
     $DB->db_connect('w');
     if ($db_error_msg = $DB->is_error()) {
       echo "Error connecting to database: $db_error_msg\n";
@@ -129,7 +129,7 @@ if ($RCI->configured) {
 }
 else {
   echo "This instance of RoundCube is not yet configured!\n";
-  echo "Open http://url-to-roundcube/installer/ in your browser and follow the instuctions.\n";
+  echo "Open http://url-to-crystalmail/installer/ in your browser and follow the instuctions.\n";
 }
 
 echo "\n";

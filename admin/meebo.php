@@ -5,8 +5,8 @@ include ('../config/main.inc.php');
 if ($_GET['_action'] == 'save') {
 // Some variables to work with
 $file_location = '../config/main.inc.php';
-$search_for_term = 'rcmail_config[\'meebo_code\'] = \''.$rcmail_config['meebo_code'].'\';';
-$replace_with_term = 'rcmail_config[\'meebo_code\'] = \''.$_POST["code"].'\';';
+$search_for_term = 'cmail_config[\'meebo_code\'] = \''.$cmail_config['meebo_code'].'\';';
+$replace_with_term = 'cmail_config[\'meebo_code\'] = \''.$_POST["code"].'\';';
 
 // The function that does the replacing
 function search_replace($search, $replace, $subject)
@@ -73,7 +73,7 @@ echo "<script type='text/javascript'>
 ?>
 <h2>Meebo Toolbar Config</h2>
 				<form action="meebo.php?_action=save" method="post">
-<p>Meebo Bar ID:<input type="text" value="<?php echo$rcmail_config['meebo_code']?>" name="code";> <font size="1" color="#333" face="Verdana">(<a href="#" id="show-menu">What?</a>)</font><br>
+<p>Meebo Bar ID:<input type="text" value="<?php echo$cmail_config['meebo_code']?>" name="code";> <font size="1" color="#333" face="Verdana">(<a href="#" id="show-menu">What?</a>)</font><br>
 <br>
 <input type="submit" />
 </form>

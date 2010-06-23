@@ -12,25 +12,25 @@
  |   Show edit form for a identity record or to add a new one            |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: edit_identity.inc 3334 2010-03-06 18:59:25Z alec $
 
 */
 
-define('IDENTITIES_LEVEL', intval($RCMAIL->config->get('identities_level', 0)));
+define('IDENTITIES_LEVEL', intval($CMAIL->config->get('identities_level', 0)));
 
 // edit-identity
-if (($_GET['_iid'] || $_POST['_iid']) && $RCMAIL->action=='edit-identity') {
-  $IDENTITY_RECORD = $USER->get_identity(get_input_value('_iid', RCUBE_INPUT_GPC));
+if (($_GET['_iid'] || $_POST['_iid']) && $CMAIL->action=='edit-identity') {
+  $IDENTITY_RECORD = $USER->get_identity(get_input_value('_iid', crystal_INPUT_GPC));
   
   if (is_array($IDENTITY_RECORD))
     $OUTPUT->set_env('iid', $IDENTITY_RECORD['identity_id']);
   else {
     $OUTPUT->show_message('opnotpermitted', 'error');
     // go to identities page
-    rcmail_overwrite_action('identities');
+    cmail_overwrite_action('identities');
     return;
   }
 }
@@ -39,19 +39,19 @@ else {
   if (IDENTITIES_LEVEL > 1) {
     $OUTPUT->show_message('opnotpermitted', 'error');
     // go to identities page
-    rcmail_overwrite_action('identities');
+    cmail_overwrite_action('identities');
     return;
   }
   else if (IDENTITIES_LEVEL == 1)
-    $IDENTITY_RECORD['email'] = $RCMAIL->user->get_username();
+    $IDENTITY_RECORD['email'] = $CMAIL->user->get_username();
 }
 
 
-function rcube_identity_form($attrib)
+function crystal_identity_form($attrib)
   {
-  global $IDENTITY_RECORD, $RCMAIL, $OUTPUT;
+  global $IDENTITY_RECORD, $CMAIL, $OUTPUT;
 
-  rcube_html_editor('identity');
+  crystal_html_editor('identity');
 
   // add some labels to client
   $OUTPUT->add_label('noemailwarning', 'nonamewarning', 'converting', 'editorwarning');
@@ -70,7 +70,7 @@ function rcube_identity_form($attrib)
                        'reply-to'     => array('type' => 'text', 'label' => 'reply-to', 'size' => $i_size),
                        'bcc'          => array('type' => 'text', 'size' => $i_size),
                        'signature'	  => array('type' => 'textarea', 'size' => $t_cols, 'rows' => $t_rows),
-                       'html_signature'=>array('type' => 'checkbox', 'label' => 'htmlsignature', 'onclick' => 'return rcmail_toggle_editor(this, \'rcmfd_signature\');'),
+                       'html_signature'=>array('type' => 'checkbox', 'label' => 'htmlsignature', 'onclick' => 'return cmail_toggle_editor(this, \'rcmfd_signature\');'),
                        'standard'     => array('type' => 'checkbox', 'label' => 'setdefault'));
 
   // disable some field according to access level
@@ -86,7 +86,7 @@ function rcube_identity_form($attrib)
     if (is_array($colprop))
       {
       $out = $form_start;
-      $out .= rcmail_get_edit_field($attrib['part'], $IDENTITY_RECORD[$attrib['part']], $attrib, $colprop['type']); 
+      $out .= cmail_get_edit_field($attrib['part'], $IDENTITY_RECORD[$attrib['part']], $attrib, $colprop['type']); 
       return $out;
       }
     else
@@ -111,11 +111,11 @@ function rcube_identity_form($attrib)
       }
 
     $label = strlen($colprop['label']) ? $colprop['label'] : $col;
-    $value = rcmail_get_edit_field($col, $IDENTITY_RECORD[$col], $colprop, $colprop['type']);
+    $value = cmail_get_edit_field($col, $IDENTITY_RECORD[$col], $colprop, $colprop['type']);
 
     $out .= sprintf("<tr><td class=\"title\"><label for=\"%s\">%s</label></td><td>%s</td></tr>\n",
                     $colprop['id'],
-                    Q(rcube_label($label)),
+                    Q(crystal_label($label)),
                     $value);
     }
 
@@ -125,12 +125,12 @@ function rcube_identity_form($attrib)
   }
 
 $OUTPUT->include_script('list.js');
-$OUTPUT->add_handler('identityform', 'rcube_identity_form');
+$OUTPUT->add_handler('identityform', 'crystal_identity_form');
 $OUTPUT->set_env('identities_level', IDENTITIES_LEVEL);
 
-$OUTPUT->set_pagetitle(rcube_label(($RCMAIL->action=='add-identity' ? 'newidentity' : 'edititem')));
+$OUTPUT->set_pagetitle(crystal_label(($CMAIL->action=='add-identity' ? 'newidentity' : 'edititem')));
 
-if ($RCMAIL->action=='add-identity' && $OUTPUT->template_exists('addidentity'))
+if ($CMAIL->action=='add-identity' && $OUTPUT->template_exists('addidentity'))
   $OUTPUT->send('addidentity');
 
 $OUTPUT->send('editidentity');

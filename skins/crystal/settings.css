@@ -4,12 +4,12 @@
 #tabsbar
 {
   position: absolute;
-    background: url('images/header.png') repeat-x;
+  background: url('images/header.png') repeat-x;
   top: 26px;
   left: 0px;
   right: 0px;
   height: 46px;
-  min-width: 350px;
+  min-width: 450px;
   padding-top: 23px;
   padding-bottom: 5px;
   padding-left: 205px;
@@ -200,7 +200,7 @@ span.tablink-selected a
   bottom: 60px;
   border: 1px solid #999999;
   overflow: auto;
-  background-color: #F2F2F2;
+
 }
 
 #identity-details table td.title
@@ -286,7 +286,6 @@ legend
 body.iframe,
 #prefs-frame
 {
-  background-color: #F2F2F2;
   border: none;
 }
 

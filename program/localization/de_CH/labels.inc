@@ -10,7 +10,7 @@
 | Licensed under the GNU GPL                                            |
 |                                                                       |
 +-----------------------------------------------------------------------+
-| Author:      Thomas Bruederli <roundcube@gmail.com>                   |
+| Author:      Thomas Bruederli <crystalmail@gmail.com>                   |
 +-----------------------------------------------------------------------+
 
 @version $Id: labels.inc 3479 2010-04-09 15:12:40Z thomasb $

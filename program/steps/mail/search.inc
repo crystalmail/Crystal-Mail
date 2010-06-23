@@ -8,7 +8,7 @@
  |                                                                       |
  +-----------------------------------------------------------------------+
  | Author: Benjamin Smith <defitro@gmail.com>                            |
- |         Thomas Bruederli <roundcube@gmail.com>                        |
+ |         Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: search.inc 3367 2010-03-17 12:24:09Z thomasb $
@@ -24,13 +24,13 @@ $_SESSION['page'] = 1;
 
 // using encodeURI with javascript "should" give us
 // a correctly encoded query string
-$imap_charset = RCMAIL_CHARSET;
+$imap_charset = cmail_CHARSET;
 
 // get search string
-$str = get_input_value('_q', RCUBE_INPUT_GET);
-$filter = get_input_value('_filter', RCUBE_INPUT_GET);
-$mbox = get_input_value('_mbox', RCUBE_INPUT_GET);
-$headers = get_input_value('_headers', RCUBE_INPUT_GET);
+$str = get_input_value('_q', crystal_INPUT_GET);
+$filter = get_input_value('_filter', crystal_INPUT_GET);
+$mbox = get_input_value('_mbox', crystal_INPUT_GET);
+$headers = get_input_value('_headers', crystal_INPUT_GET);
 $search_request = md5($mbox.$filter.$str);
 
 // add list filter string
@@ -79,9 +79,9 @@ else if(trim($str))
       }
     
     // save search modifiers for the current folder to user prefs
-    $search_mods = $RCMAIL->config->get('search_mods', $SEARCH_MODS_DEFAULT);
+    $search_mods = $CMAIL->config->get('search_mods', $SEARCH_MODS_DEFAULT);
     $search_mods[$mbox] = array_fill_keys(array_keys($subject), 1);
-    $RCMAIL->user->save_prefs(array('search_mods' => $search_mods));
+    $CMAIL->user->save_prefs(array('search_mods' => $search_mods));
   } else {
     // search in subject by default
     $subject['subject'] = 'HEADER SUBJECT';
@@ -118,7 +118,7 @@ if ($search_str) {
 // Make sure we got the headers
 if (!empty($result_h))
 {
-  rcmail_js_message_list($result_h);
+  cmail_js_message_list($result_h);
   if ($search_str)
     $OUTPUT->show_message('searchsuccessful', 'confirmation', array('nr' => $IMAP->messagecount(NULL, 'ALL')));
 }
@@ -131,7 +131,7 @@ else
 $OUTPUT->set_env('search_request', $search_str ? $search_request : -1);
 $OUTPUT->set_env('messagecount', $count);
 $OUTPUT->set_env('pagecount', ceil($count/$IMAP->page_size));
-$OUTPUT->command('set_rowcount', rcmail_get_messagecount_text($count, 1));
+$OUTPUT->command('set_rowcount', cmail_get_messagecount_text($count, 1));
 $OUTPUT->send();
 
 ?>

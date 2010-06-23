@@ -20,11 +20,11 @@
  
 class Utils
 {
-  private $rcmail = null;
+  private $cmail = null;
   private $backend = null;
 
-  public function __construct($rcmail, $backend) {
-    $this->rcmail = $rcmail;
+  public function __construct($cmail, $backend) {
+    $this->cmail = $cmail;
     $this->backend = $backend;
   }
 
@@ -49,7 +49,7 @@ class Utils
    * @access public
    */
   public function exportEvents($start, $end) {
-    if (!empty($this->rcmail->user->ID)) {
+    if (!empty($this->cmail->user->ID)) {
       $events = $this->backend->getEvents($start, $end);
 
       $ical = "BEGIN:VCALENDAR\n";

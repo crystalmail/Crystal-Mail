@@ -87,7 +87,7 @@ $_GET['what_do_you_want'] = 'just_the_version_number_please';
 include ('../program/include/iniset.php');
 
 //Check if Installed Version and Info Version
-if (RCMAIL_VERSION == $infoversion){
+if (cmail_VERSION == $infoversion){
 
 echo "
 <script type='text/javascript'>                                         

@@ -6,19 +6,19 @@
  * Add it to the plugins list in config/main.inc.php and set
  * path to a virtuser table file to resolve user names and e-mail
  * addresses
- * $rcmail_config['virtuser_file'] = '';
+ * $cmail_config['virtuser_file'] = '';
  *
  * @version 1.0
  * @author Aleksander Machniak
  */
-class virtuser_file extends rcube_plugin
+class virtuser_file extends crystal_plugin
 {
     private $file;
     private $app;
 
     function init()
     {
-	$this->app = rcmail::get_instance();
+	$this->app = cmail::get_instance();
 	$this->file = $this->app->config->get('virtuser_file');
 
 	if ($this->file) {

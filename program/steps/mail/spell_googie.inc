@@ -15,7 +15,7 @@
  |   Script from GoogieSpell by amix.dk                                  |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: spell_googie.inc 3225 2010-01-26 11:05:06Z alec $
@@ -27,7 +27,7 @@ $REMOTE_REQUEST = TRUE;
 // default settings
 $host = "ssl://www.google.com";
 $port = 443;
-$lang = get_input_value('lang', RCUBE_INPUT_GET);
+$lang = get_input_value('lang', crystal_INPUT_GET);
 $path = "/tbproxy/spell?lang=$lang";
 
 // spell check uri is configured
@@ -66,7 +66,7 @@ $store = substr($store, $pos);
 header("Content-Length: " . strlen($store));
 
 // Don't use server's default Content-Type charset (#1486406)
-header("Content-Type: text/xml; charset=".RCMAIL_CHARSET);
+header("Content-Type: text/xml; charset=".cmail_CHARSET);
 print $store;  
 exit;
 

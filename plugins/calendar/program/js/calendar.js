@@ -16,15 +16,15 @@
 $(document).ready(function() {
   
   // start loading
-  rcmail.set_busy(true,'loading');
+  cmail.set_busy(true,'loading');
 
-  rcmail.addEventListener('plugin.reloadCalendar', reloadCalendar);
+  cmail.addEventListener('plugin.reloadCalendar', reloadCalendar);
   // get settings
-  rcmail.addEventListener('plugin.getSettings', setSettings);
-  rcmail.http_post('plugin.getSettings', '');
+  cmail.addEventListener('plugin.getSettings', setSettings);
+  cmail.http_post('plugin.getSettings', '');
 
   function setSettings(response) {
-  rcmail.set_busy(false,'loading');
+  cmail.set_busy(false,'loading');
   $('#calendar').fullCalendar({
     header: {
       left: 'prev,next today',
@@ -47,29 +47,29 @@ $(document).ready(function() {
     timeFormat: response.settings['time_format'],
     axisFormat : response.settings['time_format'],
     defaultView: response.settings['default_view'],
-    allDayText: rcmail.gettext('all-day', 'calendar'),
+    allDayText: cmail.gettext('all-day', 'calendar'),
 
     buttonText: {
       today: response.settings['today'],
-      day: rcmail.gettext('day', 'calendar'),
-      week: rcmail.gettext('week', 'calendar'),
-      month: rcmail.gettext('month', 'calendar')
+      day: cmail.gettext('day', 'calendar'),
+      week: cmail.gettext('week', 'calendar'),
+      month: cmail.gettext('month', 'calendar')
     },
 
     loading : function(isLoading) {
       if(isLoading) {
-        rcmail.enable_command('plugin.calendar_print', false);
-        rcmail.set_busy(true,'loading');
+        cmail.enable_command('plugin.calendar_print', false);
+        cmail.set_busy(true,'loading');
       } else {
-        rcmail.set_busy(false,'loading');
+        cmail.set_busy(false,'loading');
       }
     },    
     eventRender: function(event, element, view) {
-      rcmail.enable_command('plugin.calendar_print', true);
+      cmail.enable_command('plugin.calendar_print', true);
       if(view.name != "month") {
         if (event.className) {
           if(!event.allDay)
-            element.find('span.fc-event-title').after("<span class=\"fc-event-categories\">"+rcmail.gettext(event.className, 'calendar')+"</span>");
+            element.find('span.fc-event-title').after("<span class=\"fc-event-categories\">"+cmail.gettext(event.className, 'calendar')+"</span>");
         }
         if (event.location) {
           element.find('span.fc-event-title').after("<span class=\"fc-event-location\">@"+event.location+"</span>");
@@ -86,11 +86,11 @@ $(document).ready(function() {
         event.end = event.start;
       }
       // send request to RoundCube
-      rcmail.http_post('plugin.moveEvent', '_event_id='+event.id+'&_start='+event.start.getTime()/1000+'&_end='+event.end.getTime()/1000+'&_allDay='+allDay);
+      cmail.http_post('plugin.moveEvent', '_event_id='+event.id+'&_start='+event.start.getTime()/1000+'&_end='+event.end.getTime()/1000+'&_allDay='+allDay);
     },
     eventResize : function(event, delta) {
       // send request to RoundCube
-      rcmail.http_post('plugin.resizeEvent', '_event_id='+event.id+'&_start='+event.start.getTime()/1000+'&_end='+event.end.getTime()/1000);
+      cmail.http_post('plugin.resizeEvent', '_event_id='+event.id+'&_start='+event.start.getTime()/1000+'&_end='+event.end.getTime()/1000);
     },
     dayClick: function(date, allDay, jsEvent, view) {
          var $dialogContent = $("#event");
@@ -100,12 +100,12 @@ $(document).ready(function() {
          var categories = $dialogContent.find("select[name='categories']");
          var location = $dialogContent.find("input[name='location']");
 
-         var save = rcmail.gettext('save', 'calendar');
-         var cancel = rcmail.gettext('cancel', 'calendar');
+         var save = cmail.gettext('save', 'calendar');
+         var cancel = cmail.gettext('cancel', 'calendar');
          var buttons = {};
          buttons[save] = function() {
            // send request to RoundCube
-           rcmail.http_post('plugin.newEvent', '_start='+date.getTime()/1000+'&_summary='+summary.val()+'&_description='+description.val()+'&_location='+location.val()+'&_categories='+categories.val()+'&_allDay='+allDay);
+           cmail.http_post('plugin.newEvent', '_start='+date.getTime()/1000+'&_summary='+summary.val()+'&_description='+description.val()+'&_location='+location.val()+'&_categories='+categories.val()+'&_allDay='+allDay);
 
            $dialogContent.dialog("close");
          };
@@ -115,7 +115,7 @@ $(document).ready(function() {
 
          $dialogContent.dialog({
             modal: true,
-            title: rcmail.gettext('new_event', 'calendar'),
+            title: cmail.gettext('new_event', 'calendar'),
             close: function() {
                $dialogContent.dialog("destroy");
                $dialogContent.hide();
@@ -131,9 +131,9 @@ $(document).ready(function() {
          var location = $dialogContent.find("input[name='location']").val(event.location);
          var categories = $dialogContent.find("select[name='categories']").val(event.className);
 
-         var save = rcmail.gettext('save', 'calendar');
-         var remove = rcmail.gettext('remove', 'calendar');
-         var cancel = rcmail.gettext('cancel', 'calendar');
+         var save = cmail.gettext('save', 'calendar');
+         var remove = cmail.gettext('remove', 'calendar');
+         var cancel = cmail.gettext('cancel', 'calendar');
          var buttons = {};
          buttons[save] = function() {
           event.title = summary.val();
@@ -142,14 +142,14 @@ $(document).ready(function() {
           event.className = categories.val();
 
           // send request to RoundCube
-          rcmail.http_post('plugin.editEvent', '_event_id='+event.id+'&_summary='+event.title+'&_description='+description.val()+'&_location='+location.val()+'&_categories='+categories.val());
+          cmail.http_post('plugin.editEvent', '_event_id='+event.id+'&_summary='+event.title+'&_description='+description.val()+'&_location='+location.val()+'&_categories='+categories.val());
 
           $('#calendar').fullCalendar('updateEvent', event);
           $dialogContent.dialog("close");
          };
          buttons[remove] = function() {
           // send request to RoundCube
-          rcmail.http_post('plugin.removeEvent', '_event_id='+event.id);
+          cmail.http_post('plugin.removeEvent', '_event_id='+event.id);
 
           $('#calendar').fullCalendar('removeEvents', event.id);
 
@@ -161,7 +161,7 @@ $(document).ready(function() {
 
          $dialogContent.dialog({
             modal: true,
-            title: rcmail.gettext('edit_event', 'calendar'),
+            title: cmail.gettext('edit_event', 'calendar'),
             close: function() {
                $dialogContent.dialog("destroy");
                $dialogContent.hide();
@@ -190,7 +190,7 @@ $(document).ready(function() {
   function exportEvents() {
     return true;
   }
-  rcmail.register_command('plugin.exportEvents', exportEvents, true);
+  cmail.register_command('plugin.exportEvents', exportEvents, true);
   
   /* print events */
   var calpopup;
@@ -202,6 +202,6 @@ $(document).ready(function() {
     calpopup.focus();
     return true;
   }
-  rcmail.register_command('plugin.calendar_print', previewPrintEvents);
+  cmail.register_command('plugin.calendar_print', previewPrintEvents);
 
 });

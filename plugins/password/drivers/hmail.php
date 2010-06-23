@@ -4,13 +4,13 @@
  * hMailserver password driver
  *
  * @version 1.0
- * @author Roland 'rosali' Liebl <myroundcube@mail4us.net>
+ * @author Roland 'rosali' Liebl <mycrystalmail@mail4us.net>
  *
  */
 
 function password_save($curpass, $passwd)
 {
-    $rcmail = rcmail::get_instance();
+    $cmail = cmail::get_instance();
 
     try {
         $obApp = new COM("hMailServer.Application");
@@ -20,7 +20,7 @@ function password_save($curpass, $passwd)
         return PASSWORD_ERROR;
     }
 
-    $username = $rcmail->user->data['username'];
+    $username = $cmail->user->data['username'];
     $temparr = explode('@', $username);
     $domain = $temparr[1];
 

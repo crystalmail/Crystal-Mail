@@ -461,7 +461,7 @@ table.records-table tr.unfocused td
 }
 
 
-/***** roundcube webmail pre-defined classes *****/
+/***** crystalmail webmail pre-defined classes *****/
 
 #rcversion
 {

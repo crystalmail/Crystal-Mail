@@ -7,13 +7,13 @@
  * to or remove them from outgoing messages.
  *
  * Enable the plugin in config/main.inc.php and add your desired headers:
- * $rcmail_config['additional_message_headers'] = array('User-Agent');
+ * $cmail_config['additional_message_headers'] = array('User-Agent');
  *
  * @version @package_version@
  * @author Ziba Scott
- * @website http://roundcube.net
+ * @website http://crystalmail.net
  */
-class additional_message_headers extends rcube_plugin
+class additional_message_headers extends crystal_plugin
 {
     public $task = 'mail';
 
@@ -27,7 +27,7 @@ class additional_message_headers extends rcube_plugin
 	$this->load_config();
 
         // additional email headers
-        $additional_headers = rcmail::get_instance()->config->get('additional_message_headers',array());
+        $additional_headers = cmail::get_instance()->config->get('additional_message_headers',array());
         foreach($additional_headers as $header=>$value){
             if (null === $value) {
                 unset($args['headers'][$header]);

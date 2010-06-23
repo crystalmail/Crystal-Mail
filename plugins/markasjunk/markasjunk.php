@@ -9,17 +9,17 @@
  * @version @package_version@
  * @author Thomas Bruederli
  */
-class markasjunk extends rcube_plugin
+class markasjunk extends crystal_plugin
 {
   public $task = 'mail';
 
   function init()
   {
-    $rcmail = rcmail::get_instance();
+    $cmail = cmail::get_instance();
 
     $this->register_action('plugin.markasjunk', array($this, 'request_action'));
       
-    if ($rcmail->action == '' || $rcmail->action == 'show') {
+    if ($cmail->action == '' || $cmail->action == 'show') {
       $skin_path = $this->local_skin_path();
       $this->include_script('markasjunk.js');
       $this->add_texts('localization', true);
@@ -38,19 +38,19 @@ class markasjunk extends rcube_plugin
     $GLOBALS['IMAP_FLAGS']['JUNK'] = 'Junk';
     $GLOBALS['IMAP_FLAGS']['NONJUNK'] = 'NonJunk';
     
-    $uids = get_input_value('_uid', RCUBE_INPUT_POST);
-    $mbox = get_input_value('_mbox', RCUBE_INPUT_POST);
+    $uids = get_input_value('_uid', crystal_INPUT_POST);
+    $mbox = get_input_value('_mbox', crystal_INPUT_POST);
     
-    $rcmail = rcmail::get_instance();
-    $rcmail->imap->unset_flag($uids, 'NONJUNK');
-    $rcmail->imap->set_flag($uids, 'JUNK');
+    $cmail = cmail::get_instance();
+    $cmail->imap->unset_flag($uids, 'NONJUNK');
+    $cmail->imap->set_flag($uids, 'JUNK');
     
-    if (($junk_mbox = $rcmail->config->get('junk_mbox')) && $mbox != $junk_mbox) {
-      $rcmail->output->command('move_messages', $junk_mbox);
+    if (($junk_mbox = $cmail->config->get('junk_mbox')) && $mbox != $junk_mbox) {
+      $cmail->output->command('move_messages', $junk_mbox);
     }
     
-    $rcmail->output->command('display_message', $this->gettext('reportedasjunk'), 'confirmation');
-    $rcmail->output->send();
+    $cmail->output->command('display_message', $this->gettext('reportedasjunk'), 'confirmation');
+    $cmail->output->send();
   }
 
 }

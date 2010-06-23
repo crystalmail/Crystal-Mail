@@ -4,7 +4,7 @@
  *
  * @version 1.2 - 31.01.2010
  * @author Roland 'rosali' Liebl (based on automatic_addressbook by Jocelyn Delalande)
- * @website http://myroundcube.googlecode.com
+ * @website http://mycrystalmail.googlecode.com
  * @licence GNU GPL
  * 
  * TUTORIAL: http://www.ibm.com/developerworks/opensource/library/x-phpgooglecontact/index.html
@@ -12,7 +12,7 @@
  **/
  
 /**
- * Usage: http://mail4us.net/myroundcube/
+ * Usage: http://mail4us.net/mycrystalmail/
  *
  * Requirements:
  * Copy and paste "Zend" folder into ./program/lib
@@ -23,11 +23,11 @@
  *
  * NOTICE: Patch ./program/lib/MDB2.php
  *         http://pear.php.net/bugs/bug.php?id=17039&edit=12&patch=skip_delimited_strings_fix_quoting_array&revision=1264618739
- *         Fixed since Roundcube SVN Trunk 3354 (http://trac.roundcube.net/ticket/1486547)
+ *         Fixed since Roundcube SVN Trunk 3354 (http://trac.crystalmail.net/ticket/1486547)
  *
  **/   
 
-class google_contacts extends rcube_plugin
+class google_contacts extends crystal_plugin
 {
 
   public $task = "mail|addressbook|settings";
@@ -45,12 +45,12 @@ class google_contacts extends rcube_plugin
       $this->load_config('config/config.inc.php');
     else
       $this->load_config('config/config.inc.php.dist');
-    $rcmail = rcmail::get_instance();
-    $this->user = $rcmail->config->get('googleuser');
-    $this->pass = $rcmail->config->get('googlepass');
+    $cmail = cmail::get_instance();
+    $this->user = $cmail->config->get('googleuser');
+    $this->pass = $cmail->config->get('googlepass');
     
     if($this->user && $this->pass){
-      $this->pass = $rcmail->decrypt($this->pass);
+      $this->pass = $cmail->decrypt($this->pass);
       $this->add_hook('address_sources', array($this, 'address_sources'));
       $this->add_hook('get_address_book', array($this, 'get_address_book'));
       $this->add_hook('create_contact', array($this, 'create_contact'));    
@@ -58,7 +58,7 @@ class google_contacts extends rcube_plugin
       $this->add_hook('delete_contact', array($this, 'delete_contact'));
       
       // use this address book for autocompletion queries
-      $config = $rcmail->config;
+      $config = $cmail->config;
       $sources = $config->get('autocomplete_addressbooks', array('sql'));
         
       if (!in_array($this->abook_id, $sources)){
@@ -82,9 +82,9 @@ class google_contacts extends rcube_plugin
   function save_contact($a){
     if($a['source'] == $this->abook_id){
       //@ ToDo: implement google contacts update when RC supports more fields
-      $rcmail = rcmail::get_instance(); 
-      $rcmail->output->show_message('google_contacts.abookreadonly', 'error', null, false);
-      rcmail_overwrite_action('show');      
+      $cmail = cmail::get_instance(); 
+      $cmail->output->show_message('google_contacts.abookreadonly', 'error', null, false);
+      cmail_overwrite_action('show');      
       $a['abort'] = true;
     }
     return $a;
@@ -100,8 +100,8 @@ class google_contacts extends rcube_plugin
     
   function address_sources($p)
   {
-    $rcmail = rcmail::get_instance();
-    if ($rcmail->config->get('use_google_abook'))
+    $cmail = cmail::get_instance();
+    if ($cmail->config->get('use_google_abook'))
       $p['sources'][$this->abook_id] = 
         array('id' => $this->abook_id, 'name' => Q($this->gettext('googlecontacts')), 'readonly' => TRUE);
     $this->sync_contacts();
@@ -110,15 +110,15 @@ class google_contacts extends rcube_plugin
   
   function get_address_book($p)
   {
-    $rcmail = rcmail::get_instance();
-    if (($p['id'] === $this->abook_id) && $rcmail->config->get('use_google_abook')) {
+    $cmail = cmail::get_instance();
+    if (($p['id'] === $this->abook_id) && $cmail->config->get('use_google_abook')) {
         require_once(dirname(__FILE__) . '/google_contacts_backend.php');
-        $p['instance'] = new google_contacts_backend($rcmail->db, $rcmail->user->ID);
-        $rcmail->output->command('enable_command','add','import',false);
+        $p['instance'] = new google_contacts_backend($cmail->db, $cmail->user->ID);
+        $cmail->output->command('enable_command','add','import',false);
     }
     else{
-      if ($p['id'] == $rcmail->config->get('default_addressbook'))
-        $rcmail->output->command('enable_command','import',true);
+      if ($p['id'] == $cmail->config->get('default_addressbook'))
+        $cmail->output->command('enable_command','import',true);
     }
     return $p;
   }
@@ -137,8 +137,8 @@ class google_contacts extends rcube_plugin
   function settings_table($args)
   {
     if ($args['section'] == 'addressbooks') {
-      $rcmail = rcmail::get_instance();    
-      $use_google_abook = $rcmail->config->get('use_google_abook');
+      $cmail = cmail::get_instance();    
+      $use_google_abook = $cmail->config->get('use_google_abook');
       $field_id = 'rcmfd_use_google_abook';
       $checkbox = new html_checkbox(array('name' => '_use_google_abook', 'id' => $field_id, 'value' => 1));
       $args['blocks']['googlecontacts']['name'] = $this->gettext('googlecontacts');
@@ -151,11 +151,11 @@ class google_contacts extends rcube_plugin
       $input_googleuser = new html_inputfield(array('name' => '_googleuser', 'id' => $field_id, 'size' => 35));
       $args['blocks']['googlecontacts']['options']['googleuser'] = array(
         'title' => html::label($field_id, Q($this->gettext('googleuser'))),
-        'content' => $input_googleuser->show($rcmail->config->get('googleuser')),
+        'content' => $input_googleuser->show($cmail->config->get('googleuser')),
       );
       
       $field_id = 'rcmfd_google_pass';
-      if($rcmail->config->get('googlepass'))
+      if($cmail->config->get('googlepass'))
         $title = $this->gettext('googlepassisset');
       else
         $title = $this->gettext('googlepassisnotset');
@@ -172,12 +172,12 @@ class google_contacts extends rcube_plugin
   function save_prefs($args)
   {
     if ($args['section'] == 'addressbooks') {    
-      $rcmail = rcmail::get_instance();
+      $cmail = cmail::get_instance();
       $args['prefs']['use_google_abook'] = isset($_POST['_use_google_abook']) ? true : false;
-      $args['prefs']['googleuser'] = get_input_value('_googleuser', RCUBE_INPUT_POST);
-      $pass = get_input_value('_googlepass', RCUBE_INPUT_POST);
+      $args['prefs']['googleuser'] = get_input_value('_googleuser', crystal_INPUT_POST);
+      $pass = get_input_value('_googlepass', crystal_INPUT_POST);
       if($pass){
-        $args['prefs']['googlepass'] = $rcmail->encrypt($pass);
+        $args['prefs']['googlepass'] = $cmail->encrypt($pass);
       }
     }
     return $args;
@@ -188,15 +188,15 @@ class google_contacts extends rcube_plugin
     if(isset($_SESSION['google_contacts_sync']))
       return;
     
-    $rcmail = rcmail::get_instance();    
+    $cmail = cmail::get_instance();    
     require_once(dirname(__FILE__) . '/google_contacts_backend.php');
-    $CONTACTS = new google_contacts_backend($rcmail->db, $rcmail->user->ID);
+    $CONTACTS = new google_contacts_backend($cmail->db, $cmail->user->ID);
     $this->get_contacts();
     
-    $db_table = $rcmail->config->get('db_table_google_contacts');
+    $db_table = $cmail->config->get('db_table_google_contacts');
     $query = "DELETE FROM $db_table WHERE user_id=?";
 
-    $res = $rcmail->db->query($query, $rcmail->user->ID);
+    $res = $cmail->db->query($query, $cmail->user->ID);
     $obj = $this->results;
     
     foreach($obj as $key => $val){
@@ -277,7 +277,7 @@ class google_contacts extends rcube_plugin
     $user = $this->user;
     $pass = $this->pass;
     $results = array();
-    spl_autoload_unregister('rcube_autoload');        
+    spl_autoload_unregister('crystal_autoload');        
     try {
       // @ToDo: move to init later if needed by other methods
       // load Zend Gdata libraries
@@ -295,8 +295,8 @@ class google_contacts extends rcube_plugin
       $gdata = new Zend_Gdata($client);
       $gdata->setMajorProtocolVersion(3);
       
-      $rcmail = rcmail::get_instance();
-      $max = $rcmail->config->get('google_contacts_max_results');
+      $cmail = cmail::get_instance();
+      $max = $cmail->config->get('google_contacts_max_results');
       if(empty($max))
         $max = 250;
       // perform query and get result feed
@@ -344,7 +344,7 @@ class google_contacts extends rcube_plugin
     catch (Exception $e) {
       $this->error = $e->getMessage();  
     }
-    spl_autoload_register('rcube_autoload');      
+    spl_autoload_register('crystal_autoload');      
     $this->results = $results;
   }
 }

@@ -12,7 +12,7 @@
 +-----------------------------------------------------------------------+
 | Author: Kjetil Waage - Nextline AS <kjetil@nextline.no>               |
 | Author: Tor Erik Linnerud - JKLM <tel@jklm.no>                        |
-| Author: Axel Sjøstedt <roundcube@sjostedt.no>                         |
+| Author: Axel Sjøstedt <crystalmail@sjostedt.no>                         |
 | Author: Odd Henriksen <odd@digicon.no>                                |
 +-----------------------------------------------------------------------+
 

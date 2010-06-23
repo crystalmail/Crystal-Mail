@@ -8,7 +8,7 @@
  * @version 1.1
  * @author Thomas Bruederli
  */
-class squirrelmail_usercopy extends rcube_plugin
+class squirrelmail_usercopy extends crystal_plugin
 {
 	public $task = 'login|settings';
 
@@ -33,10 +33,10 @@ class squirrelmail_usercopy extends rcube_plugin
 
 	public function create_identity($p)
 	{
-		$rcmail = rcmail::get_instance();
+		$cmail = cmail::get_instance();
 
 		// only execute on login
-		if ($rcmail->task == 'login' && $this->prefs) {
+		if ($cmail->task == 'login' && $this->prefs) {
 			if ($this->prefs['full_name'])
 				$p['record']['name'] = $this->prefs['full_name'];
 			if ($this->prefs['email_address'])
@@ -47,7 +47,7 @@ class squirrelmail_usercopy extends rcube_plugin
                                 $p['record']['reply-to'] = $this->prefs['reply-to']; 		
 
 			// copy address book
-			$contacts = $rcmail->get_address_book(null, true);
+			$contacts = $cmail->get_address_book(null, true);
 			if ($contacts && count($this->abook)) {
 				foreach ($this->abook as $rec)
 					$contacts->insert($rec, true);
@@ -63,9 +63,9 @@ class squirrelmail_usercopy extends rcube_plugin
 	private function read_squirrel_prefs($uname)
 	{
 		$this->load_config();
-		$rcmail = rcmail::get_instance();
+		$cmail = cmail::get_instance();
 
-		if ($srcdir = $rcmail->config->get('squirrelmail_data_dir')) {
+		if ($srcdir = $cmail->config->get('squirrelmail_data_dir')) {
 			$prefsfile = slashify($srcdir) . $uname . '.pref';
 			$abookfile = slashify($srcdir) . $uname . '.abook';
 			$sigfile = slashify($srcdir) . $uname . '.sig';

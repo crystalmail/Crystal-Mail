@@ -18,7 +18,7 @@
 
 */
 
-if ($spell_engine = $RCMAIL->config->get('spellcheck_engine', 'googie')) {
+if ($spell_engine = $CMAIL->config->get('spellcheck_engine', 'googie')) {
     include('spell_'.$spell_engine.'.inc');
 }
 

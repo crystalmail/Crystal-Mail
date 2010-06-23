@@ -12,7 +12,7 @@
  |   Perform a search on configured address books for the address        |
  |   autocompletion of the message compose screen                        |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: autocomplete.inc 3476 2010-04-07 15:53:48Z thomasb $
@@ -20,11 +20,11 @@
 */
 
 $MAXNUM = 15;
-$book_types = (array) $RCMAIL->config->get('autocomplete_addressbooks', 'sql');
+$book_types = (array) $CMAIL->config->get('autocomplete_addressbooks', 'sql');
 
-if ($RCMAIL->action == 'group-expand') {
-  $abook = $RCMAIL->get_address_book(get_input_value('_source', RCUBE_INPUT_GPC));
-  if ($gid = get_input_value('_gid', RCUBE_INPUT_GPC)) {
+if ($CMAIL->action == 'group-expand') {
+  $abook = $CMAIL->get_address_book(get_input_value('_source', crystal_INPUT_GPC));
+  if ($gid = get_input_value('_gid', crystal_INPUT_GPC)) {
     $members = array();
     $abook->set_group($gid);
     $abook->set_pagesize(1000);  // TODO: limit number of group members by config
@@ -35,11 +35,11 @@ if ($RCMAIL->action == 'group-expand') {
     $OUTPUT->command('replace_group_recipients', $gid, join(', ', $members));
   }
 }
-else if ($book_types && $search = get_input_value('_search', RCUBE_INPUT_GPC, true)) {
+else if ($book_types && $search = get_input_value('_search', crystal_INPUT_GPC, true)) {
   $contacts = array();
 
   foreach ($book_types as $id) {
-    $abook = $RCMAIL->get_address_book($id);
+    $abook = $CMAIL->get_address_book($id);
     $abook->set_pagesize($MAXNUM);
 
     if ($result = $abook->auto_complete($search, $MAXNUM, $id)) {

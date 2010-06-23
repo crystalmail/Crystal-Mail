@@ -14,10 +14,10 @@
  *   class myCustom_attachments extends filesystem_attachments
  *
  * @author Ziba Scott <ziba@umich.edu>
- * @author Thomas Bruederli <roundcube@gmail.com>
+ * @author Thomas Bruederli <crystalmail@gmail.com>
  * 
  */
-class filesystem_attachments extends rcube_plugin
+class filesystem_attachments extends crystal_plugin
 {
     public $task = 'mail';
     
@@ -49,10 +49,10 @@ class filesystem_attachments extends rcube_plugin
     function upload($args)
     {
         $args['status'] = false;
-        $rcmail = rcmail::get_instance();
+        $cmail = cmail::get_instance();
 
         // use common temp dir for file uploads
-        $temp_dir = $rcmail->config->get('temp_dir');
+        $temp_dir = $cmail->config->get('temp_dir');
         $tmpfname = tempnam($temp_dir, 'rcmAttmnt');
 
         if (move_uploaded_file($args['path'], $tmpfname) && file_exists($tmpfname)) {
@@ -75,8 +75,8 @@ class filesystem_attachments extends rcube_plugin
         $args['status'] = false;
 
         if (!$args['path']) {
-            $rcmail = rcmail::get_instance();
-            $temp_dir = $rcmail->config->get('temp_dir');
+            $cmail = cmail::get_instance();
+            $temp_dir = $cmail->config->get('temp_dir');
             $tmp_path = tempnam($temp_dir, 'rcmAttmnt');
 
             if ($fp = fopen($tmp_path, 'w')) {
@@ -148,7 +148,7 @@ class filesystem_attachments extends rcube_plugin
 
     function file_id()
     {
-        $userid = rcmail::get_instance()->user->ID;
+        $userid = cmail::get_instance()->user->ID;
 	list($usec, $sec) = explode(' ', microtime()); 
         return preg_replace('/[^0-9]/', '', $userid . $sec . $usec);
     }

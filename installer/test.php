@@ -19,8 +19,8 @@ if (!$RCI->configured ) {
 <h3>Check config files</h3>
 <?php
 
-$read_main = is_readable(RCMAIL_CONFIG_DIR.'/main.inc.php');
-$read_db = is_readable(RCMAIL_CONFIG_DIR.'/db.inc.php');
+$read_main = is_readable(cmail_CONFIG_DIR.'/main.inc.php');
+$read_db = is_readable(cmail_CONFIG_DIR.'/db.inc.php');
 
 if ($read_main && !empty($RCI->config)) {
   $RCI->pass('main.inc.php');
@@ -137,7 +137,7 @@ $db_working = false;
 if ($RCI->configured) {
     if (!empty($RCI->config['db_dsnw'])) {
 
-        $DB = new rcube_mdb2($RCI->config['db_dsnw'], '', false);
+        $DB = new crystal_mdb2($RCI->config['db_dsnw'], '', false);
         $DB->db_connect('w');
         if (!($db_error_msg = $DB->is_error())) {
             $RCI->pass('DSN (write)');
@@ -285,7 +285,7 @@ if (isset($_POST['sendmail']) && !empty($_POST['_from']) && !empty($_POST['_to']
       $mail_object  = new Mail_mime();
       $send_headers = $mail_object->headers($headers);
 
-      $SMTP = new rcube_smtp();
+      $SMTP = new crystal_smtp();
       $SMTP->connect();
 
       $status = $SMTP->send_mail($headers['From'], $headers['To'],
@@ -393,7 +393,7 @@ if (isset($_POST['imaptest']) && !empty($_POST['_host']) && !empty($_POST['_user
     $imap_port = $RCI->getprop('default_port');
   }
   
-  $imap = new rcube_imap(null);
+  $imap = new crystal_imap(null);
   if ($imap->connect($imap_host, $_POST['_user'], $_POST['_pass'], $imap_port, $imap_ssl)) {
     $RCI->pass('IMAP connect', 'SORT capability: ' . ($imap->get_capability('SORT') ? 'yes' : 'no'));
     $imap->close();

@@ -7,15 +7,15 @@
  *
  * @version 1.1 - 25.11.2009
  * @author Roland 'rosali' Liebl
- * @website http://myroundcube.googlecode.com
+ * @website http://mycrystalmail.googlecode.com
  * @licence GNU GPL
  *
  **/
  
 /**
- * Usage: http://mail4us.net/myroundcube/
+ * Usage: http://mail4us.net/mycrystalmail/
  *
- * NOTICE: Captcha Challenge template hook: <roundcube:object name="captcha" />
+ * NOTICE: Captcha Challenge template hook: <crystalmail:object name="captcha" />
  *
  **/
 
@@ -46,7 +46,7 @@
 
 #-- RoundCube Localization wrapper
 function translate($str = ""){
-  return rcube_label('captcha.' . str_replace(" ","",strtolower(trim($str))));
+  return crystal_label('captcha.' . str_replace(" ","",strtolower(trim($str))));
 }
 
 #-- config
@@ -59,7 +59,7 @@ define( 'CAPTCHA_DATA_URLS', 0);               // RFC2397-URLs exclude MSIE user
 define( 'CAPTCHA_TEMP_DIR', 'plugins/captcha/temp');
 
 /* static - (you could instantiate it, but...) */
-class captcha extends rcube_plugin {
+class captcha extends crystal_plugin {
 
   public $task = "login|mail";
 
@@ -78,8 +78,8 @@ class captcha extends rcube_plugin {
   
   function show_captcha($p){
   
-    $rcmail = rcmail::get_instance();
-    $skin = $rcmail->config->get('skin');
+    $cmail = cmail::get_instance();
+    $skin = $cmail->config->get('skin');
     
     if(!file_exists("plugins/captcha/$skin/captcha.css"))
       $skin = "default";
@@ -100,27 +100,27 @@ class captcha extends rcube_plugin {
   
   function check_captcha($args){
   
-    $rcmail = rcmail::get_instance();
+    $cmail = cmail::get_instance();
      
-    if($rcmail->task == "logout"){
+    if($cmail->task == "logout"){
       setcookie(CAPTCHA_COOKIE, '-del-', time() - 60);
     }
     
     // never check on captcha page
     if(
       isset($args['template']) &&
-      ($args['template'] == 'captcha' || $rcmail->task == 'logout')
+      ($args['template'] == 'captcha' || $cmail->task == 'logout')
       ){
            
       return $args;
       
     }
 
-    $auth = $rcmail->config->get('captcha_auth');
+    $auth = $cmail->config->get('captcha_auth');
     
     // check authenticated state
     if(!isset($_SESSION['user_id'])){    
-      $page = (array)$rcmail->config->get('captcha_page');
+      $page = (array)$cmail->config->get('captcha_page');
       $page = array_flip($page);
       if(!isset($page[$args['template']])){    
          return $args;
@@ -142,17 +142,17 @@ class captcha extends rcube_plugin {
 
     // check failed
     if(isset($_POST['captcha_input'])){
-      if($this->get_demo($_SESSION['username']) == sprintf($rcmail->config->get('demo_user_account'),"")){
-        $rcmail->output->show_message('captcha.captchainput');
+      if($this->get_demo($_SESSION['username']) == sprintf($cmail->config->get('demo_user_account'),"")){
+        $cmail->output->show_message('captcha.captchainput');
       }
       else{
-        $rcmail->output->show_message('captcha.captchafailed','error');
+        $cmail->output->show_message('captcha.captchafailed','error');
       }
     }
     else
-      $rcmail->output->show_message('captcha.captchainput');
-    $rcmail->output->set_env('keyboard_shortcuts','disabled');  
-    $rcmail->output->send('captcha.captcha', 'recur');
+      $cmail->output->show_message('captcha.captchainput');
+    $cmail->output->set_env('keyboard_shortcuts','disabled');  
+    $cmail->output->send('captcha.captcha', 'recur');
     exit;
   
   }
@@ -210,10 +210,10 @@ class captcha extends rcube_plugin {
           document.getElementById("riddle").style.display="none";
         }
         function show_riddle(){';
-        $rcmail = rcmail::get_instance();
-        if($rcmail->config->get('captcha_onclick') == 'entity_encoded'){
+        $cmail = cmail::get_instance();
+        if($cmail->config->get('captcha_onclick') == 'entity_encoded'){
           $html .= '
-          rcmail.display_message(phrase,"notice");';
+          cmail.display_message(phrase,"notice");';
         }
         else{
           $html .= '
@@ -244,14 +244,14 @@ class captcha extends rcube_plugin {
       representation of the passphrase
    */
    function textual_riddle($phrase) {
-      $rcmail = rcmail::get_instance();
-      if($rcmail->config->get('captcha_onclick') == 'entity_encoded'){
+      $cmail = cmail::get_instance();
+      if($cmail->config->get('captcha_onclick') == 'entity_encoded'){
    
         $captcha = "";
         for($i=0; $i<strlen($phrase);$i++){
           $captcha .= "&#" . ord(strtoupper(substr($phrase,$i,1))) . ";";
         }
-        $rcmail->output->add_script("var phrase=\"" . strtoupper($captcha) . "\";");
+        $cmail->output->add_script("var phrase=\"" . strtoupper($captcha) . "\";");
       }
 
       $symbols0 = '"\'-/_:';

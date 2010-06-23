@@ -11,8 +11,8 @@ ini_set( "display_errors", 0);
 
 include ('../config/main.inc.php');
 
-if (file_exists('../skins/'.$rcmail_config['skin'].'/admin/login.php')) {
-$login = '../skins/'.$rcmail_config['skin'].'/admin/login.php';
+if (file_exists('../skins/'.$cmail_config['skin'].'/admin/login.php')) {
+$login = '../skins/'.$cmail_config['skin'].'/admin/login.php';
 }
 else {
 $login ='../skins/default/admin/login.php';
@@ -43,7 +43,7 @@ include('../config/main.inc.php');
 			include_once("imap.inc.php");
 			$imap=new IMAPMAIL;
 			
-			if(!$imap->open($rcmail_config['default_host'],$rcmail_config['default_port'])){
+			if(!$imap->open($cmail_config['default_host'],$cmail_config['default_port'])){
 				echo "Server Connection Failed!";
 				exit;
 			}
@@ -57,7 +57,7 @@ include('../config/main.inc.php');
 				die();
 			} else {
 				//If we can check to see if the user is on the allowed list
-				if (in_array($_POST['user'], $rcmail_config['admin_allowed'])) {
+				if (in_array($_POST['user'], $cmail_config['admin_allowed'])) {
 				//If yes set some session vars
 					$_SESSION['last_active'] = time();
 					$_SESSION['user'] = $_POST['user'];
@@ -79,7 +79,7 @@ include('../config/main.inc.php');
 		include_once("imap.inc.php");
 		$imap=new IMAPMAIL;
 		
-		if(!$imap->open($rcmail_config['default_host'],$rcmail_config['default_port'])){
+		if(!$imap->open($cmail_config['default_host'],$cmail_config['default_port'])){
 			echo "Server Connection Failed!";
 			exit;
 		}
@@ -93,7 +93,7 @@ include('../config/main.inc.php');
 			die();
 		} else {
 	//If they can make sure they are on the allowed list
-			if (in_array($_SESSION['user'], $rcmail_config['admin_allowed'])) {
+			if (in_array($_SESSION['user'], $cmail_config['admin_allowed'])) {
 	//If they are make sure session hasn't expired		
 	if (time() - $_SESSION['last_active'] <= '500') {
 	//If it hasn't reset last_active time to current time

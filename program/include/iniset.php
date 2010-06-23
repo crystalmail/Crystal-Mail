@@ -13,7 +13,7 @@
  |   any request.                                                        |
  +-----------------------------------------------------------------------+
  | Author: Till Klampaeckel <till@php.net>                               |
- |         Thomas Bruederli <roundcube@gmail.com>                        |
+ |         Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: iniset.php 3544 2010-04-23 08:13:44Z thomasb $
@@ -36,17 +36,17 @@ foreach ($crit_opts as $optname => $optval) {
 }
 
 // application constants
-define('RCMAIL_VERSION', '1.0');
-define('RCMAIL_CHARSET', 'UTF-8');
-define('JS_OBJECT_NAME', 'rcmail');
-define('RCMAIL_START', microtime(true));
+define('cmail_VERSION', '1.0');
+define('cmail_CHARSET', 'UTF-8');
+define('JS_OBJECT_NAME', 'cmail');
+define('cmail_START', microtime(true));
 
 if ($_GET['what_do_you_want'] == 'just_the_version_number_please') {} else {
 if (!defined('INSTALL_PATH')) {
   define('INSTALL_PATH', dirname($_SERVER['SCRIPT_FILENAME']).'/');
 }
 
-define('RCMAIL_CONFIG_DIR', INSTALL_PATH . 'config');
+define('cmail_CONFIG_DIR', INSTALL_PATH . 'config');
 
 // make sure path_separator is defined
 if (!defined('PATH_SEPARATOR')) {
@@ -74,7 +74,7 @@ ini_set('error_reporting', E_ALL&~E_NOTICE);
 
 // set internal encoding for mbstring extension
 if(extension_loaded('mbstring'))
-  mb_internal_encoding(RCMAIL_CHARSET);
+  mb_internal_encoding(cmail_CHARSET);
 	      
 
 /**
@@ -83,7 +83,7 @@ if(extension_loaded('mbstring'))
  * @todo Make Zend, PEAR etc play with this
  * @todo Make our classes conform to a more straight forward CS.
  */
-function rcube_autoload($classname)
+function crystal_autoload($classname)
 {
   $filename = preg_replace(
       array(
@@ -107,12 +107,12 @@ function rcube_autoload($classname)
   include $filename. '.php';
 }
 
-spl_autoload_register('rcube_autoload');
+spl_autoload_register('crystal_autoload');
 
 /**
  * Local callback function for PEAR errors
  */
-function rcube_pear_error($err)
+function crystal_pear_error($err)
 {
   error_log(sprintf("%s (%s): %s",
     $err->getMessage(),
@@ -123,9 +123,9 @@ function rcube_pear_error($err)
 // include global functions
 require_once 'include/bugs.inc';
 require_once 'include/main.inc';
-require_once 'include/rcube_shared.inc';
+require_once 'include/crystal_shared.inc';
 
 
 // set PEAR error handling (will also load the PEAR main class)
-PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'rcube_pear_error');
+PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, 'crystal_pear_error');
 }

@@ -10,11 +10,11 @@
  | Author: Eric Stadtherr <estadtherr@gmail.com>                         |
  +-----------------------------------------------------------------------+
 
- $Id: editor.js 000 2006-05-18 19:12:28Z roundcube $
+ $Id: editor.js 000 2006-05-18 19:12:28Z crystalmail $
 */
 
 // Initialize HTML editor
-function rcmail_editor_init(skin_path, editor_lang, spellcheck, mode)
+function cmail_editor_init(skin_path, editor_lang, spellcheck, mode)
 {
   if (mode == 'identity')
     tinyMCE.init({
@@ -53,30 +53,30 @@ function rcmail_editor_init(skin_path, editor_lang, spellcheck, mode)
       extended_valid_elements : 'font[face|size|color|style],span[id|class|align|style]',
       content_css : skin_path + '/editor_content.css',
       external_image_list_url : 'program/js/editor_images.js',
-      spellchecker_languages : (rcmail.env.spellcheck_langs ? rcmail.env.spellcheck_langs : 'Dansk=da,Deutsch=de,+English=en,Espanol=es,Francais=fr,Italiano=it,Nederlands=nl,Polski=pl,Portugues=pt,Suomi=fi,Svenska=sv'),
+      spellchecker_languages : (cmail.env.spellcheck_langs ? cmail.env.spellcheck_langs : 'Dansk=da,Deutsch=de,+English=en,Espanol=es,Francais=fr,Italiano=it,Nederlands=nl,Polski=pl,Portugues=pt,Suomi=fi,Svenska=sv'),
       gecko_spellcheck : true,
       relative_urls : false,
       remove_script_host : false,
-      rc_client : rcmail,
-      oninit : 'rcmail_editor_callback'
+      rc_client : cmail,
+      oninit : 'cmail_editor_callback'
     });
 }
 
 // react to real individual tinyMCE editor init
-function rcmail_editor_callback(editor)
+function cmail_editor_callback(editor)
 {
-  var input_from = rcube_find_object('_from');
+  var input_from = crystal_find_object('_from');
   if (input_from && input_from.type=='select-one')
-    rcmail.change_identity(input_from);
+    cmail.change_identity(input_from);
   // set tabIndex
-  rcmail_editor_tabindex();
+  cmail_editor_tabindex();
 }
 
 // set tabIndex on tinyMCE editor
-function rcmail_editor_tabindex()
+function cmail_editor_tabindex()
 {
-  if (rcmail.env.task == 'mail') {
-    var editor = tinyMCE.get(rcmail.env.composebody);
+  if (cmail.env.task == 'mail') {
+    var editor = tinyMCE.get(cmail.env.composebody);
     if (editor) {
       var textarea = editor.getElement();
       var node = editor.getContentAreaContainer().childNodes[0];
@@ -87,7 +87,7 @@ function rcmail_editor_tabindex()
 }
 
 // switch html/plain mode
-function rcmail_toggle_editor(select, textAreaId, flagElement)
+function cmail_toggle_editor(select, textAreaId, flagElement)
 {
   var composeElement = document.getElementById(textAreaId);
   var flag, ishtml;
@@ -99,13 +99,13 @@ function rcmail_toggle_editor(select, textAreaId, flagElement)
 
   if (ishtml)
     {
-    rcmail.display_spellcheck_controls(false);
+    cmail.display_spellcheck_controls(false);
 
-    rcmail.plain2html(composeElement.value, textAreaId);
+    cmail.plain2html(composeElement.value, textAreaId);
     tinyMCE.execCommand('mceAddControl', false, textAreaId);
     // #1486593
-    setTimeout("rcmail_editor_tabindex();", 500);
-    if (flagElement && (flag = rcube_find_object(flagElement)))
+    setTimeout("cmail_editor_tabindex();", 500);
+    if (flagElement && (flag = crystal_find_object(flagElement)))
       flag.value = '1';
     }
   else
@@ -114,18 +114,18 @@ function rcmail_toggle_editor(select, textAreaId, flagElement)
     var existingHtml = thisMCE.getContent();
 
     if (existingHtml) {
-      if (!confirm(rcmail.get_label('editorwarning'))) {
+      if (!confirm(cmail.get_label('editorwarning'))) {
         if (select.tagName == 'SELECT')
 	  select.value = 'html';
         return false;
 	}
 
-      rcmail.html2plain(existingHtml, textAreaId);
+      cmail.html2plain(existingHtml, textAreaId);
       }
 
     tinyMCE.execCommand('mceRemoveControl', false, textAreaId);
-    rcmail.display_spellcheck_controls(true);
-    if (flagElement && (flag = rcube_find_object(flagElement)))
+    cmail.display_spellcheck_controls(true);
+    if (flagElement && (flag = crystal_find_object(flagElement)))
       flag.value = '0';
     }
 };

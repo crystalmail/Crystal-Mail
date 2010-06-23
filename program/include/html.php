@@ -12,7 +12,7 @@
  |   Helper class to create valid XHTML code                             |
  |                                                                       |
  +-----------------------------------------------------------------------+
- | Author: Thomas Bruederli <roundcube@gmail.com>                        |
+ | Author: Thomas Bruederli <crystalmail@gmail.com>                        |
  +-----------------------------------------------------------------------+
 
  $Id: html.php 3367 2010-03-17 12:24:09Z thomasb $

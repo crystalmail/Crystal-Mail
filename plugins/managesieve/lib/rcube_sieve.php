@@ -5,7 +5,7 @@
 
   Author: Aleksander Machniak <alec@alec.pl>
 
-  $Id: rcube_sieve.php 3460 2010-04-01 06:59:30Z alec $
+  $Id: crystal_sieve.php 3460 2010-04-01 06:59:30Z alec $
 
 */
 
@@ -21,13 +21,13 @@ define('SIEVE_ERROR_INTERNAL', 7);	// internal error
 define('SIEVE_ERROR_OTHER', 255);	// other/unknown error
 
 
-class rcube_sieve
+class crystal_sieve
 {
     private $sieve;			// Net_Sieve object
     private $error = false; 		// error flag 
     private $list = array(); 		// scripts list 
 
-    public $script;			// rcube_sieve_script object
+    public $script;			// crystal_sieve_script object
     public $current;			// name of currently loaded script
     private $disabled;			// array of disabled extensions
 
@@ -243,17 +243,17 @@ class rcube_sieve
     }
 
     /**
-    * Creates rcube_sieve_script object from text script
+    * Creates crystal_sieve_script object from text script
     */
     private function _parse($txt)
     {
 	// try to parse from Roundcube format
-        $script = new rcube_sieve_script($txt, $this->disabled);
+        $script = new crystal_sieve_script($txt, $this->disabled);
 
         // ... else try to import from different formats
         if (empty($script->content)) {
     	    $script = $this->_import_rules($txt);
-    	    $script = new rcube_sieve_script($script, $this->disabled);
+    	    $script = new crystal_sieve_script($script, $this->disabled);
     	}
 
         // replace all elsif with if+stop, we support only ifs
@@ -358,7 +358,7 @@ class rcube_sieve
     }		        
 }
 
-class rcube_sieve_script
+class crystal_sieve_script
 {
     public $content = array();	// script rules array   
 
