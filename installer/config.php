@@ -1,4 +1,4 @@
-<title>Crystal Mail Installer :: Step 2 :: Configuration</title>
+﻿<title>Crystal Mail Installer :: Step 2 :: Configuration</title>
 <form action="index.php" method="post">
 <input type="hidden" name="_step" value="2" />
 <?php
@@ -274,13 +274,11 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 			echo $check_enableadmin->show(intval($RCI->getprop('enable_admin')), array('value' => 1));
 			echo "Enable Admin Panel<br />";
 
-			echo "Admin Username:\n"; 
-				$text_adminuser = new html_inputfield(array('name' => '_admin_user', 'size' => 20, 'id' => "cfgadminuser"));
-				echo $text_adminuser->show($RCI->getprop('admin_user'));
+			echo "Admin Email:\n"; 
+				$text_adminuser = new html_inputfield(array('name' => '_admin_allowed', 'size' => 20));
+				echo $text_adminuser->show();
 				echo "<br /><br />";
-			echo "Admin Password:\n"; 
-				$text_adminpassword = new html_passwordfield(array('name' => '_admin_password', 'size' => 20, 'id' => "cfgadminpassword"));
-				echo $text_adminpassword->show($RCI->getprop('admin_password'));
+				$_POST['_admin_allowed'] = "array('".$_POST['_admin_allowed']."')";
 		?>		
 	</dd>
 	<div class="hint"><strong>Note:</strong> For some people this might pose a security risk.</div>
@@ -346,7 +344,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 			echo $check_hostspecific->show(intval($RCI->getprop('include_host_config')), array('value' => 1));
 		?>Enable Host Specific Configuration
 	</dd>
-	<div class="hint"><strong>Note:</strong> See <a href="http://www.crystalwebmail.com/documentation" target="_blank">http://www.crystalwebmail.com/documentation</a> for more details..</div>
+	<div class="hint"><strong>Note:</strong> See <a href="http://www.crystalmail.net/tracker/" target="_blank">http://www.crystalmail.net/tracker</a> for more details..</div>
 	<dt class="propname">Enable DNS checking for E-Mail Address Validation?</dt>
 	<div class="description"><strong>Description</strong>: This will perform a DNS lookup to validate the senders e-mail address..</div>
 	<dd>

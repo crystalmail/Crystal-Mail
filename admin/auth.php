@@ -56,13 +56,22 @@ include('../config/main.inc.php');
 				include($login);
 				die();
 			} else {
-				//If we can check to see if the user is on the allowed list
+				//If we can check to see if the user is on the allowed list (Multiple Admin Mode)
 				if (in_array($_POST['user'], $cmail_config['admin_allowed'])) {
 				//If yes set some session vars
 					$_SESSION['last_active'] = time();
 					$_SESSION['user'] = $_POST['user'];
 					$_SESSION['pass'] = $_POST['pass'];
-				} else {
+				} 
+                //If we can check to see if the user is on the allowed list (Single Admin Mode)
+				else if ($_POST['user'] == $cmail_config['admin_allowed']) {
+				//If yes set some session vars
+					$_SESSION['last_active'] = time();
+					$_SESSION['user'] = $_POST['user'];
+					$_SESSION['pass'] = $_POST['pass'];
+				} 
+				
+			   else {
 				//If they are not on the list they will be sent to the login screen
 					$_GET = array();
 					$_GET['failed'] = '1';
@@ -99,6 +108,7 @@ include('../config/main.inc.php');
 	//If it hasn't reset last_active time to current time
 	$_SESSION['last_active'] = time();
 	}
+	
 	else { 
 	//If the session has expired destroy the session and bring them back to the login screen
 	session_destroy();
@@ -107,7 +117,30 @@ include('../config/main.inc.php');
 	include ($login);
 	die();
 	}
-			} else {
+	
+	
+			} 
+					else if ($_SESSION['user'] == $cmail_config['admin_allowed']) {
+	//If they are make sure session hasn't expired		
+	if (time() - $_SESSION['last_active'] <= '500') {
+	//If it hasn't reset last_active time to current time
+	$_SESSION['last_active'] = time();
+	}
+	
+	else { 
+	//If the session has expired destroy the session and bring them back to the login screen
+	session_destroy();
+	$_GET = array();
+	$_GET['failed'] = '2';
+	include ($login);
+	die();
+	}
+	
+	
+			} 
+			
+			
+			else {
 			//If they are not on the allowed list bring them back to the login screen
 				$_GET = array();
 				$_GET['failed'] = '1';
