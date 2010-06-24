@@ -1,4 +1,19 @@
 <?php
+/*
+#########################################################
+#          Crystal Webmail Update Check Script          #
+#                   By: Hunter Dolan                    #
+#  You may not remove/modify this message or the above  #
+#          without written permission from the          #
+#                       author.                         #
+#########################################################
+# Goal:	Create a script that updates in the background  #
+#	without a performance drop and only runs twice a    #
+#					       day.	                        #
+#            APPROVED BY CRYSTAL TEAM ADMIN             #
+#########################################################
+*/
+
 //Include Version File
 
 //Tell iniset.php that you just wan't the version number (be polite)

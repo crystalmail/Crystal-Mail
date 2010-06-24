@@ -1,4 +1,20 @@
 <?php
+/*
+#########################################################
+#             Crystal Webmail Admin Script              #
+#                   By: Hunter Dolan                    #
+#  You may not remove/modify this message or the above  #
+#          without written permission from the          #
+#                       author.                         #
+#########################################################
+# Goal:	Create a script that updates in the background  #
+#	without a performance drop and only runs twice a    #
+#					       day.	                        #
+#            APPROVED BY CRYSTAL TEAM ADMIN             #
+#########################################################
+*/
+
+
 include ('auth.php');
 if ($_GET['hmmm'] == "yep") {
 echo '<br><br><br><br><br><center><div id="intro_text"><h1>HMMMMM... It doesn\'t look like you have any admin panel plugins installed!</h1><br><h3>Don\'t worry it just means that you haven\'t installed any plugins that utilize the Crystal Mail Admin Panel\'s Plugin API.</h3></div></center>';

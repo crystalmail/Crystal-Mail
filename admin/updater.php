@@ -1,4 +1,20 @@
 <?php
+/*
+#########################################################
+#             Crystal Webmail Update Script             #
+#                   By: Hunter Dolan                    #
+#  You may not remove/modify this message or the above  #
+#          without written permission from the          #
+#                       author.                         #
+#########################################################
+# Goal:	Create a script that updates in the background  #
+#	without a performance drop and only runs twice a    #
+#					       day.	                        #
+#            APPROVED BY CRYSTAL TEAM ADMIN             #
+#########################################################
+*/
+
+
 include('auth.php');
 if ($_GET['show'] == '') {
 echo '<iframe src="updater.php?show=1" scrolling="no" frameborder="no" height = "100%" width = "100%"></iframe>';
