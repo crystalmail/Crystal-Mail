@@ -282,15 +282,6 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 		?>		
 	</dd>
 	<div class="hint"><strong>Note:</strong> For some people this might pose a security risk.</div>
-	<dt class="propname">Crystal Webmail Installer</dt>
-	<div class="description"><strong>Description</strong>: This option allows you to keep the installer available after you complete this installation.</div>
-	<dd>
-		<?php
-			$check_installer = new html_checkbox(array('name' => '_enable_installer', 'id' => "cfgenableinstaller"));
-			echo $check_installer->show(intval($RCI->getprop('enable_installer')), array('value' => 0));
-		?>Leave Crystal Installer Enabled (Not Recommended)
-	</dd>
-	<div class="hint"><strong>Note:</strong> THIS IS NOT RECOMMENDED AND POSES A MAJOR SECURITY RISK!!!</div>
 	<dt class="propname">Client IP Check</dt>
 	<div class="description"><strong>Description</strong>: This will check the client IP in the session authorization.</div>
 	<dd>
