@@ -90,7 +90,6 @@ $cmail_config['virtuser_query'] = '';
 
 // In order to enable the admin panel, you must change this option to 'true'.
 // Once enabled, you can access it via www.example.org/admin
-// Default login is User: admin Password: admin -- This can and should be changed after login
 $cmail_config['enable_admin'] = false;
 
 // Admin Panel username and password
@@ -99,7 +98,7 @@ $cmail_config['admin_allowed'] = array('');
 
 // THIS OPTION WILL ALLOW THE INSTALLER TO RUN AND CAN EXPOSE SENSITIVE CONFIG DATA.
 // ONLY ENABLE IT IF YOU'RE REALLY SURE WHAT YOU'RE DOING!
-$cmail_config['enable_installer'] = true;
+$cmail_config['enable_installer'] = false;
 
 // Check client IP in session athorization
 $cmail_config['ip_check'] = false;
