@@ -26,6 +26,8 @@
  $Id: index.php 3544 2010-04-23 08:13:44Z thomasb $
 
 */
+//Hide Errors Unless in Debug Mode
+if ($_GET['debug_mode'] = "1") {}else{error_reporting(0);}
 // include environment
 require_once 'program/include/iniset.php';
 

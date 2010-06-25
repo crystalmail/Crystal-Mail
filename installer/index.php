@@ -71,11 +71,14 @@ if ($RCI->configured && empty($_REQUEST['_step'])) {
 
 	<?php
 		$installer_enabled =  $RCI->getprop('enable_installer');
+		if ($_GET['_step'] == "4") {
+		}else {
 		if ($installer_enabled == '0'){
 		    header("HTTP/1.0 404 Not Found");
 			echo '<div id="rounded" class="rounded"><h1 class="fail"><center>DENIED!!!</center></h1>';
 			echo '<center>The installer is disabled! To enable, change the variable "enable_installer" to "true" in your main.inc.php</center></div>';
 			exit;
+	}
 	}
 	?>
 	<ol id="progress">
@@ -90,21 +93,6 @@ if ($RCI->configured && empty($_REQUEST['_step'])) {
 	?>
 	</center>
 	</ol>
-
-
-
-<?php
-
-  // exit if installation is complete
-  if ($RCI->configured && !$RCI->getprop('enable_installer') && !$_SESSION['allowinstaller']) {
-    // header("HTTP/1.0 404 Not Found");
-    echo '<h2 class="error">The installer is disabled!</h2>';
-    echo '<p>To enable it again, set <tt>$cmail_config[\'enable_installer\'] = true;</tt> in cmail_CONFIG_DIR/main.inc.php</p>';
-    echo '</div></body></html>';
-    exit;
-  }
-  
-?>
 
 <?php
 $include_steps = array('./welcome.php', './check.php', './config.php', './gen.php', './test.php');
