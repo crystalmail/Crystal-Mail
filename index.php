@@ -30,10 +30,13 @@
 if ($_GET['debug_mode'] = "1") {}else{error_reporting(0);}
 // include environment
 require_once 'program/include/iniset.php';
-
+if (file_exists('config/main.inc.php')) { 
+include ('config/main.inc.php');
 //Update Script
+if ($cmail_config['enable_auto_updates'] == 'true') {
 include ('./program/crystal/update/update.php');
-
+}
+}
 // init application, start session, init output class, etc.
 $CMAIL = cmail::get_instance();
 

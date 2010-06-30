@@ -1,7 +1,6 @@
 <?php
-
+ini_set( "display_errors", 0);
 ini_set('error_reporting', E_ALL&~E_NOTICE);
-ini_set('display_errors', 1);
 
 define('INSTALL_PATH', realpath(dirname(__FILE__) . '/../').'/');
 define('cmail_CONFIG_DIR', INSTALL_PATH . 'config');

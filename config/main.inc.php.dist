@@ -140,6 +140,8 @@ $cmail_config['include_host_config'] = false;
 // Enable DNS checking for e-mail address validation
 $cmail_config['email_dns_check'] = false;
 
+// Enable Automatic Updates
+$cmail_config['enable_auto_updates'] = true;
 
 
 

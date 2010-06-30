@@ -1,19 +1,13 @@
-﻿<?php
-if ($_GET['level'] == '') {
-echo '<meta http-equiv="refresh" content="0;url=?_step=2&level=2">';
-die();
-}
-?>
+﻿
 <title>Crystal Mail Installer :: Step 2 :: Configuration</title>
 <form action="index.php" method="post">
-<input type="hidden" name="_step" value="3" />
+<input type="hidden" name="_step" value="2" />
 <style>
 .hidden {
 display: none;
 }
-</style><?php
-
-
+</style>
+<?php
 // also load the default config to fill in the fields
 $RCI->load_defaults();
 
@@ -30,7 +24,33 @@ $RCI->bool_config_props = array(
 	'debug_level' => 1,
 	'smtp_user_u' => 1,
 	'enable_admin' => 1,
+	'enable_auto_updates' => 1,
 );
+
+// allow the current user to get to the next step
+$_SESSION['allowinstaller'] = true;
+
+if (!empty($_POST['submit'])) {
+	$textbox = new html_textarea(array('rows' => 20, 'cols' => 100, 'class' => "configfile"));
+	echo '<div class="rounded" id="rounded"> <h2><p class="center">Please review the two configuration files below. If all the setting are correct, click the INSTALL button.</p></h2>';
+	
+	echo '<div><fieldset class="rounded"><p><legend>main.inc.php';	
+	echo '(<a href="index.php?_getfile=main">download</a>)</p></legend>';
+	echo $textbox->show(($_SESSION['main.inc.php'] = $RCI->create_config('main')));
+	echo '</fieldset>';	
+	
+	echo '<fieldset class="rounded"><legend>db.inc.php';	
+	echo '(<a href="index.php?_getfile=db">download</a>)</legend>';
+	echo $textbox->show($_SESSION['db.inc.php'] = $RCI->create_config('db'));
+	
+	
+	
+	echo '<p class="center">Of course there are more options to configure.
+	Have a look at the config files or visit <a href="http://trac.crystalwebmail.net/wiki/Howto_Config">Howto_Config</a> to find out.</p>';
+	echo '</fieldset></div>';	
+	echo '<br><div id="button"><input type="button" onclick="location.href=\'./index.php?_step=3\'" value="INSTALL" /></div><br>';
+	echo "\n</div>\n";
+}
 
 // Function to create a new random token
 // e.g. createToken('UG8D-', 3, 4)
@@ -60,20 +80,17 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 <input type="hidden" name="_step" value="2" />
 <div class="rounded" id="rounded">
 	<br />
-
 	<div id="impatient">
-<p><?php if ($_GET['level'] == 2) { echo 'In a hurry? To complex? Click <a href="?_step=2&level=1">here</a> for the express version!';} else {echo 'Want a more in-depth configuration? Click <a href="?_step=2&level=2">here</a>!';} ?></p>
+<p><?php if ($_GET['level'] == 2) { echo 'In a hurry? To complex? Click <a href="?_step=2&level=1">here</a> for the express version!';} else if ($_GET['level'] == 1) {echo 'Want a more in-depth configuration? Click <a href="?_step=2&level=2">here</a>!';} ?><?php if ($_POST['level'] == 2) { echo 'In a hurry? To complex? Click <a href="?_step=2&level=1">here</a> for the express version!';} else if ($_POST['level'] == 1) {echo 'Want a more in-depth configuration? Click <a href="?_step=2&level=2">here</a>!';} ?></p>
 	</div>
-	
 	<br /><br />
 
 	
 <form name="form" method="post" action="?action=install">
-
 <fieldset class="rounded">
 <legend class="legend">General Configuration</legend>
 <dl class="configblock">
-	<div class="hidden">
+<div class="hidden">
 	<dt class="propname">Plugins</dt>
 	<div class="description"><strong>Description</strong>: When the options below are checked, the associated plugins are enabled.</div>
 	<div class="hint">The following Plugins were found on your system:</div>
@@ -93,10 +110,9 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 			} 
 		?>
 	</dd>
-
+	</div>
 		<div class="hint"><strong>Note:</strong> The default plugins selected have already been configured. If you enable additional ones, you may need to configure them.</div>
-		</div>
-		<dt class="propname">Automatically Create Users</dt>
+	<dt class="propname">Automatically Create Users</dt>
 	<div class="description"><strong>Description</strong>: This will automatically create a new user once the IMAP login has suceeded.</div>
 	<dd>
 		<?php
@@ -204,8 +220,11 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<input name="check_all_folders" size="5" id="check_all_folders" value="true" type="hidden" />
 </dl>
 </fieldset>
-<br>
-<br>
+
+
+
+<div class="spacer"></div>
+
 <fieldset class="rounded">
 <legend class="legend">Connection & Server Configuration</legend>
 <p class="propname"><strong>Note:</strong> Additional configuration options are available through the main.inc.php in the Crystal Mail config directory. This template is only used to provide an initial configuration to get Crystal mail installed and running.</p><br />
@@ -400,11 +419,24 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 			echo "Admin Email:\n"; 
 				$text_adminuser = new html_inputfield(array('name' => '_admin_allowed', 'size' => 20));
 				echo $text_adminuser->show();
-				echo "<br />";
+				echo "<br /><br />";
 				$_POST['_admin_allowed'] = "array('".$_POST['_admin_allowed']."')";
 		?>		
 	</dd>
+	
 	<div class="hint"><strong>Note:</strong> For some people this might pose a security risk.</div>
+		<br><dt class="propname">Automatic Updates</dt>
+	<div class="description"><strong>Description</strong>: This will enable the Auto Updates.</div>
+	<dd>
+		<?php
+			$check_enable_auto_updates = new html_checkbox(array('name' => '_enable_auto_updates', 'id' => "cfgenableautoupdates"));
+			echo $check_enable_auto_updates->show(intval($RCI->getprop('enable_auto_updates')), array('value' => 1));
+			echo "Enable Automatic Updates<br />";
+			?>
+
+</dd>
+			
+	
 	<dt class="propname">Client IP Check</dt>
 	<div class="description"><strong>Description</strong>: This will check the client IP in the session authorization.</div>
 	<dd>
@@ -427,7 +459,6 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	
 	<dd>
 		<?php
-		ini_set( "display_errors", 0);
 			$check_footer = new html_textarea(array('name' => '_message_footer', 'id' => "cfgfooter", 'cols' => "65", 'rows' => "10"));
 			echo $check_footer->show(file_get_contents('../config/footer.txt'));
 		?> 
@@ -509,10 +540,10 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<input name="mail_header_delimiter" size="30" id="mail_header_delimiter" value="null" type="hidden" />
 </dl>
 </fieldset>
-<?php if ($_GET['level'] == 2) { echo '';} else {echo '<div class="hidden">';} ?>
 
 <div class="spacer"></div>
-
+<?php if ($_GET['level'] == 2) { echo '';} else if ($_GET['level'] == 1) {echo '<div class="hidden">';} ?>
+<?php if ($_POST['level'] == 2) { echo '';} else if ($_POST['level'] == 2) {echo '<div class="hidden">';} ?>
 <fieldset class="rounded">
 <legend class="legend">Debugging & Logging Configuration</legend>
 <dl class="configblock">
@@ -644,9 +675,6 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 <div class="spacer"></div>
 
 
-
-
-<div class="spacer"></div>
 
 <fieldset class="rounded">
 <legend class="legend">Miscellaneous Configuration</legend>
@@ -1263,8 +1291,10 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 </fieldset>
 
 -->
-<?php if ($_GET['level'] == 2) { echo '';} else {echo '</div>';} ?>
+<?php if ($_POST['level'] == 2) {$_POST['level'] = "2";} else if ($_POST['level'] == 1) {echo '</div>';$_POST['level'] = "1";} ?>
+<?php if ($_GET['level'] == 2) {$_POST['level'] = "2";} else if ($_GET['level'] == 1) {echo '</div>';$_POST['level'] = "1";} ?>
 <?php
+$_GET['level'] = "";
 
 echo '<p><div id="button"><input type="submit" name="submit" value="' . ($RCI->configured ? 'Update' : 'Create') . ' Configuration Files" ' . ($RCI->failures ? 'disabled' : '') . ' /></div></p><br>';
 
