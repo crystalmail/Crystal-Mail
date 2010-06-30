@@ -1,8 +1,7 @@
 <form action="index.php?_step=3" method="post">
+
 <?php
-	// check env for a local configuration
-	if (!$RCI->configured ) {
-    
+
 		$content = $_SESSION['main.inc.php'];
 		$new_main = '../config/main.inc.php';
 		$handle_main = fopen($new_main, 'x+') or die("<div class='fail'>Error! Cannot write to files to server please chmod the entire Crystal directory 775. Thank-you!</div>");
@@ -12,7 +11,7 @@
 		$handle_db = fopen('../config/db.inc.php', 'x+') or die();
 		fwrite ($handle_db,$_SESSION['db.inc.php']);
 		fclose($handle_db);
-	}
+	
  	
 ?>
 <div id="rounded" class="rounded"><center>
