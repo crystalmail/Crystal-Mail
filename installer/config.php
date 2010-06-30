@@ -1,7 +1,19 @@
-﻿<title>Crystal Mail Installer :: Step 2 :: Configuration</title>
+﻿<?php
+if ($_GET['level'] == '') {
+echo '<meta http-equiv="refresh" content="0;url=?_step=2&level=2">';
+die();
+}
+?>
+<title>Crystal Mail Installer :: Step 2 :: Configuration</title>
 <form action="index.php" method="post">
-<input type="hidden" name="_step" value="2" />
-<?php
+<input type="hidden" name="_step" value="3" />
+<style>
+.hidden {
+display: none;
+}
+</style><?php
+
+
 // also load the default config to fill in the fields
 $RCI->load_defaults();
 
@@ -19,31 +31,6 @@ $RCI->bool_config_props = array(
 	'smtp_user_u' => 1,
 	'enable_admin' => 1,
 );
-
-// allow the current user to get to the next step
-$_SESSION['allowinstaller'] = true;
-
-if (!empty($_POST['submit'])) {
-	$textbox = new html_textarea(array('rows' => 20, 'cols' => 100, 'class' => "configfile"));
-	echo '<div class="rounded" id="rounded"> <h2><p class="center">Please review the two configuration files below. If all the setting are correct, click the INSTALL button.</p></h2>';
-	
-	echo '<div><fieldset class="rounded"><p><legend>main.inc.php';	
-	echo '(<a href="index.php?_getfile=main">download</a>)</p></legend>';
-	echo $textbox->show(($_SESSION['main.inc.php'] = $RCI->create_config('main')));
-	echo '</fieldset>';	
-	
-	echo '<fieldset class="rounded"><legend>db.inc.php';	
-	echo '(<a href="index.php?_getfile=db">download</a>)</legend>';
-	echo $textbox->show($_SESSION['db.inc.php'] = $RCI->create_config('db'));
-	
-	echo '<p id="button"><input type="button" onclick="location.href=\'./index.php?_step=3\'" value="INSTALL" /></p>';
-	
-	echo '<p class="center">Of course there are more options to configure.
-	Have a look at the config files or visit <a href="http://trac.crystalwebmail.net/wiki/Howto_Config">Howto_Config</a> to find out.</p>';
-	echo '</fieldset></div>';	
-	
-	echo "\n</div>\n";
-}
 
 // Function to create a new random token
 // e.g. createToken('UG8D-', 3, 4)
@@ -73,16 +60,152 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 <input type="hidden" name="_step" value="2" />
 <div class="rounded" id="rounded">
 	<br />
+
 	<div id="impatient">
-		<p>FOR THE IMPATIENT: It is possible to just enter the "Connection & Server" information and run Crystal Webmail without any other configuration.</p>
-		<p>It is recommended to be familiar with each of the options though.</p>
+<p><?php if ($_GET['level'] == 2) { echo 'In a hurry? To complex? Click <a href="?_step=2&level=1">here</a> for the express version!';} else {echo 'Want a more in-depth configuration? Click <a href="?_step=2&level=2">here</a>!';} ?></p>
 	</div>
+	
 	<br /><br />
 
 	
 <form name="form" method="post" action="?action=install">
 
+<fieldset class="rounded">
+<legend class="legend">General Configuration</legend>
+<dl class="configblock">
+	<div class="hidden">
+	<dt class="propname">Plugins</dt>
+	<div class="description"><strong>Description</strong>: When the options below are checked, the associated plugins are enabled.</div>
+	<div class="hint">The following Plugins were found on your system:</div>
+	<dd>
+		<?php 
+			include ('../config/main.inc.php.dist'); 
+			$plugins=scandir("../plugins"); 
+			foreach ($plugins as $plugin_name){ 
+				$checked = "array('value' => 0"; 
+				if (preg_match("/[^.\^.svn\^.DS_Store]/", $plugin_name)) { 
+					if (in_array($plugin_name, $cmail_config['plugins'])){ 
+						$checked = ""; 
+					} 
+					$check_plugin = new html_checkbox(array('name' => '_plugin_'.$plugin_name, 'id' => "cfgplugin".$plugin_name)); 
+					echo $check_plugin->show($checked).$plugin_name."<br>"; 
+				} 
+			} 
+		?>
+	</dd>
 
+		<div class="hint"><strong>Note:</strong> The default plugins selected have already been configured. If you enable additional ones, you may need to configure them.</div>
+		</div>
+		<dt class="propname">Automatically Create Users</dt>
+	<div class="description"><strong>Description</strong>: This will automatically create a new user once the IMAP login has suceeded.</div>
+	<dd>
+		<?php
+			$check_autocreate = new html_checkbox(array('name' => '_auto_create_user', 'id' => "cfgautocreate"));
+			echo $check_autocreate->show(intval($RCI->getprop('auto_create_user')), array('value' => 1));
+		?>Automatically Create Users (Recommended)
+	</dd>
+	<div class="hint"><strong>Note:</strong> It is recommended to leave this enabled otherwise only users that have logged into Crystal before will be able to login.</div>
+	<dt class="propname">Page Titles</dt>
+	<div class="description"><strong>Description</strong>: This is the title you want to appear in the browser window title bar.</div>
+	<dd>
+		<?php
+			$input_prodname = new html_inputfield(array('name' => '_product_name', 'size' => 30, 'id' => "cfgprodname"));
+			echo $input_prodname->show($RCI->getprop('product_name'));
+		?>
+	</dd>
+	<dt class="propname">Folder Names: Drafts</dt>
+	<div class="description"><strong>Description</strong>: This is the name of the folder used to store draft messages.</div>
+	
+	<dd>
+		<?php
+			$text_draftsmbox = new html_inputfield(array('name' => '_drafts_mbox', 'size' => 20, 'id' => "cfgdraftsmbox"));
+			echo $text_draftsmbox->show($RCI->getprop('drafts_mbox'));
+		?>
+	</dd>
+	<div class="hint"><strong>Note:</strong> If left blank, draft messages will not be stored.</div>
+	<dt class="propname">Folder Names: Junk</dt>
+	<div class="description"><strong>Description</strong>: This is the name of the folder used to store junk messages.</div>
+
+	<dd>
+		<?php
+			$text_junkmbox = new html_inputfield(array('name' => '_junk_mbox', 'size' => 20, 'id' => "cfgjunkmbox"));
+			echo $text_junkmbox->show($RCI->getprop('junk_mbox'));
+		?>
+	</dd>
+	<div class="hint"><strong>Note:</strong> If left blank, junk messages will not be stored.</div>
+	<dt class="propname">Folder Names: Archive</dt>
+	<div class="description"><strong>Description</strong>: This is the name of the folder used to store archive messages.</div>
+	<dd>
+		<?php
+			$text_archivembox = new html_inputfield(array('name' => '_archive_mbox', 'size' => 20, 'id' => "cfgarchivembox"));
+			echo $text_archivembox->show($RCI->getprop('archive_mbox'));
+		?>
+	</dd>
+	<div class="hint"><strong>Note:</strong> If left blank, archive messages will not be stored.</div>
+	<dt class="propname">Folder Names: Sent</dt>
+	<div class="description"><strong>Description</strong>: This is the name of the folder used to store sent messages.</div>
+
+	<dd>
+		<?php
+			$text_sentmbox = new html_inputfield(array('name' => '_sent_mbox', 'size' => 20, 'id' => "cfgsentmbox"));
+			echo $text_sentmbox->show($RCI->getprop('sent_mbox'));
+		?>
+	</dd>
+	<div class="hint"><strong>Note:</strong> If left blank, sent messages will not be stored.</div>
+	<dt class="propname">Folder Names: Trash</dt>
+	<div class="description"><strong>Description</strong>: This is the name of the folder used to store trash messages.</div>
+	
+	<dd>
+		<?php
+			$text_trashmbox = new html_inputfield(array('name' => '_trash_mbox', 'size' => 20, 'id' => "cfgtrashmbox"));
+			echo $text_trashmbox->show($RCI->getprop('trash_mbox'));
+		?>
+	</dd>
+	<div class="hint"><strong>Note:</strong> If left blank, trash messages will not be stored.</div>
+	<dt class="propname">Automaticvally Create Default Folders</dt>
+	<div class="description"><strong>Description</strong>: This will automatically create the default IMAP folders after login.</div>
+	<dd>
+		<?php
+			$check_createfolders = new html_checkbox(array('name' => '_create_default_folders', 'size' => 20, 'id' => "cfgcreatefolders"));
+			echo $check_createfolders->show(intval($RCI->getprop('create_default_folders')), array('value' => 1));
+		?>Create Default IMAP Folders Upon Successful Login
+	</dd>
+	<dt class="propname">Protect Default IMAP Folders</dt>
+	<div class="description"><strong>Description</strong>: When this option is enabled, it will prevent users from renaming, deleting, or subscription changes to default IMAP folders.</div>
+	<dd>
+		<?php
+			$check_protectfolders = new html_checkbox(array('name' => '_protect_default_folders', 'size' => 20, 'id' => "cfgprotectfolders"));
+			echo $check_protectfolders->show(intval($RCI->getprop('protect_default_folders')), array('value' => 1));
+		?>Protect Default IMAP Folders From Modification
+	</dd>
+	<dt class="propname">Delivery Notification</dt>
+	<div class="description"><strong>Description</strong>: Choose the default behavior when a delivery notification (read receipt) is requested.</div>
+	<dd>
+		<?php
+			$select_mdnreq = new html_select(array('name' => '_mdn_requests', 'id' => "cfgmdnreq"));
+			$select_mdnreq->add(array('Ask The User', 'Send Automatically', 'Ignore'), array(0, 1, 2));
+			echo $select_mdnreq->show(intval($RCI->getprop('mdn_requests')));
+		?>
+	</dd>
+	<dt class="propname">Identities</dt>
+	<div class="description"><strong>Description</strong>: This will determine to what extent a users identity may be modified.</div>
+	<dd>
+		<?php
+			$input_ilevel = new html_select(array('name' => '_identities_level', 'id' => "cfgidentitieslevel"));
+			$input_ilevel->add('One identity with possibility to edit all params but not email address.', 3);
+			$input_ilevel->add('One identity with possibility to edit all params.', 2);
+			$input_ilevel->add('Many identities with possibility to edit all params but not email address.', 1);
+			$input_ilevel->add('Many identities with possibility to edit all params.', 0);
+			echo $input_ilevel->show($RCI->getprop('identities_level'), 0);
+		?>
+	</dd>
+	
+	<!-- These entries are not part of the config but are required for the main.inc.php -->
+	<input name="check_all_folders" size="5" id="check_all_folders" value="true" type="hidden" />
+</dl>
+</fieldset>
+<br>
+<br>
 <fieldset class="rounded">
 <legend class="legend">Connection & Server Configuration</legend>
 <p class="propname"><strong>Note:</strong> Additional configuration options are available through the main.inc.php in the Crystal Mail config directory. This template is only used to provide an initial configuration to get Crystal mail installed and running.</p><br />
@@ -277,7 +400,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 			echo "Admin Email:\n"; 
 				$text_adminuser = new html_inputfield(array('name' => '_admin_allowed', 'size' => 20));
 				echo $text_adminuser->show();
-				echo "<br /><br />";
+				echo "<br />";
 				$_POST['_admin_allowed'] = "array('".$_POST['_admin_allowed']."')";
 		?>		
 	</dd>
@@ -304,6 +427,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	
 	<dd>
 		<?php
+		ini_set( "display_errors", 0);
 			$check_footer = new html_textarea(array('name' => '_message_footer', 'id' => "cfgfooter", 'cols' => "65", 'rows' => "10"));
 			echo $check_footer->show(file_get_contents('../config/footer.txt'));
 		?> 
@@ -385,6 +509,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 	<input name="mail_header_delimiter" size="30" id="mail_header_delimiter" value="null" type="hidden" />
 </dl>
 </fieldset>
+<?php if ($_GET['level'] == 2) { echo '';} else {echo '<div class="hidden">';} ?>
 
 <div class="spacer"></div>
 
@@ -518,137 +643,6 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 
 <div class="spacer"></div>
 
-<fieldset class="rounded">
-<legend class="legend">General Configuration</legend>
-<dl class="configblock">
-	<dt class="propname">Plugins</dt>
-	<div class="description"><strong>Description</strong>: When the options below are checked, the associated plugins are enabled.</div>
-	<div class="hint">The following Plugins were found on your system:</div>
-	<dd>
-		<?php 
-			include ('../config/main.inc.php.dist'); 
-			$plugins=scandir("../plugins"); 
-			foreach ($plugins as $plugin_name){ 
-				$checked = "array('value' => 0"; 
-				if (preg_match("/[^.\^.svn\^.DS_Store]/", $plugin_name)) { 
-					if (in_array($plugin_name, $cmail_config['plugins'])){ 
-						$checked = ""; 
-					} 
-					$check_plugin = new html_checkbox(array('name' => '_plugin_'.$plugin_name, 'id' => "cfgplugin".$plugin_name)); 
-					echo $check_plugin->show($checked).$plugin_name."<br>"; 
-				} 
-			} 
-		?>
-	</dd>
-		<div class="hint"><strong>Note:</strong> The default plugins selected have already been configured. If you enable additional ones, you may need to configure them.</div>
-	<dt class="propname">Automatically Create Users</dt>
-	<div class="description"><strong>Description</strong>: This will automatically create a new user once the IMAP login has suceeded.</div>
-	<dd>
-		<?php
-			$check_autocreate = new html_checkbox(array('name' => '_auto_create_user', 'id' => "cfgautocreate"));
-			echo $check_autocreate->show(intval($RCI->getprop('auto_create_user')), array('value' => 1));
-		?>Automatically Create Users (Recommended)
-	</dd>
-	<div class="hint"><strong>Note:</strong> It is recommended to leave this enabled otherwise only users that have logged into Crystal before will be able to login.</div>
-	<dt class="propname">Page Titles</dt>
-	<div class="description"><strong>Description</strong>: This is the title you want to appear in the browser window title bar.</div>
-	<dd>
-		<?php
-			$input_prodname = new html_inputfield(array('name' => '_product_name', 'size' => 30, 'id' => "cfgprodname"));
-			echo $input_prodname->show($RCI->getprop('product_name'));
-		?>
-	</dd>
-	<dt class="propname">Folder Names: Drafts</dt>
-	<div class="description"><strong>Description</strong>: This is the name of the folder used to store draft messages.</div>
-	
-	<dd>
-		<?php
-			$text_draftsmbox = new html_inputfield(array('name' => '_drafts_mbox', 'size' => 20, 'id' => "cfgdraftsmbox"));
-			echo $text_draftsmbox->show($RCI->getprop('drafts_mbox'));
-		?>
-	</dd>
-	<div class="hint"><strong>Note:</strong> If left blank, draft messages will not be stored.</div>
-	<dt class="propname">Folder Names: Junk</dt>
-	<div class="description"><strong>Description</strong>: This is the name of the folder used to store junk messages.</div>
-
-	<dd>
-		<?php
-			$text_junkmbox = new html_inputfield(array('name' => '_junk_mbox', 'size' => 20, 'id' => "cfgjunkmbox"));
-			echo $text_junkmbox->show($RCI->getprop('junk_mbox'));
-		?>
-	</dd>
-	<div class="hint"><strong>Note:</strong> If left blank, junk messages will not be stored.</div>
-	<dt class="propname">Folder Names: Archive</dt>
-	<div class="description"><strong>Description</strong>: This is the name of the folder used to store archive messages.</div>
-	<dd>
-		<?php
-			$text_archivembox = new html_inputfield(array('name' => '_archive_mbox', 'size' => 20, 'id' => "cfgarchivembox"));
-			echo $text_archivembox->show($RCI->getprop('archive_mbox'));
-		?>
-	</dd>
-	<div class="hint"><strong>Note:</strong> If left blank, archive messages will not be stored.</div>
-	<dt class="propname">Folder Names: Sent</dt>
-	<div class="description"><strong>Description</strong>: This is the name of the folder used to store sent messages.</div>
-
-	<dd>
-		<?php
-			$text_sentmbox = new html_inputfield(array('name' => '_sent_mbox', 'size' => 20, 'id' => "cfgsentmbox"));
-			echo $text_sentmbox->show($RCI->getprop('sent_mbox'));
-		?>
-	</dd>
-	<div class="hint"><strong>Note:</strong> If left blank, sent messages will not be stored.</div>
-	<dt class="propname">Folder Names: Trash</dt>
-	<div class="description"><strong>Description</strong>: This is the name of the folder used to store trash messages.</div>
-	
-	<dd>
-		<?php
-			$text_trashmbox = new html_inputfield(array('name' => '_trash_mbox', 'size' => 20, 'id' => "cfgtrashmbox"));
-			echo $text_trashmbox->show($RCI->getprop('trash_mbox'));
-		?>
-	</dd>
-	<div class="hint"><strong>Note:</strong> If left blank, trash messages will not be stored.</div>
-	<dt class="propname">Automaticvally Create Default Folders</dt>
-	<div class="description"><strong>Description</strong>: This will automatically create the default IMAP folders after login.</div>
-	<dd>
-		<?php
-			$check_createfolders = new html_checkbox(array('name' => '_create_default_folders', 'size' => 20, 'id' => "cfgcreatefolders"));
-			echo $check_createfolders->show(intval($RCI->getprop('create_default_folders')), array('value' => 1));
-		?>Create Default IMAP Folders Upon Successful Login
-	</dd>
-	<dt class="propname">Protect Default IMAP Folders</dt>
-	<div class="description"><strong>Description</strong>: When this option is enabled, it will prevent users from renaming, deleting, or subscription changes to default IMAP folders.</div>
-	<dd>
-		<?php
-			$check_protectfolders = new html_checkbox(array('name' => '_protect_default_folders', 'size' => 20, 'id' => "cfgprotectfolders"));
-			echo $check_protectfolders->show(intval($RCI->getprop('protect_default_folders')), array('value' => 1));
-		?>Protect Default IMAP Folders From Modification
-	</dd>
-	<dt class="propname">Delivery Notification</dt>
-	<div class="description"><strong>Description</strong>: Choose the default behavior when a delivery notification (read receipt) is requested.</div>
-	<dd>
-		<?php
-			$select_mdnreq = new html_select(array('name' => '_mdn_requests', 'id' => "cfgmdnreq"));
-			$select_mdnreq->add(array('Ask The User', 'Send Automatically', 'Ignore'), array(0, 1, 2));
-			echo $select_mdnreq->show(intval($RCI->getprop('mdn_requests')));
-		?>
-	</dd>
-	<dt class="propname">Identities</dt>
-	<div class="description"><strong>Description</strong>: This will determine to what extent a users identity may be modified.</div>
-	<dd>
-		<?php
-			$input_ilevel = new html_select(array('name' => '_identities_level', 'id' => "cfgidentitieslevel"));
-			$input_ilevel->add('One identity with possibility to edit all params but not email address.', 3);
-			$input_ilevel->add('One identity with possibility to edit all params.', 2);
-			$input_ilevel->add('Many identities with possibility to edit all params but not email address.', 1);
-			$input_ilevel->add('Many identities with possibility to edit all params.', 0);
-			echo $input_ilevel->show($RCI->getprop('identities_level'), 0);
-		?>
-	</dd>
-	
-	<!-- These entries are not part of the config but are required for the main.inc.php -->
-	<input name="check_all_folders" size="5" id="check_all_folders" value="true" type="hidden" />
-</dl>
-</fieldset>
 
 
 
@@ -1269,6 +1263,7 @@ function createToken($tokenprefix, $sections, $sectionlength) {
 </fieldset>
 
 -->
+<?php if ($_GET['level'] == 2) { echo '';} else {echo '</div>';} ?>
 <?php
 
 echo '<p><div id="button"><input type="submit" name="submit" value="' . ($RCI->configured ? 'Update' : 'Create') . ' Configuration Files" ' . ($RCI->failures ? 'disabled' : '') . ' /></div></p><br>';

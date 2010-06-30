@@ -1,6 +1,22 @@
 <title>Crystal Mail Installer :: Welcome</title>
 </center>
-
+<SCRIPT TYPE="text/javascript">
+<!--
+function dropdown(mySel)
+{
+var myWin, myVal;
+myVal = mySel.options[mySel.selectedIndex].value;
+if(myVal)
+   {
+   if(mySel.form.target)myWin = parent[mySel.form.target];
+   else myWin = window;
+   if (! myWin) return true;
+   myWin.location = myVal;
+   }
+return false;
+}
+//-->
+</SCRIPT>
 <div id="rounded" class="rounded"><h1><center>Welcome to the Crystal Webmail Installer</h1>
 <br>
 <center>
@@ -35,9 +51,27 @@ The interactive installer will guide you through the entire installation and eve
 	<li>An SMTP server (recommended) or PHP configured for mail delivery</li>
 </ul>
 </div>
-<!-- <div id="button"><input type=button onClick="location.href='index.php?step=1'" value='Continue'></div> -->
-<form action="index.php" methond="get">
-<input type="hidden" name="_step" value="1" />
-<div id="button"><input type=submit value='Begin Install'></div> 
+<FORM 
+     ACTION="../cgi-bin/redirect.pl" 
+     METHOD=POST onSubmit="return dropdown(this.gourl)">
+     <div id="button" width="300px" style='	font-family: "Lucida Grande", "Verdana";
+	font-size: 12px;
+	color: #3F4245;
+	line-height: 1.4em;
+	text-shadow: #ffffff 0px 1px 3px;
+	-webkit-text-shadow: #ffffff 0px 1px 3px;
+	-moz-text-shadow: #ffffff 0px 1px 3px;'>
+
+<SELECT NAME="gourl">
+
+<OPTION VALUE="">Please Installer Mode
+
+<OPTION VALUE="?_step=1&level=2"                     >Full (Get all the configuration items)
+<OPTION VALUE="?_step=1&level=1"                          >Express (Get only the essential configuration items)
+
+</SELECT>&nbsp;|&nbsp;<INPUT TYPE=SUBMIT VALUE="Next">
+</div> 
+
+</FORM>
 <br>
 </div>

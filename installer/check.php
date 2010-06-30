@@ -62,6 +62,14 @@ $source_urls = array(
 );
 
 echo '<input type="hidden" name="_step" value="' . ($RCI->configured ? 4 : 2) . '" />';
+if ($_GET['level'] == '') {
+echo '<input type="hidden" name="level" value="2">';
+}else if ($_GET['level'] == '2')
+{
+echo '<input type="hidden" name="level" value="2">';
+}else if ($_GET['level'] == '1') {
+echo '<input type="hidden" name="level" value="1">';
+}
 ?>
 
 <h3>Checking PHP version</h3>
