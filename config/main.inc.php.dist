@@ -28,7 +28,7 @@ $cmail_config['default_port'] = 143;
 
 // IMAP auth type. Can be "auth" (CRAM-MD5), "plain" (PLAIN) or "check" to auto detect.
 // Optional, defaults to "check"
-$cmail_config['imap_auth_type'] = null;
+$cmail_config['imap_auth_type'] = 'check';
 
 // SMTP SERVER - Use this host for sending mails.
 // To use SSL connection, set ssl://smtp.host.com
@@ -78,6 +78,11 @@ $cmail_config['virtuser_file'] = '';
 // %u will be replaced with the current username for login.
 // The query should select the user's e-mail address as first column
 // and optional identity name as second column
+// EXAMPLE: $rcmail_config['virtuser_query'] = "SELECT email_address FROM database.table WHERE login = '%u'";
+// email_address - the first column returned by the query must be the complete email address
+// database - name of the database where your table is located, the roundcube db user must have read access
+// table - name of the table where your email addresses are stored
+// login - name of the field that contains the username that is used to log in to roundcube (and send/receive email) 
 $cmail_config['virtuser_query'] = '';
 
 
@@ -92,7 +97,7 @@ $cmail_config['virtuser_query'] = '';
 // Once enabled, you can access it via www.example.org/admin
 $cmail_config['enable_admin'] = false;
 
-// Admin Panel username and password
+// Admin Panel: Enter the username of users allowed to access the admin panel
 $cmail_config['admin_allowed'] = array('');
 
 

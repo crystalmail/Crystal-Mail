@@ -440,7 +440,7 @@
 			{
 		  if($this->state=="AUTHORIZATION")
 		  {
-					$this->error= "Error : User is not authorised or logged in.!<br>";
+					$this->error= "Error : User is not authorized or logged in.!<br>";
 					return false;
 		  }
 		  if($this->put_line($this->tag." SELECT $mailbox_name"))
@@ -466,7 +466,7 @@
 			{
 		  if($this->state=="AUTHORIZATION")
 		  {
-			$this->error= "Error : User is not authorised or logged in.!<br>";
+			$this->error= "Error : User is not authorized or logged in.!<br>";
 			return false;
 		  }
 		  if($this->put_line($this->tag." EXAMINE $mailbox_name"))
@@ -491,7 +491,7 @@
 			{
 			if($this->state=="AUTHORIZATION")
 			{
-			$this->error= "Error : User is not authorised or logged in.!<br>";
+			$this->error= "Error : User is not authorized or logged in.!<br>";
 			return false;
 			}
 			if($this->put_line($this->tag." CREATE $mailbox_name"))
@@ -516,7 +516,7 @@
 		{
 			if($this->state=="AUTHORIZATION")
 			{
-					$this->error= "Error : User is not authorised or logged in.!<br>";
+					$this->error= "Error : User is not authorized or logged in.!<br>";
 					return false;
 			}
 			if($this->put_line($this->tag." DELETE $mailbox_name"))
@@ -541,7 +541,7 @@
 		{
 			if($this->state=="AUTHORIZATION")
 			{
-			$this->error= "Error : User is not authorised or logged in.!<br>";
+			$this->error= "Error : User is not authorized or logged in.!<br>";
 			return false;
 			}
 			if($this->put_line($this->tag." RENAME $old_mailbox_name $new_mailbox_name"))
@@ -566,7 +566,7 @@
 		{
 			if($this->state=="AUTHORIZATION")
 			{
-				$this->error= "Error : User is not authorised or logged in.!<br>";
+				$this->error= "Error : User is not authorized or logged in.!<br>";
 				return false;
 			}
 			if($this->put_line($this->tag." SUBSCRIBE $mailbox_name"))
@@ -591,7 +591,7 @@
 		{
 			if($this->state=="AUTHORIZATION")
 			{
-				$this->error= "Error : User is not authorised or logged in.!<br>";
+				$this->error= "Error : User is not authorized or logged in.!<br>";
 				return false;
 			}
 			if($this->put_line($this->tag." UNSUBSCRIBE $mailbox_name"))
@@ -626,7 +626,7 @@
 		{
 			if($this->state=="AUTHORIZATION")
 			{
-				$this->error= "Error : User is not authorised or logged in.!<br>";
+				$this->error= "Error : User is not authorized or logged in.!<br>";
 				return false;
 			}
 			if(trim($ref_mail_box)=="")
@@ -660,7 +660,7 @@
 		{
 			if($this->state=="AUTHORIZATION")
 			{
-				$this->error= "Error : User is not authorised or logged in.!<br>";
+				$this->error= "Error : User is not authorized or logged in.!<br>";
 				return false;
 			}
 			if(trim($ref_mail_box)=="")
@@ -694,7 +694,7 @@
 		{
 			if($this->state=="AUTHORIZATION")
 			{
-				$this->error= "Error : User is not authorised or logged in.!<br>";
+				$this->error= "Error : User is not authorized or logged in.!<br>";
 				return false;
 			}
 			if($this->put_line($this->tag." STATUS $mail_box ($status_cmd)"))
